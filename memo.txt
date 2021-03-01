@@ -1,0 +1,3 @@
+
+#    volumes:
+#      - ./src/main/resources/db/migration:/var/lib/mysql

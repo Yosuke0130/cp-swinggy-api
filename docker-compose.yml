@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql_01
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: golf_app_db
+      BIND_ADDRESS: 0.0.0.0
+    command: --default-authentication-plugin=mysql_native_password
+
+  app:
+    build: .
+    container_name: app_01
+    ports:
+      - 8080:8080
+    tty: true
+    depends_on:
+      - db
