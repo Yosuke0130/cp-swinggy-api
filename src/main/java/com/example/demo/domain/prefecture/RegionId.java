@@ -1,16 +1,20 @@
-//package com.example.demo.domain.prefecture;
-//
-//import org.springframework.context.ApplicationContextException;
-//
-//public class RegionId {
-//
-//    private int regionId;
-//
-//    public RegionId(int regionId) throws ApplicationContextException {
-//        if(regionId < 1 || regionId > 8) {
-//            throw new ApplicationContextException("1-8の間で入力して下さい");
-//        }
-//        this.regionId = regionId;
-//        }
-//    }
+package com.example.demo.domain.prefecture;
+
+import org.springframework.context.ApplicationContextException;
+
+public class RegionId {
+    //staticにするとまずい？？
+    private static int value;
+
+    public RegionId(int value) {
+        if(value < 0 || value > 8) {
+            System.out.println("0-8の整数を入力してちょ");
+        }
+        this.value = value;
+        }
+    //PrefectureのGetterからのみ呼ばれる
+    public static int getValue() {
+        return value;
+    }
+}
 

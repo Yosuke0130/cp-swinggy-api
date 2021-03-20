@@ -18,35 +18,34 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
 
     @Override
     public List<Prefecture> find(int regionId) {
-        //TODO implement
+
         //地域ごとデータ取得
         List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture where region_id = ?", regionId);
-        System.out.println("took data");
-
-        List<Prefecture> prefectureList = new ArrayList<>();
-
         //Prefecture型に変換
-        for(Map<String, Object> map: prefectureData) {
-            Prefecture pref = new Prefecture((int)map.get("id"),
-                    (String)map.get("name"),
-                    (int) map.get("region_id"));
-            prefectureList.add(pref);
-        }
+        List<Prefecture> prefectureList = convertToPrefecture(prefectureData);
         return prefectureList;
     }
+
     //全件取得
     @Override
     public List<Prefecture> findAll() {
+        //全件取得
+        System.out.println("will take all data");
         List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture");
-        List<Prefecture> prefectureList = new ArrayList<>();
-
         //Prefecture型に変換
-        for(Map<String, Object> map: prefectureData) {
+        List<Prefecture> allPrefectureList = convertToPrefecture(prefectureData);
+        return allPrefectureList;
+    }
+
+    //Prefecture型に変換メソッド どこに書くべき？
+    private List<Prefecture> convertToPrefecture(List<Map<String, Object>> value) {
+        List<Prefecture> prefList = new ArrayList<>();
+        for(Map<String, Object> map: value) {
             Prefecture pref = new Prefecture((int)map.get("id"),
                     (String)map.get("name"),
                     (int) map.get("region_id"));
-            prefectureList.add(pref);
+            prefList.add(pref);
         }
-        return prefectureList;
+        return prefList;
     }
 }

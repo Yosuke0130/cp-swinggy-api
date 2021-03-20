@@ -18,7 +18,6 @@ public class PrefectureController {
 
     @GetMapping("/")
     public PrefectureResource getPrefectures(@RequestParam(name = "region-id", required = false) int regionId) {
-        //TODO implement the method
         //サービス呼び出し
         List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
 
