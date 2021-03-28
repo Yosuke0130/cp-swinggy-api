@@ -5,23 +5,17 @@ public class Prefecture {
 
     private final int id;
     private final String name;
-//    private final int regionId;
-    private RegionId regionId;
+    private final int regionId;
 
     //Constructor
     public Prefecture(int id, String name, int regionId) {
         this.id = id;
         this.name = name;
-//        this.regionId = regionId;
-        RegionId rId = new RegionId(regionId);
+        this.regionId = regionId;
     }
 
     //Getter
     public int getId() {return id;}
     public String getName() {return name;}
-    //RegionIdの値を取得
-    public int getRegion_Id() {
-        int regionId = RegionId.getValue();
-        return regionId;
-    }
+    public int getRegion_Id() {return regionId;}
 }

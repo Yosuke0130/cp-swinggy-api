@@ -4,8 +4,9 @@ import com.example.demo.domain.prefecture.Prefecture;
 import com.example.demo.domain.prefecture.PrefectureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+//import java.util.stream.Stream;
 
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
@@ -13,37 +14,33 @@ public class PrefectureServiceImpl implements PrefectureService {
     @Autowired
     PrefectureRepository prefectureRepository;
 
+    //全件取得
+    @Override
+    public List<PrefectureModel> getFullPrefectureList() {
+        System.out.println("input Zero");
+        List<Prefecture> allPrefectureList = prefectureRepository.findAll();
+        List<PrefectureModel> allPrefectureModelList = allPrefectureList.stream()
+                .map(prefecture -> convertToPrefectureModel(prefecture))
+                .collect(Collectors.toList());
+        return allPrefectureModelList;
+    }
+
+    //1-8各地域データ取得
     @Override
     public List<PrefectureModel> getPrefectureList(int regionId) {
-
-        //0=全件取得、1-8各地域データ取得 サービス層で分けるのか？
-        if (regionId >= 1 && regionId <= 8) {
-            //1-8各地域データ取得
-            List<Prefecture> prefectureList = prefectureRepository.find(regionId);
-            List<PrefectureModel> prefectureModelList = convertToPrefectureModel(prefectureList);
-            return prefectureModelList;
-        } else if (regionId == 0) {
-            //0=全件取得
-            System.out.println("input Zero");
-            List<Prefecture> allPrefectureList = prefectureRepository.findAll();
-            List<PrefectureModel> allPrefectureModelList = convertToPrefectureModel(allPrefectureList);
-            return allPrefectureModelList;
-        } else {
-            System.out.println("input error");
-            return null;
-        }
+        List<Prefecture> prefectureList = prefectureRepository.find(regionId);
+        List<PrefectureModel> prefectureModelList = prefectureList.stream()
+                .map(prefecture -> convertToPrefectureModel(prefecture))
+                .collect(Collectors.toList());
+        return prefectureModelList;
     }
 
-        //DTOに入れるメソッド どこに書くべき？
-    private List<PrefectureModel> convertToPrefectureModel(List<Prefecture> value) {
-        List<PrefectureModel> prefectureModelList = new ArrayList<>();
-        for(int i = 0; i < value.size(); i++) {
-            PrefectureModel prefectureModel =
-                    new PrefectureModel(value.get(i).getId(),
-                            value.get(i).getName(),
-                            value.get(i).getRegion_Id());
-            prefectureModelList.add(prefectureModel);
-        }
-        return  prefectureModelList;
+        //DTOに入れるメソッド
+    private PrefectureModel convertToPrefectureModel(Prefecture prefecture) {
+        return new PrefectureModel(prefecture.getId(),
+                    prefecture.getName(),
+                    prefecture.getRegion_Id());
     }
+
 }
+
