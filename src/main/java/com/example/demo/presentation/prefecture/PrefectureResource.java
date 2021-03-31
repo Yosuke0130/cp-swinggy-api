@@ -9,7 +9,6 @@ public class PrefectureResource {
     @JsonProperty("prefectures")
     private List<PrefectureModel> prefectureModel;
 
-    //Constructor
     public PrefectureResource(List<PrefectureModel> prefectureModel) {
         this.prefectureModel = prefectureModel;
     }

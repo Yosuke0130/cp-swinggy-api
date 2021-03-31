@@ -1,5 +1,6 @@
 package com.example.demo.infrastructure.prefecture;
 
+import com.example.demo.Logging;
 import com.example.demo.domain.prefecture.Prefecture;
 import com.example.demo.domain.prefecture.PrefectureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,14 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     @Autowired
     JdbcTemplate jdbc;
 
+    @Autowired
+    Logging logger;
+
     //全件取得
     @Override
     public List<Prefecture> findAll() {
         //全件取得
-        System.out.println("will take all data");
+        logger.info("take all data");
         List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture");
         //Prefecture型に変換
         List<Prefecture> allPrefectureList = prefectureData.stream()
@@ -40,10 +44,11 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
         return prefectureList;
     }
 
-    //Prefecture型に変換メソッド
+    //Prefecture型に変換
     private Prefecture convertToPrefecture(Map<String, Object> prefecture) {
         return new Prefecture((int)prefecture.get("id"),
                 (String)prefecture.get("name"),
                 (int)prefecture.get("region_id"));
     }
+
 }

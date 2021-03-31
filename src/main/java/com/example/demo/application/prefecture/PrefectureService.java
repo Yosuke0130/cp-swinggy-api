@@ -5,8 +5,6 @@ import java.util.Optional;
 
 public interface PrefectureService {
 
-    List<PrefectureModel> getFullPrefectureList();
-
-    List<PrefectureModel> getPrefectureList(int regionId);
+    List<PrefectureModel> getPrefectureList(Optional<Integer> regionId);
 
 }
