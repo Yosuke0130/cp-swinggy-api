@@ -30,3 +30,5 @@ services:
       - -wait
       - tcp://db:3306
     command: java -jar demo-0.0.1.jar
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL}

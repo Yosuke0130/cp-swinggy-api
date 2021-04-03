@@ -26,6 +26,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
-	useJUnitPlatform()
-}
+//TODO: テストを書く
+//test {
+//	useJUnitPlatform()
+//}
