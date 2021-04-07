@@ -20,11 +20,11 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     @Autowired
     Logging logger;
 
-    //全件取得
+
     @Override
-    public List<Prefecture> findAll() {
+    public List<Prefecture> findAll() throws IllegalArgumentException{
         //全件取得
-        logger.info("take all data");
+        logger.debug("take all data");
         List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture");
         //Prefecture型に変換
         List<Prefecture> allPrefectureList = prefectureData.stream()
@@ -34,8 +34,9 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     }
 
     @Override
-    public List<Prefecture> find(int regionId) {
+    public List<Prefecture> find(int regionId) throws IllegalArgumentException{
         //地域ごとデータ取得
+        logger.debug("take regional data");
         List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture where region_id = ?", regionId);
         //Prefecture型に変換
         List<Prefecture> prefectureList = prefectureData.stream()
@@ -45,7 +46,7 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     }
 
     //Prefecture型に変換
-    private Prefecture convertToPrefecture(Map<String, Object> prefecture) {
+    private Prefecture convertToPrefecture(Map<String, Object> prefecture) throws IllegalArgumentException{
         return new Prefecture((int)prefecture.get("id"),
                 (String)prefecture.get("name"),
                 (int)prefecture.get("region_id"));

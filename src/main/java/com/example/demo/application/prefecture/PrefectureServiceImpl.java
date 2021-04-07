@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class PrefectureServiceImpl implements PrefectureService {
     Logging logger;
 
     @Override
-    public List<PrefectureModel> getPrefectureList(Optional<Integer> regionId) {
+    public List<PrefectureModel> getPrefectureList(Optional<Integer> regionId) throws IllegalArgumentException {
 
         //全件取得
         if (regionId.isEmpty()) {
@@ -46,8 +45,8 @@ public class PrefectureServiceImpl implements PrefectureService {
             return prefectureModelList;
         }
 
-        logger.info("input error");
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        logger.info("Input error from PrefectureServiceImpl");
+        throw new IllegalArgumentException("Input error from PrefectureServiceImpl");
     }
 
         //PrefectureModel型に変換

@@ -2,11 +2,7 @@ package com.example.demo.domain.prefecture;
 
 import com.example.demo.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-@ResponseStatus(HttpStatus.CREATED)
 public class RegionId {
 
     private int value;
@@ -16,9 +12,9 @@ public class RegionId {
     @Autowired
     Logging logger;
 
-    public RegionId(int value) {
+    public RegionId(int value) throws IllegalArgumentException {
         if(validateValue(value)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+            throw new IllegalArgumentException("Input error from RegionId");
         }
         this.value = value;
         }
@@ -28,7 +24,7 @@ public class RegionId {
     }
 
     public boolean validateValue(int value) {
-        logger.info("validation check");
+        logger.debug("validation check");
         return value < MIN_VALUE || value > MAX_VALUE;
     }
 

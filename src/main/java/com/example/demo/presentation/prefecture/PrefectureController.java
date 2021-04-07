@@ -5,6 +5,7 @@ import com.example.demo.application.prefecture.PrefectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.lang.Integer;
@@ -18,16 +19,21 @@ public class PrefectureController {
     PrefectureService prefectureService;
 
     @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     @GetMapping("/")
     public PrefectureResource getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
+        try{
+            //サービス呼び出し
+            List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
 
-        //サービス呼び出し
-        List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
+            //PrefectureResource型に変換
+            PrefectureResource prefectureResource = new PrefectureResource(prefectureModelList);
 
-        //PrefectureResource型に変換
-        PrefectureResource prefectureResource = new PrefectureResource(prefectureModelList);
+            return prefectureResource;
 
-        return prefectureResource;
-
+        } catch(Exception e) {
+            System.out.println("error occurred!!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
