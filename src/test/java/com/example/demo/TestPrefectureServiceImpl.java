@@ -36,21 +36,23 @@ public class TestPrefectureServiceImpl {
     @Test
     void paramIs1() {
 
-        Prefecture testPrefecture = new Prefecture(1,"Hokkaido",1);
-        List<Prefecture> testPrefectureList = new ArrayList<>();
-        testPrefectureList.add(testPrefecture);
+        int prefectureId = 1;
+        String name = "Hokkaido";
+        int regionId = 1;
 
-        when(prefectureRepository.find(1)).thenReturn(testPrefectureList);
+        Prefecture prefecture = new Prefecture(prefectureId, name, regionId);
+        List<Prefecture> prefectureList = new ArrayList<>();
+        prefectureList.add(prefecture);
 
-        Optional<Integer> testId = Optional.of(1);
+        when(prefectureRepository.find(regionId)).thenReturn(prefectureList);
 
-        List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(testId);
+        List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(Optional.of(regionId));
 
         assertAll(
-                () -> verify(prefectureRepository, times(1)).find(1),
-                () -> assertEquals(1, result.get(0).getId()),
-                () -> assertEquals("Hokkaido", result.get(0).getName()),
-                () -> assertEquals(1, result.get(0).getRegion_Id())
+                () -> verify(prefectureRepository, times(1)).find(regionId),
+                () -> assertEquals(prefectureId, result.get(0).getId()),
+                () -> assertEquals(name, result.get(0).getName()),
+                () -> assertEquals(regionId, result.get(0).getRegion_Id())
         );
 
     }
