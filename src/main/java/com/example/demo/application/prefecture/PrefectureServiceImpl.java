@@ -27,7 +27,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 
         //全件取得
         if (regionId.isEmpty()) {
-            logger.info("param is null");
             List<Prefecture> allPrefectureList = prefectureRepository.findAll();
         List<PrefectureModel> allPrefectureModelList = allPrefectureList.stream()
                 .map(prefecture -> convertToPrefectureModel(prefecture))
@@ -45,11 +44,10 @@ public class PrefectureServiceImpl implements PrefectureService {
             return prefectureModelList;
         }
 
-        logger.info("Input error from PrefectureServiceImpl");
-        throw new IllegalArgumentException("Input error from PrefectureServiceImpl");
+        throw new IllegalArgumentException("param must be null or int 1-8");
+
     }
 
-        //PrefectureModel型に変換
     private PrefectureModel convertToPrefectureModel(Prefecture prefecture) {
         return new PrefectureModel(prefecture.getId(),
                     prefecture.getName(),

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.prefecture;
 
 import com.example.demo.application.prefecture.PrefectureModel;
 import com.example.demo.application.prefecture.PrefectureServiceImpl;

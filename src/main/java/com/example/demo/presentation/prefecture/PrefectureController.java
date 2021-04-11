@@ -23,7 +23,7 @@ public class PrefectureController {
     @GetMapping("/")
     public PrefectureResource getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
         try{
-            //サービス呼び出し
+
             List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
 
             //PrefectureResource型に変換
@@ -32,7 +32,7 @@ public class PrefectureController {
             return prefectureResource;
 
         } catch(Exception e) {
-            System.out.println("error occurred!!");
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }

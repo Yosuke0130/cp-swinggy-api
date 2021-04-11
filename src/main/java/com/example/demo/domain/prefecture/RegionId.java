@@ -14,7 +14,7 @@ public class RegionId {
 
     public RegionId(int value) throws IllegalArgumentException {
         if(validateValue(value)) {
-            throw new IllegalArgumentException("Input error from RegionId");
+            throw new IllegalArgumentException("Input value must be between 1-8");
         }
         this.value = value;
         }
