@@ -6,9 +6,6 @@ create table prefecture(
     primary key(id)
 );
 
-set character_set_client=utf8mb4;
-set character_set_connection=utf8mb4;
-
 insert into prefecture values
   (1,1,"北海道"),
   (2,2,"青森県"),

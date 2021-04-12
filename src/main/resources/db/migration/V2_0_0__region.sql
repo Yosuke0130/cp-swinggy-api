@@ -5,9 +5,6 @@ create table region(
     primary key(id)
     );
 
-set character_set_client=utf8mb4;
-set character_set_connection=utf8mb4;
-
 insert into region values
       (1,"北海道地方"),
       (2,"東北地方"),
