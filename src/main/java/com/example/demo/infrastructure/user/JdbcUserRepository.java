@@ -22,14 +22,14 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public boolean insert(int userId, String name, String screenName, String email, String tel) throws SQLException {
         try {
-            int user_result = jdbc.update("insert into user(user_id) values(?)", userId);
+            int user_count = jdbc.update("insert into user(user_id) values(?)", userId);
 
-            int user_profile_result = jdbc.update(
+            int user_profile_count = jdbc.update(
                         "insert into user_profile(user_profile_id, user_id, name, screen_name, email, tel)" +
                             " values(?, ?, ?, ?, ?, ?)",
                             userId, userId, name, screenName, email, tel);
 
-            logger.info("user_result : " + user_result + ", user_profile_result : " + user_profile_result);
+            logger.info("user_result : " + user_count + ", user_profile_result : " + user_profile_count);
 
             return true;
 

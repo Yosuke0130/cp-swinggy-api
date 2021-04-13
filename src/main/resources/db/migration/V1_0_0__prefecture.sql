@@ -1,5 +1,5 @@
 
-create table prefecture(
+create table if not exists prefecture(
     id int(3) not null,
     region_id int(3) not null,
     name varchar(255) not null,

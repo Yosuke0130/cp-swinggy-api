@@ -1,5 +1,5 @@
 
-create table user_profile(
+create table if not exists user_profile(
     user_profile_id int(3),
     user_id int(3) not null,
     name varchar(255) not null,

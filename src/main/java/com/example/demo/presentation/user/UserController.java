@@ -29,12 +29,14 @@ public class UserController {
                            @RequestParam(name = "email", required = false) String email,
                            @RequestParam(name = "tel", required = false) String tel) {
 
-        boolean result = userService.createAccount(userId, name, screenName, email, tel);
+        boolean createResult = userService.createAccount(userId, name, screenName, email, tel);
 
-        if (result == true) {
-            logger.info("result : " + result);
+        if (createResult) {
+            logger.info("result : " + createResult);
         } else {
+
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
         }
     }
 }
