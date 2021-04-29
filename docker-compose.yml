@@ -32,3 +32,7 @@ services:
     command: java -jar demo-0.0.1.jar
     environment:
       - LOG_LEVEL=${LOG_LEVEL}
+      - cloud.aws.credentials.accessKey=${AWS_ACCESS_KEY_ID}
+      - cloud.aws.credentials.secretKey=${AWS_SECRET_ACCESS_KEY}
+      - s3.bucketName=${S3_BUCKET_NAME}
+      - cloud.aws.region.static=${AWS_REGION}

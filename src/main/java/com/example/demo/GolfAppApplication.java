@@ -12,7 +12,7 @@ public class GolfAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GolfAppApplication.class, args);
-		logger.debug("Let's play GOLF!!");
+		logger.info("Let's play GOLF!!");
 	}
 
 }

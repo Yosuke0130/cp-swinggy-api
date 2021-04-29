@@ -1,9 +1,14 @@
 package com.example.demo.domain.user;
 
-import java.sql.SQLException;
-
+import com.example.demo.application.user.UserCreateException;
 
 public interface UserRepository {
 
-    public boolean insert(int userId, String name, String screenName, String email, String tel) throws SQLException;
+    public void insert(User user, byte[] profileImage) throws UserCreateException;
+
+    public int selectTel(User user);
+
+    public int selectEmail(User user);
+
+    public int selectScreenName(User user);
 }

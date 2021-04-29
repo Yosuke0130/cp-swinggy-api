@@ -1,5 +1,6 @@
 
 create table if not exists user(
-    user_id int(3) not null,
+    user_id int(3),
+    created_at date,
     primary key(user_id)
     );
