@@ -9,31 +9,31 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public boolean existsTel(User user) {
+    public boolean telExists(User user) {
 
         //screenName, email, telの重複をチェック
         int selectTel = userRepository.selectTel(user);
         if (selectTel >= 1) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public boolean existsEmail(User user) {
+    public boolean emailExists(User user) {
 
         int selectEmail = userRepository.selectEmail(user);
         if (selectEmail >= 1) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public boolean existsScreenName(User user) {
+    public boolean screenNameExists(User user) {
         int selectScreenName = userRepository.selectScreenName(user);
         if(selectScreenName >= 1) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
 }

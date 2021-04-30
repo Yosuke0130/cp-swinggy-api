@@ -8,19 +8,20 @@ public class ScreenName {
 
     public ScreenName(String screenName) throws IllegalArgumentException{
 
-        if(validateLength(screenName)) {
+        if(isLengthValid(screenName)) {
 
+            this.screenName = screenName;
+
+        } else {
             throw new IllegalArgumentException("length has to be 4-32");
         }
-
-        this.screenName = screenName;
     }
 
     public String getValue() {return screenName;}
 
-    public boolean validateLength(String screenName) {
+    public boolean isLengthValid(String screenName) {
 
-        return screenName.length() < MIN_LENGTH || screenName.length() > MAX_LENGTH;
+        return screenName.length() > MIN_LENGTH && screenName.length() < MAX_LENGTH;
     }
 
 }

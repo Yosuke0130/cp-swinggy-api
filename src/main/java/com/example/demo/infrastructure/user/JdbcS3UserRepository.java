@@ -17,11 +17,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Optional;
+import static java.util.Objects.nonNull;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -34,13 +35,21 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public void insert(User user, byte[] profileImage) throws UserCreateException {
+    public void insert(User user, Optional<byte[]> profileImage) throws UserCreateException {
         try {
 
-            uploadImage(profileImage, user);
+            String profileImagePath = null;
+
+            //画像データがあればアップロード処理
+            if(nonNull(profileImage)) {
+
+                byte[] uploadImage = profileImage.get();
+                uploadImage(uploadImage, user);
+                profileImagePath = getProfileImagePath(user);
+
+            }
 
             Date createdDate = new Date();
-            String profileImagePath = getProfileImagePath(user);
 
             jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
 
@@ -61,7 +70,6 @@ public class JdbcS3UserRepository implements UserRepository {
         }
     }
 
-
     @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
@@ -75,7 +83,7 @@ public class JdbcS3UserRepository implements UserRepository {
     private String bucketName;
 
     //S3ファイルアップロード
-    public void uploadImage(byte[] profileImage, User user) throws IOException {
+    public void uploadImage(byte[] uploadImage, User user) throws IOException {
 
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
@@ -85,13 +93,14 @@ public class JdbcS3UserRepository implements UserRepository {
                 .withRegion(awsRegion)
                 .build();
 
-        try(InputStream input = new ByteArrayInputStream(profileImage)) {
+        try(InputStream input = new ByteArrayInputStream(uploadImage)) {
             // メタ情報を生成
             ObjectMetadata metaData = new ObjectMetadata();
-            metaData.setContentLength(profileImage.length);
+            metaData.setContentLength(uploadImage.length);
+            metaData.setContentType("image/jpeg");
             // リクエストを生成
             PutObjectRequest request = new PutObjectRequest(
-                    bucketName, "profile_image" + "/" + user.getScreenName() + ".jpg", input, metaData);
+                    bucketName, "profile_image" + "/" + user.getScreenName() + ".jpeg", input, metaData);
             // アップロード
             s3Client.putObject(request);
         }

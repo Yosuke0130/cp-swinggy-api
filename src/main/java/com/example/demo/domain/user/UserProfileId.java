@@ -12,7 +12,6 @@ public class UserProfileId {
     private String userprofileId;
 
     public UserProfileId() {
-
         //UUID発行
         UUID uuid = UUID.randomUUID();
         this.userprofileId = uuid.toString();
@@ -20,6 +19,5 @@ public class UserProfileId {
     }
 
     public String getValue() {return this.userprofileId;}
-    void setValue(String userprofileId) {this.userprofileId = userprofileId;}
 
 }
