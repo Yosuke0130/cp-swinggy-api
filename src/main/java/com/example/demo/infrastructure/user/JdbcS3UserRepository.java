@@ -17,12 +17,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
-import static java.util.Objects.nonNull;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -35,30 +36,30 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public void insert(User user, Optional<byte[]> profileImage) throws UserCreateException {
+    public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException {
         try {
 
-            String profileImagePath = null;
-
-            //画像データがあればアップロード処理
-            if(nonNull(profileImage)) {
-
-                byte[] uploadImage = profileImage.get();
-                uploadImage(uploadImage, user);
-                profileImagePath = getProfileImagePath(user);
-
+            if(!profileImage.isPresent()) {
+                //nullの場合、デフォルト画像セット
+                String defaultImagePath = "https://bucket-for-golfapp.s3-ap-northeast-1.amazonaws.com/profile_image/default_Image.jpeg";
+                user.setProfileImagePath(defaultImagePath);
+            } else {
+                //拡張子取得、バイトに変換、アップロードメソッド呼び出し、パスをuserにセット
+                String contentType = profileImage.get().getContentType();
+                byte[] uploadImage = profileImage.get().getBytes();
+                URL url = uploadImage(uploadImage, user, contentType);
+                user.setProfileImagePath(url.toString());
             }
 
             Date createdDate = new Date();
-
             jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
 
             jdbc.update(
             "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
                     " values(?, ?, ?, ?, ?, ?, ?, ?)",
-            user.getUserProfileId(), user.getUserId(), user.getFirstName(), user.getLastName(), user.getScreenName(), profileImagePath, user.getEmail(), user.getTel());
+            user.getUserProfileId(), user.getUserId(), user.getFirstName(), user.getLastName(), user.getScreenName(), user.getProfileImagePath(), user.getEmail(), user.getTel());
 
-            logger.debug("insert success!");
+            logger.debug("アップロードパス" + user.getProfileImagePath());
 
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -82,8 +83,8 @@ public class JdbcS3UserRepository implements UserRepository {
     @Value("${s3.bucketName}")
     private String bucketName;
 
-    //S3ファイルアップロード
-    public void uploadImage(byte[] uploadImage, User user) throws IOException {
+    //S3ファイルアップロード パスを返却
+    public URL uploadImage(byte[] uploadImage, User user, String contentType) throws IOException {
 
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
@@ -92,22 +93,35 @@ public class JdbcS3UserRepository implements UserRepository {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(awsRegion)
                 .build();
+        String objectDirectory = "profile_image";
 
         try(InputStream input = new ByteArrayInputStream(uploadImage)) {
             // メタ情報を生成
             ObjectMetadata metaData = new ObjectMetadata();
             metaData.setContentLength(uploadImage.length);
-            metaData.setContentType("image/jpeg");
+            metaData.setContentType(contentType);
+            String imageType = checkContentType(contentType);
             // リクエストを生成
             PutObjectRequest request = new PutObjectRequest(
-                    bucketName, "profile_image" + "/" + user.getScreenName() + ".jpeg", input, metaData);
+                bucketName,
+                objectDirectory + "/" + user.getUserProfileId() + "." + imageType,
+                input,
+                metaData);
             // アップロード
             s3Client.putObject(request);
         }
+        return s3Client.getUrl(bucketName,objectDirectory);
     }
 
-    public String getProfileImagePath(User user) {
-        return "https://" + bucketName + ".s3-" + awsRegion + ".amazonaws.com/profile_image/" + user.getScreenName() + ".jpg";
+    //"imge/jpeg"を"jpeg"に変換して拡張子として使えるようにするメソッド
+    public String checkContentType(String contentType) throws IllegalArgumentException{
+        if(contentType.equals("image/jpeg")) {
+            return "jpeg";
+        } else if(contentType.equals("image/png")) {
+            return "png";
+        } else {
+            throw new IllegalArgumentException("Data Type should be jpeg or png");
+        }
     }
 
     @Override

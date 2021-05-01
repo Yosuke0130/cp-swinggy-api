@@ -9,7 +9,7 @@ public class Name {
 
     public Name(String name) throws IllegalArgumentException{
         //正規表現チェック 全角ひらがな、カタカナ、漢字、半角英小文字、半角英大文字
-        Pattern pattern = Pattern.compile("^[ぁ-んァ-ン一-龥a-zA-Z]{2,20}$");
+        Pattern pattern = Pattern.compile("^[ぁ-んァ-ン一-龥a-zA-Z]+$");
         Matcher matcher = pattern.matcher(name);
 
         if(matcher.find()) {

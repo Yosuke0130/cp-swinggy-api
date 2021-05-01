@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -33,17 +31,11 @@ public class UserController {
                                              @RequestParam("first_name") String firstName,
                                              @RequestParam("last_name") String lastName,
                                              @RequestParam("screen_name") String screenName,
-                                             @RequestParam(name = "profile_image", required = false) MultipartFile multiPartFile,
+                                             @RequestParam(name = "profile_image", required = false) Optional<MultipartFile> profileImage,
                                              @RequestParam("email") String email,
                                              @RequestParam(name = "tel", required = false) String tel,
                                              UriComponentsBuilder uriBuilder) {
         try{
-
-            Optional<byte[]> profileImage = null;
-
-            if(Objects.nonNull(multiPartFile)) {
-                profileImage = Optional.of(multiPartFile.getBytes());
-            }
 
             userApplicationService.create(userId, firstName, lastName, screenName, profileImage, email, tel);
 
@@ -67,11 +59,6 @@ public class UserController {
             //client error
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        } catch (IOException e) {
-
-            //画像データ処理
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         }
     }

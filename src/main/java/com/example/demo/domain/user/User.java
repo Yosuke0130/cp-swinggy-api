@@ -9,6 +9,7 @@ public class User {
     private ScreenName screenName;
     private Email email;
     private Tel tel;
+    private String profileImagePath;
 
     public User(int userId, String firstName, String lastName, String screenName, String email, String tel) throws IllegalArgumentException {
 
@@ -19,6 +20,7 @@ public class User {
         this.email = new Email(email);
         this.tel = new Tel(tel);
         this.userProfileId = new UserProfileId();
+        this.profileImagePath = null;
     }
 
     public int getUserId() {return userId;}
@@ -28,5 +30,10 @@ public class User {
     public String getScreenName() {return screenName.getValue();}
     public String getEmail() {return email.getValue();}
     public String getTel() {return tel.getValue();}
+    public String getProfileImagePath() {return this.profileImagePath;}
+
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
 
 }

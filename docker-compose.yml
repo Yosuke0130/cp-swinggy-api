@@ -30,11 +30,9 @@ services:
       - -wait
       - tcp://db:3306
     command: java -jar demo-0.0.1.jar
-#    environment:
-#      - LOG_LEVEL=${LOG_LEVEL}
-#      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-#      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-#      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
-#      - AWS_REGION=${AWS_REGION}
-    env_file:
-      - .env
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}

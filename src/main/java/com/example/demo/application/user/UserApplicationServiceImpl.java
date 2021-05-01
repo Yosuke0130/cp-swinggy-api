@@ -6,7 +6,7 @@ import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @Service
@@ -22,11 +22,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     UserService userService;
 
     @Override
-    public void create(int userId, String firstName, String lastName, String screenName, Optional<byte[]> profileImage, String email, String tel)
+    public void create(int userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
             throws UserCreateException, IllegalArgumentException {
 
         User user = new User(userId, firstName, lastName, screenName, email, tel);
-        System.out.println("shoud not reach here");
+
         //ドメインサービス 重複チェッククラス
         if (userService.telExists(user)) {
             throw new IllegalArgumentException("This tel number has already existed");
