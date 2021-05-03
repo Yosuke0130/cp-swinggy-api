@@ -7,7 +7,7 @@ create table if not exists user_profile(
     screen_name varchar(255) not null unique,
     profile_image_path varchar(255),
     email varchar(255) not null unique,
-    tel varchar(255) not null,
+    tel varchar(255) not null unique,
     primary key(user_profile_id),
     constraint fk_user_id
      foreign key(user_id)

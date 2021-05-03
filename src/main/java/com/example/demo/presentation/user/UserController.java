@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -31,11 +32,15 @@ public class UserController {
                                              @RequestParam("first_name") String firstName,
                                              @RequestParam("last_name") String lastName,
                                              @RequestParam("screen_name") String screenName,
-                                             @RequestParam(name = "profile_image", required = false) Optional<MultipartFile> profileImage,
+                                             @RequestParam(name = "profile_image", required = false) MultipartFile profileImageData,
                                              @RequestParam("email") String email,
                                              @RequestParam(name = "tel", required = false) String tel,
                                              UriComponentsBuilder uriBuilder) {
         try{
+                Optional<MultipartFile> profileImage = Optional.empty();
+                if(Objects.nonNull(profileImageData)) {
+                    profileImage = Optional.of(profileImageData);
+            }
 
             userApplicationService.create(userId, firstName, lastName, screenName, profileImage, email, tel);
 

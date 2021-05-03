@@ -1,5 +1,7 @@
 package com.example.demo.domain.user;
 
+import java.net.URL;
+
 public class User {
 
     private final int userId;
@@ -9,10 +11,11 @@ public class User {
     private ScreenName screenName;
     private Email email;
     private Tel tel;
-    private String profileImagePath;
+    private ProfileImageURL profileImageURL;
 
-    public User(int userId, String firstName, String lastName, String screenName, String email, String tel) throws IllegalArgumentException {
 
+
+    public User(int userId, String firstName, String lastName, String screenName, String email, String tel, URL defaultURL) throws IllegalArgumentException {
         this.userId = userId;
         this.firstName = new Name(firstName);
         this.lastName = new Name(lastName);
@@ -20,7 +23,7 @@ public class User {
         this.email = new Email(email);
         this.tel = new Tel(tel);
         this.userProfileId = new UserProfileId();
-        this.profileImagePath = null;
+        this.profileImageURL = new ProfileImageURL(defaultURL);
     }
 
     public int getUserId() {return userId;}
@@ -30,10 +33,8 @@ public class User {
     public String getScreenName() {return screenName.getValue();}
     public String getEmail() {return email.getValue();}
     public String getTel() {return tel.getValue();}
-    public String getProfileImagePath() {return this.profileImagePath;}
+    public URL getProfileImageURL() {return profileImageURL.getValue();}
 
-    public void setProfileImagePath(String profileImagePath) {
-        this.profileImagePath = profileImagePath;
-    }
+    public void setProfileImageURL(URL profileImageURL) {this.profileImageURL.setValue(profileImageURL);}
 
 }

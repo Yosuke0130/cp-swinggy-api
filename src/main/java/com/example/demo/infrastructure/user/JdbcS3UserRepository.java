@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -39,27 +41,24 @@ public class JdbcS3UserRepository implements UserRepository {
     public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException {
         try {
 
-            if(!profileImage.isPresent()) {
-                //nullの場合、デフォルト画像セット
-                String defaultImagePath = "https://bucket-for-golfapp.s3-ap-northeast-1.amazonaws.com/profile_image/default_Image.jpeg";
-                user.setProfileImagePath(defaultImagePath);
-            } else {
+            if (profileImage.isPresent()) {
                 //拡張子取得、バイトに変換、アップロードメソッド呼び出し、パスをuserにセット
                 String contentType = profileImage.get().getContentType();
                 byte[] uploadImage = profileImage.get().getBytes();
                 URL url = uploadImage(uploadImage, user, contentType);
-                user.setProfileImagePath(url.toString());
+                user.setProfileImageURL(url);
+                System.out.println(user.getProfileImageURL());
             }
 
             Date createdDate = new Date();
             jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
 
             jdbc.update(
-            "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
-                    " values(?, ?, ?, ?, ?, ?, ?, ?)",
-            user.getUserProfileId(), user.getUserId(), user.getFirstName(), user.getLastName(), user.getScreenName(), user.getProfileImagePath(), user.getEmail(), user.getTel());
+                    "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
+                            " values(?, ?, ?, ?, ?, ?, ?, ?)",
+                    user.getUserProfileId(), user.getUserId(), user.getFirstName(), user.getLastName(), user.getScreenName(), user.getProfileImageURL().toString(), user.getEmail(), user.getTel());
 
-            logger.debug("アップロードパス" + user.getProfileImagePath());
+            logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -83,6 +82,9 @@ public class JdbcS3UserRepository implements UserRepository {
     @Value("${s3.bucketName}")
     private String bucketName;
 
+    @Value("${profile.image.directory}")
+    private String profileImageDirectory;
+
     //S3ファイルアップロード パスを返却
     public URL uploadImage(byte[] uploadImage, User user, String contentType) throws IOException {
 
@@ -93,31 +95,30 @@ public class JdbcS3UserRepository implements UserRepository {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(awsRegion)
                 .build();
-        String objectDirectory = "profile_image";
 
-        try(InputStream input = new ByteArrayInputStream(uploadImage)) {
+        try (InputStream input = new ByteArrayInputStream(uploadImage)) {
             // メタ情報を生成
             ObjectMetadata metaData = new ObjectMetadata();
             metaData.setContentLength(uploadImage.length);
             metaData.setContentType(contentType);
-            String imageType = checkContentType(contentType);
+            String imageType = getFileExtension(contentType);
             // リクエストを生成
             PutObjectRequest request = new PutObjectRequest(
-                bucketName,
-                objectDirectory + "/" + user.getUserProfileId() + "." + imageType,
-                input,
-                metaData);
+                    bucketName,
+                    profileImageDirectory + "/" + user.getUserProfileId() + "." + imageType,
+                    input,
+                    metaData);
             // アップロード
             s3Client.putObject(request);
         }
-        return s3Client.getUrl(bucketName,objectDirectory);
+        return s3Client.getUrl(bucketName, profileImageDirectory);
     }
 
-    //"imge/jpeg"を"jpeg"に変換して拡張子として使えるようにするメソッド
-    public String checkContentType(String contentType) throws IllegalArgumentException{
-        if(contentType.equals("image/jpeg")) {
+    //"image/jpeg"を"jpeg"に変換して拡張子として使えるようにするメソッド
+    public String getFileExtension(String contentType) throws IllegalArgumentException {
+        if (contentType.equals("image/jpeg")) {
             return "jpeg";
-        } else if(contentType.equals("image/png")) {
+        } else if (contentType.equals("image/png")) {
             return "png";
         } else {
             throw new IllegalArgumentException("Data Type should be jpeg or png");
@@ -126,29 +127,28 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public int selectTel(User user) {
+    public List<Map<String, Object>> selectByTel(User user) {
 
-        Integer telData = jdbc.queryForObject("select count(tel) from user_profile where tel = ?", Integer.class, user.getTel());
+        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?",user.getTel());
 
-        return telData;
+        return userSelectedByTel;
     }
 
     @Override
     @Transactional
-    public int selectEmail(User user) {
+    public List<Map<String, Object>> selectByEmail(User user) {
 
-        Integer emailData = jdbc.queryForObject("select count(email) from user_profile where email = ?", Integer.class, user.getEmail());
+        List<Map<String, Object>> userSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail());
 
-        return emailData;
+        return userSelectedByEmail;
     }
 
     @Override
     @Transactional
-    public int selectScreenName(User user) {
+    public List<Map<String, Object>> selectByScreenName(User user) {
 
-        Integer screenNameData = jdbc.queryForObject("select count(screen_name) from user_profile where screen_name = ?", Integer.class, user.getScreenName());
+        List<Map<String, Object>> userSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName());
 
-        return screenNameData;
+        return userSelectedByScreenName;
     }
-
 }
