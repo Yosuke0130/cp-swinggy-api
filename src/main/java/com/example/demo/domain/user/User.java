@@ -15,7 +15,7 @@ public class User {
 
 
 
-    public User(int userId, String firstName, String lastName, String screenName, String email, String tel, URL defaultURL) throws IllegalArgumentException {
+    public User(int userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.firstName = new Name(firstName);
         this.lastName = new Name(lastName);
@@ -23,7 +23,7 @@ public class User {
         this.email = new Email(email);
         this.tel = new Tel(tel);
         this.userProfileId = new UserProfileId();
-        this.profileImageURL = new ProfileImageURL(defaultURL);
+        this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
     public int getUserId() {return userId;}
@@ -31,10 +31,11 @@ public class User {
     public String getFirstName() {return firstName.getValue();}
     public String getLastName() {return lastName.getValue();}
     public String getScreenName() {return screenName.getValue();}
+    //TODO: 値オブジェクトをそのまま返すように変更
     public String getEmail() {return email.getValue();}
     public String getTel() {return tel.getValue();}
     public URL getProfileImageURL() {return profileImageURL.getValue();}
 
-    public void setProfileImageURL(URL profileImageURL) {this.profileImageURL.setValue(profileImageURL);}
+    public void setProfileImageURL(URL profileImageURL) {this.profileImageURL = new ProfileImageURL(profileImageURL);}
 
 }

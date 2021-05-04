@@ -7,14 +7,12 @@ public class ProfileImageURL {
     private URL profileImageURL;
 
     //コンストラクタ生成時にデフォルト画像をセット
-    public ProfileImageURL(URL defaultURL) {
+    public ProfileImageURL(URL url) {
 
-        this.profileImageURL = defaultURL;
+        this.profileImageURL = url;
 
     }
 
     public URL getValue() {return profileImageURL;}
-
-    public void setValue(URL profileImageURL) {this.profileImageURL = profileImageURL;}
 
 }

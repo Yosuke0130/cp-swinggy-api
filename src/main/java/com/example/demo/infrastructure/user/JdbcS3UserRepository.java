@@ -11,6 +11,7 @@ import com.example.demo.Logging;
 import com.example.demo.application.user.UserCreateException;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -45,9 +46,9 @@ public class JdbcS3UserRepository implements UserRepository {
                 //拡張子取得、バイトに変換、アップロードメソッド呼び出し、パスをuserにセット
                 String contentType = profileImage.get().getContentType();
                 byte[] uploadImage = profileImage.get().getBytes();
-                URL url = uploadImage(uploadImage, user, contentType);
-                user.setProfileImageURL(url);
-                System.out.println(user.getProfileImageURL());
+                String extension = FilenameUtils.getExtension(profileImage.get().getOriginalFilename());
+                URL profileImageUrl = uploadImage(uploadImage, user, contentType, extension);
+                user.setProfileImageURL(profileImageUrl);
             }
 
             Date createdDate = new Date();
@@ -86,7 +87,7 @@ public class JdbcS3UserRepository implements UserRepository {
     private String profileImageDirectory;
 
     //S3ファイルアップロード パスを返却
-    public URL uploadImage(byte[] uploadImage, User user, String contentType) throws IOException {
+    public URL uploadImage(byte[] uploadImage, User user, String contentType, String fileExtension) throws IOException {
 
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
@@ -101,28 +102,17 @@ public class JdbcS3UserRepository implements UserRepository {
             ObjectMetadata metaData = new ObjectMetadata();
             metaData.setContentLength(uploadImage.length);
             metaData.setContentType(contentType);
-            String imageType = getFileExtension(contentType);
+
             // リクエストを生成
             PutObjectRequest request = new PutObjectRequest(
                     bucketName,
-                    profileImageDirectory + "/" + user.getUserProfileId() + "." + imageType,
+                    profileImageDirectory + "/" + user.getUserProfileId() + "." + fileExtension,
                     input,
                     metaData);
             // アップロード
             s3Client.putObject(request);
         }
         return s3Client.getUrl(bucketName, profileImageDirectory);
-    }
-
-    //"image/jpeg"を"jpeg"に変換して拡張子として使えるようにするメソッド
-    public String getFileExtension(String contentType) throws IllegalArgumentException {
-        if (contentType.equals("image/jpeg")) {
-            return "jpeg";
-        } else if (contentType.equals("image/png")) {
-            return "png";
-        } else {
-            throw new IllegalArgumentException("Data Type should be jpeg or png");
-        }
     }
 
     @Override

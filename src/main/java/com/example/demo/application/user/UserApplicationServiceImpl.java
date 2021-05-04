@@ -15,22 +15,22 @@ import java.util.Optional;
 public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Autowired
-    Logging logger;
+    private Logging logger;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Value("${default.profile.image.url}")
-    private URL defaultURL;
+    private URL defaultProfileImageUrl;
 
     @Override
     public void create(int userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
             throws UserCreateException, IllegalArgumentException {
 
-        User user = new User(userId, firstName, lastName, screenName, email, tel, defaultURL);
+        User user = new User(userId, firstName, lastName, screenName, email, tel, defaultProfileImageUrl);
 
         //ドメインサービス 重複チェッククラス
         if (userService.telExists(user)) {
