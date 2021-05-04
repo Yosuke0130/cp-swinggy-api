@@ -1,7 +1,9 @@
 package com.example.demo.domain.user;
 
 import com.example.demo.Logging;
+import com.example.demo.application.user.UserCreateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +19,16 @@ public class UserService {
 
     //screenName, email, telの重複をチェック
     public boolean telExists(User user) {
+        List<Map<String, Object>> users = null;
         try {
-            List<Map<String, Object>> userSelectedByTel = userRepository.selectByTel(user);
-            logger.debug("Existed user data: " + userSelectedByTel.get(0));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            users = userRepository.selectByTel(user);
+        } catch (DataAccessException e) {
+            throw new UserCreateException("Failed to access the data source.");
         }
-        return  true;
+        if (users == null) {
+            throw new UserCreateException("Unexpected null value was returned from UserRepository.");
+        }
+        return users.size() > 0;
     }
 
     public boolean emailExists(User user) {
