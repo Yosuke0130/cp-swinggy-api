@@ -57,7 +57,14 @@ public class JdbcS3UserRepository implements UserRepository {
             jdbc.update(
                     "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
                             " values(?, ?, ?, ?, ?, ?, ?, ?)",
-                    user.getUserProfileId(), user.getUserId(), user.getFirstName(), user.getLastName(), user.getScreenName(), user.getProfileImageURL().toString(), user.getEmail(), user.getTel());
+                    user.getUserProfileId().getValue(),
+                    user.getUserId(),
+                    user.getFirstName().getValue(),
+                    user.getLastName().getValue(),
+                    user.getScreenName().getValue(),
+                    user.getProfileImageURL().getValue().toString(),
+                    user.getEmail().getValue(),
+                    user.getTel().getValue());
 
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
@@ -119,16 +126,16 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<Map<String, Object>> selectByTel(User user) {
 
-        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?",user.getTel());
+            List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?",user.getTel().getValue());
 
-        return userSelectedByTel;
+            return userSelectedByTel;
     }
 
     @Override
     @Transactional
     public List<Map<String, Object>> selectByEmail(User user) {
 
-        List<Map<String, Object>> userSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail());
+        List<Map<String, Object>> userSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail().getValue());
 
         return userSelectedByEmail;
     }
@@ -137,7 +144,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<Map<String, Object>> selectByScreenName(User user) {
 
-        List<Map<String, Object>> userSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName());
+        List<Map<String, Object>> userSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName().getValue());
 
         return userSelectedByScreenName;
     }

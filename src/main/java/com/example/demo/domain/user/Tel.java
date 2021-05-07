@@ -6,7 +6,7 @@ public class Tel {
     final private static int MAX_DIGIT = 11;
     final private static int MIN_DIGIT = 10;
 
-    public Tel(String tel) throws IllegalArgumentException{
+    public Tel(String tel) throws IllegalArgumentException {
 
         //半角数字のみ、桁数だけチェック
         if(isDigitValid(tel)) {

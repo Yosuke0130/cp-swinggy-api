@@ -11,11 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -34,27 +32,49 @@ public class TestPrefectureServiceImpl {
     }
 
     @Test
-    void paramIs1() {
+    public void paramIs1() {
 
-        int prefectureId = 1;
-        String name = "Hokkaido";
-        int regionId = 1;
+        int testPrefectureId = 1;
+        String testName = "Hokkaido";
+        int testRegionId = 1;
 
-        Prefecture prefecture = new Prefecture(prefectureId, name, regionId);
-        List<Prefecture> prefectureList = new ArrayList<>();
-        prefectureList.add(prefecture);
+        Prefecture testPrefecture = new Prefecture(testPrefectureId, testName, testRegionId);
+        List<Prefecture> testPrefectureList = new ArrayList<>();
+        testPrefectureList.add(testPrefecture);
 
-        when(prefectureRepository.find(regionId)).thenReturn(prefectureList);
+        doReturn(testPrefectureList).when(prefectureRepository).find(testRegionId);
 
-        List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(Optional.of(regionId));
+        List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(Optional.of(testRegionId));
 
         assertAll(
-                () -> verify(prefectureRepository, times(1)).find(regionId),
-                () -> assertEquals(prefectureId, result.get(0).getId()),
-                () -> assertEquals(name, result.get(0).getName()),
-                () -> assertEquals(regionId, result.get(0).getRegion_Id())
+                () -> assertEquals(testRegionId, result.get(0).getId()),
+                () -> assertEquals(testName, result.get(0).getName()),
+                () -> assertEquals(testRegionId, result.get(0).getRegion_Id())
         );
 
     }
 
+    @Test
+    public void paramIsNull() {
+
+        int testPrefectureId = 1;
+        String testName = "Hokkaido";
+        int testRegionId = 1;
+
+        Prefecture testPrefecture = new Prefecture(testPrefectureId, testName, testRegionId);
+        List<Prefecture> testPrefectureList = new ArrayList<>();
+        testPrefectureList.add(testPrefecture);
+
+        Optional<Integer> nullRegionId = Optional.empty();
+
+        doReturn(testPrefectureList).when(prefectureRepository).findAll();
+
+        List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(nullRegionId);
+
+        assertAll(
+                () -> assertEquals(testRegionId, result.get(0).getId()),
+                () -> assertEquals(testName, result.get(0).getName()),
+                () -> assertEquals(testRegionId, result.get(0).getRegion_Id())
+        );
+    }
 }

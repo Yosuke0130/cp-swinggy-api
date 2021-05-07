@@ -23,6 +23,7 @@ public class UserService {
         try {
             users = userRepository.selectByTel(user);
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new UserCreateException("Failed to access the data source.");
         }
         if (users == null) {
@@ -32,24 +33,30 @@ public class UserService {
     }
 
     public boolean emailExists(User user) {
+        List<Map<String, Object>> users = null;
         try {
-            List<Map<String, Object>> userSelectedByEmail = userRepository.selectByEmail(user);
-            logger.debug("Existed user data: " +userSelectedByEmail.get(0));
+            users = userRepository.selectByEmail(user);
 
-        } catch (Exception e) {
-            return false;
+        } catch (DataAccessException e) {
+            throw new UserCreateException("Failed to access the data source.");
         }
-        return  true;
+        if(users == null) {
+            throw new UserCreateException("Unexpected null value was returned from UserRepository.");
+        }
+        return  users.size() > 0;
     }
 
     public boolean screenNameExists(User user) {
+        List<Map<String, Object>> users = null;
         try {
-            List<Map<String, Object>> userSelectedByScreenName = userRepository.selectByScreenName(user);
-            logger.debug("Existed user data: " + userSelectedByScreenName.get(0));
+            users = userRepository.selectByScreenName(user);
 
-        } catch (Exception e) {
-            return false;
+        } catch (DataAccessException e) {
+            throw new UserCreateException("Failed to access the data source.");
         }
-        return  true;
+        if (users == null) {
+            throw new UserCreateException("Unexpected null value was returned from UserRepository.");
+        }
+        return users.size() > 0;
     }
 }

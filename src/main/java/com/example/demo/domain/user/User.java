@@ -13,8 +13,6 @@ public class User {
     private Tel tel;
     private ProfileImageURL profileImageURL;
 
-
-
     public User(int userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.firstName = new Name(firstName);
@@ -26,15 +24,15 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
+    //値オブジェクトで返す？プリミティブで返す？
     public int getUserId() {return userId;}
-    public String getUserProfileId() {return userProfileId.getValue();}
-    public String getFirstName() {return firstName.getValue();}
-    public String getLastName() {return lastName.getValue();}
-    public String getScreenName() {return screenName.getValue();}
-    //TODO: 値オブジェクトをそのまま返すように変更
-    public String getEmail() {return email.getValue();}
-    public String getTel() {return tel.getValue();}
-    public URL getProfileImageURL() {return profileImageURL.getValue();}
+    public UserProfileId getUserProfileId() {return userProfileId;}
+    public Name getFirstName() {return firstName;}
+    public Name getLastName() {return lastName;}
+    public ScreenName getScreenName() {return screenName;}
+    public Email getEmail() {return email;}
+    public Tel getTel() {return tel;}
+    public ProfileImageURL getProfileImageURL() {return profileImageURL;}
 
     public void setProfileImageURL(URL profileImageURL) {this.profileImageURL = new ProfileImageURL(profileImageURL);}
 
