@@ -19,14 +19,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -36,6 +39,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Autowired
     JdbcTemplate jdbc;
+
 
     @Override
     @Transactional
@@ -78,6 +82,7 @@ public class JdbcS3UserRepository implements UserRepository {
         }
     }
 
+
     @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
@@ -93,8 +98,9 @@ public class JdbcS3UserRepository implements UserRepository {
     @Value("${profile.image.directory}")
     private String profileImageDirectory;
 
+
     //S3ファイルアップロード パスを返却
-    public URL uploadImage(byte[] uploadImage, User user, String contentType, String fileExtension) throws IOException {
+    private URL uploadImage(byte[] uploadImage, User user, String contentType, String fileExtension) throws IOException {
 
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
@@ -122,14 +128,16 @@ public class JdbcS3UserRepository implements UserRepository {
         return s3Client.getUrl(bucketName, profileImageDirectory);
     }
 
+
     @Override
     @Transactional
     public List<Map<String, Object>> selectByTel(User user) {
 
-            List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?",user.getTel().getValue());
+        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().getValue());
 
-            return userSelectedByTel;
+        return userSelectedByTel;
     }
+
 
     @Override
     @Transactional
@@ -140,6 +148,7 @@ public class JdbcS3UserRepository implements UserRepository {
         return userSelectedByEmail;
     }
 
+
     @Override
     @Transactional
     public List<Map<String, Object>> selectByScreenName(User user) {
@@ -147,5 +156,47 @@ public class JdbcS3UserRepository implements UserRepository {
         List<Map<String, Object>> userSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName().getValue());
 
         return userSelectedByScreenName;
+    }
+
+
+    @Override
+    public List<User> find(int userId) throws IllegalArgumentException {
+        try {
+            List<Map<String, Object>> userData = jdbc.queryForList("select * from user_profile where user_id = ?", userId);
+
+            if (userData.size() > 0) {
+                List<User> userList = userData.stream()
+                        .map(user -> convertToUser(user))
+                        .collect(Collectors.toList());
+
+                return userList;
+            } else {
+                throw new IllegalArgumentException("User data doesn't exist.");
+            }
+
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Data access error occurred.");
+        }
+    }
+
+
+    private User convertToUser(Map<String, Object> user) throws IllegalArgumentException {
+
+        try {
+            URL url = new URL((String) user.get("profile_image_path"));
+
+            return new User((int) user.get("user_id"),
+                    (String) user.get("first_name"),
+                    (String) user.get("last_name"),
+                    (String) user.get("screen_name"),
+                    (String) user.get("email"),
+                    (String) user.get("tel"),
+                    url);
+
+        } catch (MalformedURLException e) {
+
+            throw new IllegalArgumentException("Image path URL couldn't be issued.");
+        }
     }
 }

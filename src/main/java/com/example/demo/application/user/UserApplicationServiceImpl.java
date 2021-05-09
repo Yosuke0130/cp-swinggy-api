@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
@@ -25,6 +28,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Value("${default.profile.image.url}")
     private URL defaultProfileImageUrl;
+
 
     @Override
     public void create(int userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
@@ -46,5 +50,29 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         logger.debug("insert user data into db & upload profileImage");
         userRepository.insert(user, profileImage);
 
+    }
+
+
+    @Override
+    public List<UserModel> getUserList(int userId) throws IllegalArgumentException {
+
+        List<User> userList = userRepository.find(userId);
+
+        List<UserModel> userModelList = userList.stream()
+                .map(user -> convertToUserModel(user))
+                .collect(Collectors.toList());
+
+        return userModelList;
+    }
+
+
+    private UserModel convertToUserModel(User user) {
+        return new UserModel(user.getUserId(),
+                user.getFirstName().getValue(),
+                user.getLastName().getValue(),
+                user.getScreenName().getValue(),
+                user.getEmail().getValue(),
+                user.getTel().getValue(),
+                user.getProfileImageURL().getValue());
     }
 }

@@ -13,15 +13,13 @@ public class RegionId {
     Logging logger;
 
     public RegionId(int value) throws IllegalArgumentException {
-        if(validateValue(value)) {
+        if (validateValue(value)) {
             throw new IllegalArgumentException("Input value must be between 1-8");
         }
         this.value = value;
-        }
-
-    public int getValue() {
-        return value;
     }
+
+    public int getValue() {return value;}
 
     public boolean validateValue(int value) {
         logger.debug("validation check");

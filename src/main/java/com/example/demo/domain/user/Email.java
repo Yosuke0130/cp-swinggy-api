@@ -7,12 +7,12 @@ public class Email {
 
     private String email;
 
-    public Email(String email) throws IllegalArgumentException{
+    public Email(String email) throws IllegalArgumentException {
         //正規表現チェック
         Pattern pattern = Pattern.compile("[\\w.-]+@[\\w-]+\\.[\\w.-]+");
         Matcher matcher = pattern.matcher(email);
 
-        if(matcher.find()) {
+        if (matcher.find()) {
 
             this.email = email;
 
@@ -24,5 +24,4 @@ public class Email {
     }
 
     public String getValue() {return email;}
-
 }

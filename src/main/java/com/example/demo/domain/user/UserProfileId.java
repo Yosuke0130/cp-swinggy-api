@@ -2,6 +2,7 @@ package com.example.demo.domain.user;
 
 import com.example.demo.Logging;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.UUID;
 
 public class UserProfileId {

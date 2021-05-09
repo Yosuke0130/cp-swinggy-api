@@ -11,9 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -49,7 +51,8 @@ public class TestPrefectureServiceImpl {
         assertAll(
                 () -> assertEquals(testRegionId, result.get(0).getId()),
                 () -> assertEquals(testName, result.get(0).getName()),
-                () -> assertEquals(testRegionId, result.get(0).getRegion_Id())
+                () -> assertEquals(testRegionId, result.get(0).getRegion_Id()),
+                () -> assertEquals(1, result.size())
         );
 
     }
@@ -74,7 +77,8 @@ public class TestPrefectureServiceImpl {
         assertAll(
                 () -> assertEquals(testRegionId, result.get(0).getId()),
                 () -> assertEquals(testName, result.get(0).getName()),
-                () -> assertEquals(testRegionId, result.get(0).getRegion_Id())
+                () -> assertEquals(testRegionId, result.get(0).getRegion_Id()),
+                () -> assertEquals(1, result.size())
         );
     }
 }

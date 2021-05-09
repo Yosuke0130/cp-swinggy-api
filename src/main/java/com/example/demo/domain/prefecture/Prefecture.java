@@ -6,7 +6,7 @@ public class Prefecture {
     private final String name;
     private RegionId region_Id;
 
-    public Prefecture(int id, String name, int regionId) throws IllegalArgumentException{
+    public Prefecture(int id, String name, int regionId) throws IllegalArgumentException {
         this.id = id;
         this.name = name;
         this.region_Id = new RegionId(regionId);

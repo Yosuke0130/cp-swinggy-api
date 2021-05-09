@@ -6,9 +6,9 @@ public class ScreenName {
     final private static int MIN_LENGTH = 4;
     private String screenName;
 
-    public ScreenName(String screenName) throws IllegalArgumentException{
+    public ScreenName(String screenName) throws IllegalArgumentException {
 
-        if(isLengthValid(screenName)) {
+        if (isLengthValid(screenName)) {
 
             this.screenName = screenName;
 

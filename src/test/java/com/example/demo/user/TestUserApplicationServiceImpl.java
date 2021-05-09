@@ -11,7 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Optional;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,7 +93,7 @@ public class TestUserApplicationServiceImpl {
 
 
     @Test
-    public void screenNameIsDuplicated() throws IllegalArgumentException{
+    public void screenNameIsDuplicated() throws IllegalArgumentException {
         //ScreenNameの重複パターン
         doReturn(false).when(userService).telExists(any());
         doReturn(false).when(userService).emailExists(any());

@@ -9,7 +9,7 @@ public class Tel {
     public Tel(String tel) throws IllegalArgumentException {
 
         //半角数字のみ、桁数だけチェック
-        if(isDigitValid(tel)) {
+        if (isDigitValid(tel)) {
 
             this.tel = tel;
 
@@ -25,6 +25,6 @@ public class Tel {
     public boolean isDigitValid(String tel) {
 
         return MAX_DIGIT >= tel.length() && MIN_DIGIT <= tel.length();
-        }
+    }
 
 }

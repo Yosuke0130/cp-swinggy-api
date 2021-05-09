@@ -3,22 +3,22 @@ package com.example.demo.presentation.user;
 import com.example.demo.Logging;
 import com.example.demo.application.user.UserApplicationService;
 import com.example.demo.application.user.UserCreateException;
+import com.example.demo.application.user.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
@@ -27,6 +27,7 @@ public class UserController {
 
     @Autowired
     Logging logger;
+
 
     @PostMapping("/")
     public ResponseEntity<String> createUser(@RequestParam("id") int userId,
@@ -66,6 +67,28 @@ public class UserController {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
+        }
+    }
+
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    public List<UserResource> getUsers(@RequestParam("id") int userId) {
+
+        try {
+            List<UserModel> userModelList = userApplicationService.getUserList(userId);
+
+            List<UserResource> userResourceList = userModelList.stream()
+                    .map(user -> new UserResource(user))
+                    .collect(Collectors.toList());
+
+            return userResourceList;
+
+        } catch (IllegalArgumentException e) {
+
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 }

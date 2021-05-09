@@ -2,6 +2,7 @@ package com.example.demo.domain.user;
 
 import com.example.demo.application.user.UserCreateException;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,4 +16,6 @@ public interface UserRepository {
     public List<Map<String, Object>> selectByEmail(User user);
 
     public List<Map<String, Object>> selectByScreenName(User user);
+
+    public List<User> find(int userId);
 }

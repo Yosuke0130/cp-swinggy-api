@@ -24,7 +24,6 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
-    //値オブジェクトで返す？プリミティブで返す？
     public int getUserId() {return userId;}
     public UserProfileId getUserProfileId() {return userProfileId;}
     public Name getFirstName() {return firstName;}

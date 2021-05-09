@@ -5,6 +5,7 @@ import com.example.demo.application.user.UserCreateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,10 @@ public class UserService {
         } catch (DataAccessException e) {
             throw new UserCreateException("Failed to access the data source.");
         }
-        if(users == null) {
+        if (users == null) {
             throw new UserCreateException("Unexpected null value was returned from UserRepository.");
         }
-        return  users.size() > 0;
+        return users.size() > 0;
     }
 
     public boolean screenNameExists(User user) {
