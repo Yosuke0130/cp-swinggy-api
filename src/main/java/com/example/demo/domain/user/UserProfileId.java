@@ -10,17 +10,19 @@ public class UserProfileId {
     @Autowired
     Logging logger;
 
-    private String userprofileId;
+    private String userProfileId;
 
-
-    //todo:get時も発行されるの修正
     public UserProfileId() {
         //UUID発行
         UUID uuid = UUID.randomUUID();
-        this.userprofileId = uuid.toString();
-        logger.info("UUID issued: " + this.userprofileId);
+        this.userProfileId = uuid.toString();
+        logger.info("UUID issued: " + this.userProfileId);
     }
 
-    public String getValue() {return this.userprofileId;}
+    public UserProfileId(String userProfileId) {
+        this.userProfileId = userProfileId;
+    }
+
+    public String getValue() {return this.userProfileId;}
 
 }

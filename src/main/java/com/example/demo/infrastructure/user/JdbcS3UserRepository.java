@@ -171,6 +171,7 @@ public class JdbcS3UserRepository implements UserRepository {
             URL url = new URL((String) userData.get("profile_image_path"));
 
             User user = new User((int) userData.get("user_id"),
+                    (String) userData.get("user_profile_id"),
                     (String) userData.get("first_name"),
                     (String) userData.get("last_name"),
                     (String) userData.get("screen_name"),
