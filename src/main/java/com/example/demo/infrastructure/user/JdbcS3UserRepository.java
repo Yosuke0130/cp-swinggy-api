@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -160,43 +159,36 @@ public class JdbcS3UserRepository implements UserRepository {
 
 
     @Override
-    public List<User> find(int userId) throws IllegalArgumentException {
+    public User find(int userId) throws IllegalArgumentException {
         try {
-            List<Map<String, Object>> userData = jdbc.queryForList("select * from user_profile where user_id = ?", userId);
 
-            if (userData.size() > 0) {
-                List<User> userList = userData.stream()
-                        .map(user -> convertToUser(user))
-                        .collect(Collectors.toList());
+            Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
 
-                return userList;
-            } else {
-                throw new IllegalArgumentException("User data doesn't exist.");
+            if (userData.size() < 1) {
+                throw new IllegalArgumentException("User Data doesn't exist");
             }
 
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Data access error occurred.");
-        }
-    }
+            URL url = new URL((String) userData.get("profile_image_path"));
 
-
-    private User convertToUser(Map<String, Object> user) throws IllegalArgumentException {
-
-        try {
-            URL url = new URL((String) user.get("profile_image_path"));
-
-            return new User((int) user.get("user_id"),
-                    (String) user.get("first_name"),
-                    (String) user.get("last_name"),
-                    (String) user.get("screen_name"),
-                    (String) user.get("email"),
-                    (String) user.get("tel"),
+            User user = new User((int) userData.get("user_id"),
+                    (String) userData.get("first_name"),
+                    (String) userData.get("last_name"),
+                    (String) userData.get("screen_name"),
+                    (String) userData.get("email"),
+                    (String) userData.get("tel"),
                     url);
+
+            return user;
 
         } catch (MalformedURLException e) {
 
             throw new IllegalArgumentException("Image path URL couldn't be issued.");
+
+        } catch (DataAccessException e) {
+
+            e.printStackTrace();
+            throw new IllegalArgumentException("Data access error occurred.");
+
         }
     }
 }

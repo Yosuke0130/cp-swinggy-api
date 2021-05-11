@@ -13,10 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -73,17 +71,15 @@ public class UserController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/")
-    public List<UserResource> getUsers(@RequestParam("id") int userId) {
+    @GetMapping("/{id}")
+    public UserResource getUsers(@PathVariable("id") int userId) {
 
         try {
-            List<UserModel> userModelList = userApplicationService.getUserList(userId);
+            UserModel userModel = userApplicationService.get(userId);
 
-            List<UserResource> userResourceList = userModelList.stream()
-                    .map(user -> new UserResource(user))
-                    .collect(Collectors.toList());
+            UserResource userResource = new UserResource(userModel);
 
-            return userResourceList;
+            return userResource;
 
         } catch (IllegalArgumentException e) {
 

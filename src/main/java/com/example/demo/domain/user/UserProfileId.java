@@ -12,6 +12,8 @@ public class UserProfileId {
 
     private String userprofileId;
 
+
+    //todo:get時も発行されるの修正
     public UserProfileId() {
         //UUID発行
         UUID uuid = UUID.randomUUID();

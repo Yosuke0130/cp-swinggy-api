@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
@@ -54,15 +52,13 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
 
     @Override
-    public List<UserModel> getUserList(int userId) throws IllegalArgumentException {
+    public UserModel get(int userId) throws IllegalArgumentException {
 
-        List<User> userList = userRepository.find(userId);
+        User user = userRepository.find(userId);
 
-        List<UserModel> userModelList = userList.stream()
-                .map(user -> convertToUserModel(user))
-                .collect(Collectors.toList());
+        UserModel userModel = convertToUserModel(user);
 
-        return userModelList;
+        return userModel;
     }
 
 

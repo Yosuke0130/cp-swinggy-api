@@ -17,5 +17,5 @@ public interface UserRepository {
 
     public List<Map<String, Object>> selectByScreenName(User user);
 
-    public List<User> find(int userId);
+    public User find(int userId);
 }
