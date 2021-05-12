@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.lang.Integer;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/prefectures")
@@ -19,19 +20,20 @@ public class PrefectureController {
     PrefectureService prefectureService;
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/")
-    public PrefectureResource getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
-        try{
+    public List<PrefectureResource> getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
+        try {
 
             List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
 
-            //PrefectureResource型に変換
-            PrefectureResource prefectureResource = new PrefectureResource(prefectureModelList);
+            List<PrefectureResource> prefectureResourceList = prefectureModelList.stream()
+                    .map(prefecture -> new PrefectureResource(prefecture))
+                    .collect(Collectors.toList());
 
-            return prefectureResource;
+            return prefectureResourceList;
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

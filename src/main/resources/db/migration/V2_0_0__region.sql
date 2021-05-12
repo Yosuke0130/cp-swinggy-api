@@ -1,5 +1,5 @@
 
-create table region(
+create table if not exists region(
     id int(3) not null,
     name varchar(255) not null,
     primary key(id)
