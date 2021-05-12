@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 public class TestUser {
 
-    private final static int TEST_USER_ID = 1234;
+    private final static String TEST_USER_ID = "1234";
     private final static String TEST_FIRSTNAME = "sample";
     private final static String TEST_LASTNAME = "taro";
     private final static String TEST_SCREEN_NAME = "SampleTaro";
@@ -28,7 +28,7 @@ public class TestUser {
 
             User testUser = new User(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_EMAIL, TEST_TEL, testDefaultURL);
 
-            int resultOfGetUserId = testUser.getUserId();
+            String resultOfGetUserId = testUser.getUserId();
             String resultOfGetFirstName = testUser.getFirstName().getValue();
             String resultOfGetScreenName = testUser.getScreenName().getValue();
             String resultOfGetEmail = testUser.getEmail().getValue();

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserResource {
 
-    private int userId;
+    private String userId;
     private String firstName;
     private String lastName;
     private String screenName;
@@ -25,7 +25,7 @@ public class UserResource {
         this.profileImageURL = userModel.getProfileImageURL().toString();
     }
 
-    public int getUser_id() {
+    public String getUser_id() {
         return userId;
     }
 

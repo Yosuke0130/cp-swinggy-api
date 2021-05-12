@@ -159,7 +159,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
 
     @Override
-    public User find(int userId) throws IllegalArgumentException {
+    public User find(String userId) throws IllegalArgumentException {
         try {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
@@ -170,7 +170,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
             URL url = new URL((String) userData.get("profile_image_path"));
 
-            User user = new User((int) userData.get("user_id"),
+            User user = new User((String) userData.get("user_id"),
                     (String) userData.get("user_profile_id"),
                     (String) userData.get("first_name"),
                     (String) userData.get("last_name"),

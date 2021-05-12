@@ -4,7 +4,7 @@ import java.net.URL;
 
 public class User {
 
-    private final int userId;
+    private final String userId;
     private UserProfileId userProfileId;
     private Name firstName;
     private Name lastName;
@@ -13,7 +13,7 @@ public class User {
     private Tel tel;
     private ProfileImageURL profileImageURL;
 
-    public User(int userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
+    public User(String userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.firstName = new Name(firstName);
         this.lastName = new Name(lastName);
@@ -24,7 +24,7 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
-    public User(int userId, String userProfileId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
+    public User(String userId, String userProfileId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.userProfileId = new UserProfileId(userProfileId);
         this.firstName = new Name(firstName);
@@ -35,7 +35,7 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
-    public int getUserId() {return userId;}
+    public String getUserId() {return userId;}
     public UserProfileId getUserProfileId() {return userProfileId;}
     public Name getFirstName() {return firstName;}
     public Name getLastName() {return lastName;}

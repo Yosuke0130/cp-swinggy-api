@@ -1,7 +1,7 @@
 
 create table if not exists user_profile(
     user_profile_id varchar(255),
-    user_id int(3) not null,
+    user_id varchar(255) not null,
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     screen_name varchar(255) not null unique,

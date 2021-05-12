@@ -4,7 +4,7 @@ import java.net.URL;
 
 public class UserModel {
 
-    private int userId;
+    private String userId;
     private String firstName;
     private String lastName;
     private String screenName;
@@ -13,7 +13,7 @@ public class UserModel {
     private URL profileImageURL;
 
 
-    public UserModel(int userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageURL) {
+    public UserModel(String userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageURL) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,7 +24,7 @@ public class UserModel {
     }
 
 
-    public int getUserId() {return userId;}
+    public String getUserId() {return userId;}
     public String getFirstName() {return firstName;}
     public String getLastName() {return lastName;}
     public String getScreenName() {return screenName;}

@@ -28,7 +28,7 @@ public class UserController {
 
 
     @PostMapping("/")
-    public ResponseEntity<String> createUser(@RequestParam("id") int userId,
+    public ResponseEntity<String> createUser(@RequestParam("id") String userId,
                                              @RequestParam("first_name") String firstName,
                                              @RequestParam("last_name") String lastName,
                                              @RequestParam("screen_name") String screenName,
@@ -72,7 +72,7 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public UserResource getUsers(@PathVariable("id") int userId) {
+    public UserResource getUsers(@PathVariable("id") String userId) {
 
         try {
             UserModel userModel = userApplicationService.get(userId);

@@ -34,7 +34,7 @@ public class TestUserApplicationServiceImpl {
         MockitoAnnotations.openMocks(this);
     }
 
-    private final static int TEST_USER_ID = 1234;
+    private final static String TEST_USER_ID = "1234";
     private final static String TEST_FIRSTNAME = "sample";
     private final static String TEST_LASTNAME = "taro";
     private final static String TEST_SCREEN_NAME = "SampleTaro";
