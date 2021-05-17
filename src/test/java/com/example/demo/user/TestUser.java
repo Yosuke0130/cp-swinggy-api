@@ -36,7 +36,7 @@ public class TestUser {
             String resultOfGetProfileImageURL = testUser.getProfileImageURL().getValue().toString();
 
             assertAll(
-                    () -> assertEquals(1234, resultOfGetUserId),
+                    () -> assertEquals("1234", resultOfGetUserId),
                     () -> assertEquals("sample", resultOfGetFirstName),
                     () -> assertEquals("SampleTaro", resultOfGetScreenName),
                     () -> assertEquals("sample@test.com", resultOfGetEmail),

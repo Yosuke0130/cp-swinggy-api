@@ -9,7 +9,6 @@ create table if not exists user_profile(
     tel varchar(255) not null unique,
     profile_image_path varchar(255),
     primary key(user_profile_id),
-    constraint fk_user_id
      foreign key(user_id)
      references user(user_id)
     );
