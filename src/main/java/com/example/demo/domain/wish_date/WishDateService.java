@@ -17,7 +17,7 @@ public class WishDateService {
 
     public boolean wishDateExists(WishDate wishDate) throws IOException {
 
-        List<Map<String, Object>> wishDateList = wishDateRepository.select(wishDate.getOwner(), wishDate.getDate().toString());
+        List<Map<String, Object>> wishDateList = wishDateRepository.select(wishDate.getOwner(), wishDate.getDate());
 
         if (wishDateList.size() > 0) {
 

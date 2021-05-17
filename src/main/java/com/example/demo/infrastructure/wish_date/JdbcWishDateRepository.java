@@ -34,7 +34,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     }
 
     @Override
-    public List<Map<String, Object>> select(String owner, String date) throws IOException {
+    public List<Map<String, Object>> select(String owner, LocalDate date) throws IOException {
         try {
             List<Map<String, Object>> wishDateList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
 

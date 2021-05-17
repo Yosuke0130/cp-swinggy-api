@@ -9,7 +9,7 @@ public interface WishDateRepository {
 
     public void insert(WishDate wishDate) throws IOException;
 
-    public List<Map<String, Object>> select(String owner, String date) throws IOException;
+    public List<Map<String, Object>> select(String owner, LocalDate date) throws IOException;
 
     public List<WishDate> selectAll();
 
