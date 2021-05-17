@@ -27,7 +27,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public void register(String owner, String date) throws IllegalArgumentException, IOException {
 
         WishDate wishDate = new WishDate(owner, date);
-        logger.info(wishDate.getDate());
+        logger.info("Registering a wish date by yyyy-mm-dd:" + wishDate.getDate().toString());
 
         boolean result = wishDateService.wishDateExists(wishDate);
 
@@ -57,6 +57,6 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     private WishDateModel convertToWishDateModel(WishDate wishDate) {
         return new WishDateModel(wishDate.getWishDateId(),
                 wishDate.getOwner(),
-                wishDate.getDate());
+                wishDate.getDate().toString());
     }
 }

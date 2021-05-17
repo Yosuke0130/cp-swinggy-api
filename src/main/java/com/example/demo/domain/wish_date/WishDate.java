@@ -41,6 +41,6 @@ public class WishDate {
 
     public String getOwner() {return owner;}
 
-    public String getDate() {return date.toString();}
+    public LocalDate getDate() {return date;}
 
 }

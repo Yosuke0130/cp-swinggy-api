@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,20 +29,20 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
         } catch (DataAccessException e) {
             e.printStackTrace();
-            throw new IOException("DB access error.");
+            throw new IOException("DB access error occurred when inserting wish date.");
         }
     }
 
     @Override
-    public List<Map<String, Object>> selectDuplicateWishDate(WishDate wishDate) throws IOException {
+    public List<Map<String, Object>> select(String owner, String date) throws IOException {
         try {
-            List<Map<String, Object>> wishDateList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", wishDate.getOwner(), wishDate.getDate());
+            List<Map<String, Object>> wishDateList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
 
             return wishDateList;
 
         } catch (DataAccessException e) {
             e.printStackTrace();
-            throw new IOException(("something wrong"));
+            throw new IOException("DB access error occurred while checking if the same wish date exists.");
         }
     }
 
