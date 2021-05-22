@@ -24,8 +24,7 @@ public class UserService {
         try {
             users = userRepository.selectByTel(user);
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            throw new UserCreateException("Failed to access the data source.");
+            throw new UserCreateException("Failed to access the data source.", e);
         }
         if (users == null) {
             throw new UserCreateException("Unexpected null value was returned from UserRepository.");
@@ -39,7 +38,7 @@ public class UserService {
             users = userRepository.selectByEmail(user);
 
         } catch (DataAccessException e) {
-            throw new UserCreateException("Failed to access the data source.");
+            throw new UserCreateException("Failed to access the data source.", e);
         }
         if (users == null) {
             throw new UserCreateException("Unexpected null value was returned from UserRepository.");
@@ -53,7 +52,7 @@ public class UserService {
             users = userRepository.selectByScreenName(user);
 
         } catch (DataAccessException e) {
-            throw new UserCreateException("Failed to access the data source.");
+            throw new UserCreateException("Failed to access the data source.", e);
         }
         if (users == null) {
             throw new UserCreateException("Unexpected null value was returned from UserRepository.");

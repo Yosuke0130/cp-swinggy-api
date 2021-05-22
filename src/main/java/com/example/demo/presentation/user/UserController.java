@@ -45,7 +45,6 @@ public class UserController {
             userApplicationService.create(userId, firstName, lastName, screenName, profileImage, email, tel);
 
             logger.debug("Your account has created!");
-
             //リダイレクト先設定
             HttpHeaders header = new HttpHeaders();
             header.setLocation(uriBuilder.path("/").build().toUri());
@@ -54,13 +53,11 @@ public class UserController {
             return new ResponseEntity<>(header, status);
 
         } catch (UserCreateException e) {
-
             //server error
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        } catch (IllegalArgumentException e) {
-
+        } catch (IllegalArgumentException | IllegalStateException e) {
             //client error
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -81,8 +78,11 @@ public class UserController {
 
             return userResource;
 
-        } catch (IllegalArgumentException e) {
+        } catch (UserCreateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
+        } catch (IllegalStateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

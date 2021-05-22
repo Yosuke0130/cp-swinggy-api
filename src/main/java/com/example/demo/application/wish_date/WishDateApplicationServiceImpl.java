@@ -1,6 +1,7 @@
 package com.example.demo.application.wish_date;
 
 import com.example.demo.Logging;
+import com.example.demo.domain.wish_date.Participation;
 import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
 import com.example.demo.domain.wish_date.WishDateService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +26,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     Logging logger;
 
     @Override
-    public void register(String owner, String date) throws IllegalArgumentException, IOException {
+    public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateRegisterException, IOException {
 
         WishDate wishDate = new WishDate(owner, date);
         logger.info("Registering a wish date:" + wishDate.getDate().toString());
@@ -36,7 +38,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             wishDateRepository.insert(wishDate);
 
         } else {
-            throw new IllegalArgumentException("wish date already existed.");
+            throw new IllegalStateException("wish date has already existed.");
         }
 
     }
@@ -59,4 +61,50 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
                 wishDate.getOwner(),
                 wishDate.getDate().toString());
     }
+
+    @Override
+    public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException {
+
+        Participation participation = new Participation(wishDateId, participant);
+
+        if (!wishDateService.isNotYours(participation)) {
+            throw new IllegalStateException("This Wish date is the one you registered.");
+        }
+
+        if (wishDateService.participationExists(participation)) {
+            throw new IllegalStateException("You're already participated in this wish date.");
+        }
+
+        wishDateRepository.insertIntoParticipation(participation);
+    }
+
+    @Override
+    public List<ParticipationModel> getParticipations(String wishDateId, int page, int per) {
+
+        List<Participation> participations = wishDateRepository.selectParticipation(wishDateId, page, per);
+
+        List<ParticipationModel> participationModels = participations.stream()
+                .map(participationModel -> convertToParticipationModel(participationModel))
+                .collect(Collectors.toList());
+
+
+        return participationModels;
+    }
+
+    private ParticipationModel convertToParticipationModel(Participation participation) {
+
+        return new ParticipationModel(participation.getParticipationId(),
+                participation.getWishDateId(),
+                participation.getDate(),
+                participation.getParticipant());
+    }
+
+    @Override
+    public int getCount(String wishDateId) {
+
+        int count = wishDateRepository.countParticipations(wishDateId);
+
+        return count;
+    }
+
 }

@@ -16,7 +16,7 @@ public class UserProfileId {
         //UUID発行
         UUID uuid = UUID.randomUUID();
         this.userProfileId = uuid.toString();
-        logger.info("UUID issued: " + this.userProfileId);
+        logger.info("UserProfileId issued: " + this.userProfileId);
     }
 
     public UserProfileId(String userProfileId) {

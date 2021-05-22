@@ -42,7 +42,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException {
+    public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException, IllegalStateException {
         try {
 
             if (profileImage.isPresent()) {
@@ -72,12 +72,11 @@ public class JdbcS3UserRepository implements UserRepository {
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            throw new UserCreateException("DB access error");
+            throw new UserCreateException("DB access error when insert user data", e);
 
         } catch (IOException e) {
             //s3アップロードエラー
-            throw new IllegalArgumentException("upload file is not accepted");
+            throw new IllegalStateException("upload file is not accepted", e);
         }
     }
 
@@ -159,13 +158,14 @@ public class JdbcS3UserRepository implements UserRepository {
 
 
     @Override
-    public User find(String userId) throws IllegalArgumentException {
+    @Transactional
+    public User find(String userId) throws UserCreateException, IllegalStateException {
         try {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
 
             if (userData.size() < 1) {
-                throw new IllegalArgumentException("User Data doesn't exist");
+                throw new IllegalStateException("User Data doesn't exist");
             }
 
             URL url = new URL((String) userData.get("profile_image_path"));
@@ -182,13 +182,10 @@ public class JdbcS3UserRepository implements UserRepository {
             return user;
 
         } catch (MalformedURLException e) {
-
-            throw new IllegalArgumentException("Image path URL couldn't be issued.");
+            throw new UserCreateException("Image path URL couldn't be issued.", e);
 
         } catch (DataAccessException e) {
-
-            e.printStackTrace();
-            throw new IllegalArgumentException("Data access error occurred.");
+            throw new UserCreateException("Data access error occurred when getting user_profile data.", e);
 
         }
     }

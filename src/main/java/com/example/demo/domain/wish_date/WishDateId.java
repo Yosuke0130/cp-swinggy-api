@@ -16,7 +16,7 @@ public class WishDateId {
 
         UUID uuid = UUID.randomUUID();
         this.wishDateId= uuid.toString();
-        logger.info("UUID issued: " + this.wishDateId);
+        logger.info("WishDateId issued: " + this.wishDateId);
     }
 
     public WishDateId(String wishDateId) {this.wishDateId = wishDateId;}
