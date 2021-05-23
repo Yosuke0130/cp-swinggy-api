@@ -18,7 +18,7 @@ public interface WishDateRepository {
 
     public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException;
 
-    public List<Map<String, Object>> selectWishDateByParticipation(String wishDateId, String participant) throws DataAccessException;
+    public Map<String, Object> selectWishDateByParticipation(String wishDateId) throws DataAccessException;
 
     public List<Map<String , Object>> participationExists(String wishDateId, String participant) throws DataAccessException;
 

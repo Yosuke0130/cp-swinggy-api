@@ -74,12 +74,9 @@ public class WishDateController {
     public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
                                                         @RequestParam("participant") String participant) {
         try {
-
             wishDateApplicationService.participate(wishDateId, participant);
 
-            //リダイレクト必要？
             HttpHeaders header = new HttpHeaders();
-//            header.setLocation(uriBuilder.path("/").build().toUri());
             HttpStatus status = HttpStatus.CREATED;
 
             return new ResponseEntity<>(header, status);
@@ -108,7 +105,6 @@ public class WishDateController {
 
         int ttlCount = wishDateApplicationService.getCount(wishDateId);
 
-        //todo:TTL件数を添付
         participationResourceList.add("total: " + ttlCount);
 
         return participationResourceList;

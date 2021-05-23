@@ -72,11 +72,11 @@ public class JdbcS3UserRepository implements UserRepository {
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {
-            throw new UserCreateException("DB access error when insert user data", e);
+            throw new UserCreateException("DB access error when insert user data.", e);
 
         } catch (IOException e) {
             //s3アップロードエラー
-            throw new IllegalStateException("upload file is not accepted", e);
+            throw new UserCreateException("uploading profile image failed.", e);
         }
     }
 

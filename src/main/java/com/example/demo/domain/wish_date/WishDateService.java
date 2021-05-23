@@ -27,7 +27,7 @@ public class WishDateService {
     }
 
     //意思表示は一人一回
-    public boolean participationExists(Participation participation) throws ParticipateWishDateException{
+    public boolean participationExists(Participation participation) throws ParticipateWishDateException {
         List<Map<String, Object>> participations = null;
         try {
             participations = wishDateRepository.participationExists(participation.getWishDateId(), participation.getParticipant());
@@ -41,12 +41,12 @@ public class WishDateService {
         return participations.size() > 0;
     }
 
-    //todo:メソッド名
-    //自分のWishDateじゃないかチェックする
-    public boolean isNotYours(Participation participation) throws ParticipateWishDateException{
-        List<Map<String, Object>> wishDates = null;
+    //自分のWishDateじゃないかチェック
+    public boolean isSelfParticipation(Participation participation) throws ParticipateWishDateException {
+        Map<String, Object> wishDates = null;
         try {
-            wishDates = wishDateRepository.selectWishDateByParticipation(participation.getWishDateId(), participation.getParticipant());
+            wishDates = wishDateRepository.selectWishDateByParticipation(participation.getWishDateId());
+
         } catch (DataAccessException e) {
 
             throw new ParticipateWishDateException("Failed to access the data source.", e);
@@ -54,7 +54,7 @@ public class WishDateService {
         if (wishDates == null) {
             throw new ParticipateWishDateException("Unexpected null value was returned from WishDateRepository.");
         }
-        return wishDates.size() < 1;
+        return wishDates.get("owner").equals(participation.getParticipant());
     }
 
 }

@@ -88,11 +88,11 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<Map<String, Object>> selectWishDateByParticipation(String wishDateId, String participant) throws DataAccessException {
+    public Map<String, Object> selectWishDateByParticipation(String wishDateId) throws DataAccessException {
 
-        List<Map<String, Object>> wishDateData = jdbc.queryForList(
-                "select * from wish_date where wish_date_id = ? and owner = ?",
-                wishDateId, participant);
+        Map<String, Object> wishDateData = jdbc.queryForMap(
+                "select * from wish_date where wish_date_id = ?",
+                wishDateId);
 
         return wishDateData;
     }
