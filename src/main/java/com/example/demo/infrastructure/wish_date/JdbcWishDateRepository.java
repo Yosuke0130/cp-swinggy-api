@@ -88,7 +88,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public Map<String, Object> selectWishDateByParticipation(String wishDateId) throws DataAccessException {
+    public Map<String, Object> selectById(String wishDateId) throws DataAccessException {
 
         Map<String, Object> wishDateData = jdbc.queryForMap(
                 "select * from wish_date where wish_date_id = ?",

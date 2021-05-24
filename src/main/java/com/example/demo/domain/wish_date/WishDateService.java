@@ -43,18 +43,18 @@ public class WishDateService {
 
     //自分のWishDateじゃないかチェック
     public boolean isSelfParticipation(Participation participation) throws ParticipateWishDateException {
-        Map<String, Object> wishDates = null;
+        Map<String, Object> wishDate = null;
         try {
-            wishDates = wishDateRepository.selectWishDateByParticipation(participation.getWishDateId());
+            wishDate = wishDateRepository.selectById(participation.getWishDateId());
 
         } catch (DataAccessException e) {
 
             throw new ParticipateWishDateException("Failed to access the data source.", e);
         }
-        if (wishDates == null) {
+        if (wishDate == null) {
             throw new ParticipateWishDateException("Unexpected null value was returned from WishDateRepository.");
         }
-        return wishDates.get("owner").equals(participation.getParticipant());
+        return wishDate.get("owner").equals(participation.getParticipant());
     }
 
 }
