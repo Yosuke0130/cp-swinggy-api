@@ -33,7 +33,7 @@ public class PrefectureController {
 
             return prefectureResourceList;
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

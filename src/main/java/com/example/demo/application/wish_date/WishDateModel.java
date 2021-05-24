@@ -11,7 +11,6 @@ public class WishDateModel {
         this.wishDateId = wishDateId;
         this.owner = owner;
         this.date = date;
-
     }
 
     public String getWishDateId() {return wishDateId;}

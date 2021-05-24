@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException;
+    public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException, IllegalStateException;
 
     public List<Map<String, Object>> selectByTel(User user);
 
@@ -17,5 +17,5 @@ public interface UserRepository {
 
     public List<Map<String, Object>> selectByScreenName(User user);
 
-    public User find(String userId);
+    public User find(String userId) throws UserCreateException, IllegalStateException;
 }

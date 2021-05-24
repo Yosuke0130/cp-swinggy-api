@@ -30,19 +30,19 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Override
     public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
-            throws UserCreateException, IllegalArgumentException {
+            throws UserCreateException, IllegalStateException, IllegalArgumentException {
 
         User user = new User(userId, firstName, lastName, screenName, email, tel, defaultProfileImageUrl);
 
         //ドメインサービス 重複チェッククラス
         if (userService.telExists(user)) {
-            throw new IllegalArgumentException("This tel number has already existed");
+            throw new IllegalStateException("This tel number has already existed");
         }
         if (userService.emailExists(user)) {
-            throw new IllegalArgumentException(("This email address has already existed"));
+            throw new IllegalStateException(("This email address has already existed"));
         }
         if (userService.screenNameExists(user)) {
-            throw new IllegalArgumentException("This screen name hss already existed");
+            throw new IllegalStateException("This screen name hss already existed");
         }
 
         logger.debug("insert user data into db & upload profileImage");
@@ -52,7 +52,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
 
     @Override
-    public UserModel get(String userId) throws IllegalArgumentException {
+    public UserModel get(String userId) throws UserCreateException, IllegalStateException {
 
         User user = userRepository.find(userId);
 

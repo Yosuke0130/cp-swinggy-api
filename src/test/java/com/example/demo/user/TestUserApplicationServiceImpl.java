@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import com.example.demo.application.user.UserApplicationServiceImpl;
+import com.example.demo.application.user.UserCreateException;
 import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +62,6 @@ public class TestUserApplicationServiceImpl {
         assertFalse(userService.screenNameExists(any()));
     }
 
-
     @Test
     public void telIsDuplicated() {
         //TELの重複パターン
@@ -71,11 +71,10 @@ public class TestUserApplicationServiceImpl {
         doNothing().when(userRepository).insert(any(), any());
 
         //実行、例外スロー確認
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
 
         assertEquals("This tel number has already existed", e.getMessage());
     }
-
 
     @Test
     public void emailIsDuplicated() {
@@ -86,11 +85,10 @@ public class TestUserApplicationServiceImpl {
         doNothing().when(userRepository).insert(any(), any());
 
         //実行、例外スロー確認
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
 
         assertEquals("This email address has already existed", e.getMessage());
     }
-
 
     @Test
     public void screenNameIsDuplicated() throws IllegalArgumentException {
@@ -101,9 +99,8 @@ public class TestUserApplicationServiceImpl {
         doNothing().when(userRepository).insert(any(), any());
 
         //実行、例外スロー確認
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> userApplicationServiceImpl.create(TEST_USER_ID, TEST_FIRSTNAME, TEST_LASTNAME, TEST_SCREEN_NAME, TEST_PROFILE_IMAGE, TEST_EMAIL, TEST_TEL));
 
         assertEquals("This screen name hss already existed", e.getMessage());
     }
 }
-
