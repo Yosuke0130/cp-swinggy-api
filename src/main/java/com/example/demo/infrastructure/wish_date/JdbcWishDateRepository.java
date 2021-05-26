@@ -130,7 +130,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     private Participation convertToParticipation(Map<String, Object> participation) {
 
-        System.out.println(participation.get("created_at"));
         return new Participation((String)participation.get("participation_id"),
                 (String)participation.get("wish_date_id"),
                 participation.get("created_at").toString(),

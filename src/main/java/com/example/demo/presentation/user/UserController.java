@@ -13,8 +13,10 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -69,7 +71,7 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public UserResource getUsers(@PathVariable("id") String userId) {
+    public UserResource getUser(@PathVariable("id") String userId) {
 
         try {
             UserModel userModel = userApplicationService.get(userId);
@@ -87,4 +89,27 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    public List<Object> getUsers(@RequestParam("page") int page,
+                                 @RequestParam("per") int per) {
+        try {
+            List<UserModel> userModels = userApplicationService.getUsers(page, per);
+
+            List<Object> userResources = userModels.stream()
+                    .map(userResource -> new UserResource(userResource))
+                    .collect(Collectors.toList());
+
+            int ttlCount = userApplicationService.getCount();
+            userResources.add("ttl: " + ttlCount);
+
+            return userResources;
+        } catch (UserCreateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

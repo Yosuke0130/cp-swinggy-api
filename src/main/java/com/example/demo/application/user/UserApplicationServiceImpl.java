@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
@@ -54,7 +56,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     @Override
     public UserModel get(String userId) throws UserCreateException, IllegalStateException {
 
-        User user = userRepository.find(userId);
+        User user = userRepository.select(userId);
 
         UserModel userModel = convertToUserModel(user);
 
@@ -71,4 +73,24 @@ public class UserApplicationServiceImpl implements UserApplicationService {
                 user.getTel().getValue(),
                 user.getProfileImageURL().getValue());
     }
+
+    @Override
+    public List<UserModel> getUsers(int page, int per) throws UserCreateException{
+
+        List<User> users = userRepository.selectUsers(page, per);
+
+        List<UserModel> userModels = users.stream()
+                .map(userModel -> convertToUserModel(userModel))
+                .collect(Collectors.toList());
+
+        return userModels;
+    }
+
+    public int getCount() {
+
+        int count = userRepository.selectCount();
+
+        return count;
+    }
+
 }
