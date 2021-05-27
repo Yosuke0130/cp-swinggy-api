@@ -25,10 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -159,7 +157,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public User find(String userId) throws UserCreateException, IllegalStateException {
+    public User select(String userId) throws UserCreateException, IllegalStateException {
         try {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
@@ -182,11 +180,58 @@ public class JdbcS3UserRepository implements UserRepository {
             return user;
 
         } catch (MalformedURLException e) {
-            throw new UserCreateException("Image path URL couldn't be issued.", e);
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
 
         } catch (DataAccessException e) {
             throw new UserCreateException("Data access error occurred when getting user_profile data.", e);
 
         }
+    }
+
+    @Override
+    @Transactional
+    public List<User> selectUsers(int page, int per) throws UserCreateException{
+
+        int offset = 0;
+        if (page > 0) {
+            offset = page * per;
+        }
+
+        List<Map<String, Object>> userData = jdbc.queryForList("select * from user_profile order by user_id limit ? offset ?", per, offset);
+        try {
+            List<User> userList = new ArrayList<>();
+            for (Map<String, Object> value : userData) {
+                User user = convertToUser(value);
+                userList.add(user);
+            }
+            return userList;
+
+        } catch (MalformedURLException e) {
+            e.getMessage();
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
+        }
+
+    }
+
+    private User convertToUser(Map<String, Object> userData) throws MalformedURLException {
+        URL url = new URL((String) userData.get("profile_image_path"));
+
+        return new User((String) userData.get("user_id"),
+                (String) userData.get("user_profile_id"),
+                (String) userData.get("first_name"),
+                (String) userData.get("last_name"),
+                (String) userData.get("screen_name"),
+                (String) userData.get("email"),
+                (String) userData.get("tel"),
+                url);
+    }
+
+    @Override
+    @Transactional
+    public int selectCount() {
+
+        Integer count = jdbc.queryForObject("select count(*) from user_profile", Integer.class);
+
+        return count;
     }
 }

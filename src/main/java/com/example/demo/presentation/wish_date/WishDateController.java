@@ -99,15 +99,15 @@ public class WishDateController {
 
         List<ParticipationModel> participations = wishDateApplicationService.getParticipations(wishDateId, page, per);
 
-        List<Object> participationResourceList = participations.stream()
+        List<Object> participationResources = participations.stream()
                 .map(participationResource -> new ParticipationResource(participationResource))
                 .collect(Collectors.toList());
 
         int ttlCount = wishDateApplicationService.getCount(wishDateId);
 
-        participationResourceList.add("total: " + ttlCount);
+        participationResources.add("total: " + ttlCount);
 
-        return participationResourceList;
+        return participationResources;
     }
 
 }
