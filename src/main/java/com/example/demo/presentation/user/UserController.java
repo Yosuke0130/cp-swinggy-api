@@ -29,7 +29,7 @@ public class UserController {
     Logging logger;
 
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<String> createUser(@RequestParam("id") String userId,
                                              @RequestParam("first_name") String firstName,
                                              @RequestParam("last_name") String lastName,
@@ -92,7 +92,7 @@ public class UserController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/")
+    @GetMapping("")
     public List<Object> getUsers(@RequestParam("page") int page,
                                  @RequestParam("per") int per) {
         try {

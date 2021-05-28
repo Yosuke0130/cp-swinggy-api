@@ -25,7 +25,7 @@ public class WishDateController {
     @Autowired
     Logging logger;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<String> registerWishDate(@RequestParam("owner") String owner,
                                                    @RequestParam("date") String date,
                                                    UriComponentsBuilder uriBuilder) {
@@ -55,7 +55,7 @@ public class WishDateController {
     }
 
     @ResponseBody
-    @GetMapping("/")
+    @GetMapping("")
     public List<Object> getWishDates() {
 
         List<WishDateModel> wishDateModelList = wishDateApplicationService.get();
