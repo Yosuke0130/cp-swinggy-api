@@ -93,4 +93,12 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         return count;
     }
 
+    @Override
+    public int getScreenNameCount(String screenName) {
+
+        int count = userRepository.selectCountByScreenName(screenName);
+
+        return count;
+    }
+
 }

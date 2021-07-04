@@ -15,4 +15,6 @@ public interface UserApplicationService {
 
     public int getCount();
 
+    public int getScreenNameCount(String screenName);
+
 }

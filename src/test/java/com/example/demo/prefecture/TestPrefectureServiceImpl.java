@@ -49,12 +49,11 @@ public class TestPrefectureServiceImpl {
         List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(Optional.of(testRegionId));
 
         assertAll(
-                () -> assertEquals(testRegionId, result.get(0).getId()),
+                () -> assertEquals(testPrefectureId, result.get(0).getPrefectureId()),
                 () -> assertEquals(testName, result.get(0).getName()),
-                () -> assertEquals(testRegionId, result.get(0).getRegion_Id()),
+                () -> assertEquals(testRegionId, result.get(0).getRegionId()),
                 () -> assertEquals(1, result.size())
         );
-
     }
 
     @Test
@@ -75,9 +74,9 @@ public class TestPrefectureServiceImpl {
         List<PrefectureModel> result = prefectureServiceImpl.getPrefectureList(nullRegionId);
 
         assertAll(
-                () -> assertEquals(testRegionId, result.get(0).getId()),
+                () -> assertEquals(testPrefectureId, result.get(0).getPrefectureId()),
                 () -> assertEquals(testName, result.get(0).getName()),
-                () -> assertEquals(testRegionId, result.get(0).getRegion_Id()),
+                () -> assertEquals(testRegionId, result.get(0).getRegionId()),
                 () -> assertEquals(1, result.size())
         );
     }

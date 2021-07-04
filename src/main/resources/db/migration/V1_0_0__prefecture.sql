@@ -1,9 +1,9 @@
 
 create table if not exists prefecture(
-    id int(3) not null,
+    prefecture_id int(3) not null,
     region_id int(3) not null,
     name varchar(255) not null,
-    primary key(id)
+    primary key(prefecture_id)
 );
 
 insert into prefecture values

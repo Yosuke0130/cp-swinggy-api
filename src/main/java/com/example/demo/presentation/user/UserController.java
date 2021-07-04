@@ -112,4 +112,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/_count")
+    public int getScreenNameCount(@RequestParam("screen_name")String screenName) {
+
+        //TODO:例外処理実装dataaccessexeption?
+        int count = userApplicationService.getScreenNameCount(screenName);
+
+        return count;
+    }
+
 }

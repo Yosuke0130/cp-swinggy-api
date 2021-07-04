@@ -23,4 +23,6 @@ public interface UserRepository {
     public List<User> selectUsers(int page, int per) throws UserCreateException;
 
     public int selectCount();
+
+    public int selectCountByScreenName(String screenName);
 }

@@ -234,4 +234,13 @@ public class JdbcS3UserRepository implements UserRepository {
 
         return count;
     }
+
+    @Override
+    @Transactional
+    public int selectCountByScreenName(String screenName) {
+
+        Integer count = jdbc.queryForObject("select count(*) from user_profile where screen_name = ?", Integer.class, screenName);
+
+        return count;
+    }
 }

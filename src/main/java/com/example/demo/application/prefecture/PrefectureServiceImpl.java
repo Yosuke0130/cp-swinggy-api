@@ -53,9 +53,9 @@ public class PrefectureServiceImpl implements PrefectureService {
     }
 
     private PrefectureModel convertToPrefectureModel(Prefecture prefecture) {
-        return new PrefectureModel(prefecture.getId(),
+        return new PrefectureModel(prefecture.getPrefectureId(),
                 prefecture.getName(),
-                prefecture.getRegion_Id());
+                prefecture.getRegionId());
     }
 
 }

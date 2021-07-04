@@ -8,6 +8,8 @@ public class ScreenName {
 
     public ScreenName(String screenName) throws IllegalArgumentException {
 
+        //TODO:正規表現でチェック、記号は＿のみ
+
         if (isLengthValid(screenName)) {
 
             this.screenName = screenName;

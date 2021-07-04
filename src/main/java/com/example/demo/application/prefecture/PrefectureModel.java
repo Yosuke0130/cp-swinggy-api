@@ -2,17 +2,17 @@ package com.example.demo.application.prefecture;
 
 public class PrefectureModel {
 
-    private final int id;
+    private final int prefectureId;
     private final String name;
-    private final int region_id;
+    private final int regionId;
 
-    public PrefectureModel(int id, String name, int region_id) {
-        this.id = id;
-        this.region_id = region_id;
+    public PrefectureModel(int prefectureId, String name, int regionId) {
+        this.prefectureId = prefectureId;
+        this.regionId = regionId;
         this.name = name;
     }
 
-    public int getId() {return id;}
+    public int getPrefectureId() {return prefectureId;}
     public String getName() {return name;}
-    public int getRegion_Id() {return region_id;}
+    public int getRegionId() {return regionId;}
 }
