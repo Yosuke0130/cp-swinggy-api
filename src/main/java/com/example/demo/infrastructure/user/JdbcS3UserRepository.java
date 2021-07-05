@@ -237,10 +237,14 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public int selectCountByScreenName(String screenName) {
+    public int selectCountByScreenName(String screenName) throws UserCreateException {
+        try {
+            Integer count = jdbc.queryForObject("select count(*) from user_profile where screen_name = ?", Integer.class, screenName);
 
-        Integer count = jdbc.queryForObject("select count(*) from user_profile where screen_name = ?", Integer.class, screenName);
-
-        return count;
+            return count;
+        } catch (DataAccessException e) {
+            e.getMessage();
+            throw new UserCreateException("Couldn't get ScreenName count from DB.");
+        }
     }
 }

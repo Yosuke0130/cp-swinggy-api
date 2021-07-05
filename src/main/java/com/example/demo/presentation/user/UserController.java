@@ -112,13 +112,17 @@ public class UserController {
         }
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/_count")
     public int getScreenNameCount(@RequestParam("screen_name")String screenName) {
 
-        //TODO:例外処理実装dataaccessexeption?
-        int count = userApplicationService.getScreenNameCount(screenName);
+        try {
+            int count = userApplicationService.getCountByScreenName(screenName);
 
-        return count;
+            return count;
+        } catch (UserCreateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 }

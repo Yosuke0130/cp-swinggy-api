@@ -94,11 +94,10 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public int getScreenNameCount(String screenName) {
+    public int getCountByScreenName(String screenName) throws UserCreateException{
 
         int count = userRepository.selectCountByScreenName(screenName);
 
         return count;
     }
-
 }

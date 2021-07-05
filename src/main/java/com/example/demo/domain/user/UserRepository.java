@@ -24,5 +24,5 @@ public interface UserRepository {
 
     public int selectCount();
 
-    public int selectCountByScreenName(String screenName);
+    public int selectCountByScreenName(String screenName) throws UserCreateException;
 }

@@ -15,6 +15,6 @@ public interface UserApplicationService {
 
     public int getCount();
 
-    public int getScreenNameCount(String screenName);
+    public int getCountByScreenName(String screenName) throws UserCreateException;
 
 }
