@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserApplicationService {
 
-    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel) throws UserCreateException, IllegalStateException,IllegalArgumentException;
+    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, Optional<String> tel) throws UserCreateException, IllegalStateException,IllegalArgumentException;
 
     public UserModel get(String userId) throws UserCreateException, IllegalStateException;
 

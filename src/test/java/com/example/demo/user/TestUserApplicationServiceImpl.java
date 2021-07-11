@@ -40,7 +40,7 @@ public class TestUserApplicationServiceImpl {
     private final static String TEST_LASTNAME = "taro";
     private final static String TEST_SCREEN_NAME = "SampleTaro";
     private final static String TEST_EMAIL = "sample@test.com";
-    private final static String TEST_TEL = "0123456789";
+    private final static Optional<String> TEST_TEL = Optional.of("0123456789");
     private final static Optional<MultipartFile> TEST_PROFILE_IMAGE = Optional.empty();
     private final static String TEST_URL = "https://bucket-for-golfapp.s3-ap-northeast-1.amazonaws.com/profile_image/default_Image.jpeg";
 

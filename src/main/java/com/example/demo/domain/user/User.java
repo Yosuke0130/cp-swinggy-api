@@ -1,6 +1,7 @@
 package com.example.demo.domain.user;
 
 import java.net.URL;
+import java.util.Optional;
 
 public class User {
 
@@ -13,7 +14,7 @@ public class User {
     private Tel tel;
     private ProfileImageURL profileImageURL;
 
-    public User(String userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
+    public User(String userId, String firstName, String lastName, String screenName, String email, Optional<String> tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.firstName = new Name(firstName);
         this.lastName = new Name(lastName);
@@ -24,7 +25,7 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
-    public User(String userId, String userProfileId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageUrl) throws IllegalArgumentException {
+    public User(String userId, String userProfileId, String firstName, String lastName, String screenName, String email, Optional<String> tel, URL profileImageUrl) throws IllegalArgumentException {
         this.userId = userId;
         this.userProfileId = new UserProfileId(userProfileId);
         this.firstName = new Name(firstName);

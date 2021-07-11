@@ -31,7 +31,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
 
     @Override
-    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
+    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, Optional<String> tel)
             throws UserCreateException, IllegalStateException, IllegalArgumentException {
 
         User user = new User(userId, firstName, lastName, screenName, email, tel, defaultProfileImageUrl);

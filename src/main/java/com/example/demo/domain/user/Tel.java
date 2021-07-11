@@ -1,12 +1,14 @@
 package com.example.demo.domain.user;
 
+import java.util.Optional;
+
 public class Tel {
 
-    private String tel;
+    private Optional<String> tel;
     final private static int MAX_DIGIT = 11;
     final private static int MIN_DIGIT = 10;
 
-    public Tel(String tel) throws IllegalArgumentException {
+    public Tel(Optional<String> tel) throws IllegalArgumentException {
 
         //半角数字のみ、桁数だけチェック
         if (isDigitValid(tel)) {
@@ -20,11 +22,16 @@ public class Tel {
         }
     }
 
-    public String getValue() {return tel;}
+    public Optional<String> getValue() {return tel;}
 
-    public boolean isDigitValid(String tel) {
+    public boolean isDigitValid(Optional<String> tel) {
 
-        return MAX_DIGIT >= tel.length() && MIN_DIGIT <= tel.length();
+        if(tel.isPresent()) {
+
+            return MAX_DIGIT >= tel.get().length() && MIN_DIGIT <= tel.get().length();
+        } else {
+            return true;
+        }
     }
 
 }

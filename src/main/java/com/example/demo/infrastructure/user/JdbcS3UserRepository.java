@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -53,19 +52,35 @@ public class JdbcS3UserRepository implements UserRepository {
             }
 
             Date createdDate = new Date();
+
             jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
 
-            jdbc.update(
-                    "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
-                            " values(?, ?, ?, ?, ?, ?, ?, ?)",
-                    user.getUserProfileId().getValue(),
-                    user.getUserId(),
-                    user.getFirstName().getValue(),
-                    user.getLastName().getValue(),
-                    user.getScreenName().getValue(),
-                    user.getProfileImageURL().getValue().toString(),
-                    user.getEmail().getValue(),
-                    user.getTel().getValue());
+            if (user.getTel().getValue().isPresent()) {
+                jdbc.update(
+                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
+                                " values(?, ?, ?, ?, ?, ?, ?, ?)",
+                        user.getUserProfileId().getValue(),
+                        user.getUserId(),
+                        user.getFirstName().getValue(),
+                        user.getLastName().getValue(),
+                        user.getScreenName().getValue(),
+                        user.getProfileImageURL().getValue().toString(),
+                        user.getEmail().getValue(),
+                        user.getTel().getValue().get());
+
+            } else {
+                jdbc.update(
+                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
+                                " values(?, ?, ?, ?, ?, ?, ?)",
+                        user.getUserProfileId().getValue(),
+                        user.getUserId(),
+                        user.getFirstName().getValue(),
+                        user.getLastName().getValue(),
+                        user.getScreenName().getValue(),
+                        user.getProfileImageURL().getValue().toString(),
+                        user.getEmail().getValue());
+                logger.debug("User created with not tel no.");
+            }
 
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
@@ -129,7 +144,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<Map<String, Object>> selectByTel(User user) {
 
-        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().getValue());
+        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().getValue().get());
 
         return userSelectedByTel;
     }
@@ -174,7 +189,7 @@ public class JdbcS3UserRepository implements UserRepository {
                     (String) userData.get("last_name"),
                     (String) userData.get("screen_name"),
                     (String) userData.get("email"),
-                    (String) userData.get("tel"),
+                    Optional.ofNullable((String) userData.get("tel")),
                     url);
 
             return user;
@@ -190,7 +205,7 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public List<User> selectUsers(int page, int per) throws UserCreateException{
+    public List<User> selectUsers(int page, int per) throws UserCreateException {
 
         int offset = 0;
         if (page > 0) {
@@ -222,7 +237,7 @@ public class JdbcS3UserRepository implements UserRepository {
                 (String) userData.get("last_name"),
                 (String) userData.get("screen_name"),
                 (String) userData.get("email"),
-                (String) userData.get("tel"),
+                Optional.ofNullable((String) userData.get("tel")),
                 url);
     }
 

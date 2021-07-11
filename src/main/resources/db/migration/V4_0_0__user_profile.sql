@@ -6,7 +6,7 @@ create table if not exists user_profile(
     last_name varchar(255) not null,
     screen_name varchar(255) not null unique,
     email varchar(255) not null unique,
-    tel varchar(255) not null unique,
+    tel varchar(255) unique,
     profile_image_path varchar(255),
     primary key(user_profile_id),
      foreign key(user_id)

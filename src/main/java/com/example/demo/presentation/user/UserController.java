@@ -36,7 +36,7 @@ public class UserController {
                                              @RequestParam("screen_name") String screenName,
                                              @RequestParam(name = "profile_image", required = false) MultipartFile profileImageData,
                                              @RequestParam("email") String email,
-                                             @RequestParam(name = "tel", required = false) String tel,
+                                             @RequestParam(name = "tel", required = false) Optional<String> tel,
                                              UriComponentsBuilder uriBuilder) {
         try {
             Optional<MultipartFile> profileImage = Optional.empty();
@@ -66,7 +66,6 @@ public class UserController {
 
         }
     }
-
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -114,7 +113,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/_count")
-    public int getScreenNameCount(@RequestParam("screen_name")String screenName) {
+    public int getScreenNameCount(@RequestParam("screen_name") String screenName) {
 
         try {
             int count = userApplicationService.getCountByScreenName(screenName);

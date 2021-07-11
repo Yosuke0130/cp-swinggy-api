@@ -3,7 +3,6 @@ package com.example.demo.domain.user;
 import com.example.demo.application.user.UserCreateException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
