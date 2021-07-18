@@ -27,12 +27,12 @@ public class Participation {
     }
 
 
-    public String getParticipationId() {return participationId.getValue();}
+    public String getParticipationId() {return this.participationId.getValue();}
 
-    public String getWishDateId() {return wishDateId.getValue();}
+    public String getWishDateId() {return this.wishDateId.getValue();}
 
-    public LocalDateTime getDate() {return date;}
+    public LocalDateTime getDate() {return this.date;}
 
-    public String getParticipant() {return participant;}
+    public String getParticipant() {return this.participant;}
 
 }

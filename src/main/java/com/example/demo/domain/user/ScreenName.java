@@ -11,11 +11,11 @@ public class ScreenName {
 
     public ScreenName(String screenName) throws IllegalArgumentException {
 
-        //TODO:正規表現でチェック、記号は＿のみ
-        Pattern pattern = Pattern.compile("^[ぁ-んァ-ン一-龥a-zA-Z0-9_]+$");
+        String re = "^[ぁ-んァ-ン一-龥a-zA-Z0-9_]{" + MIN_LENGTH + "," + MAX_LENGTH + "}$";
+        Pattern pattern = Pattern.compile(re);
         Matcher matcher = pattern.matcher(screenName);
 
-        if (isLengthValid(screenName) && matcher.find()) {
+        if (matcher.find()) {
 
             this.screenName = screenName;
 
@@ -24,11 +24,6 @@ public class ScreenName {
         }
     }
 
-    public String getValue() {return screenName;}
-
-    public boolean isLengthValid(String screenName) {
-
-        return screenName.length() > MIN_LENGTH && screenName.length() < MAX_LENGTH;
-    }
+    public String getValue() {return this.screenName;}
 
 }

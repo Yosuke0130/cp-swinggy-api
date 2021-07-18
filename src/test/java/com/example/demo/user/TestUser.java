@@ -33,7 +33,7 @@ public class TestUser {
             String resultOfGetFirstName = testUser.getFirstName().getValue();
             String resultOfGetScreenName = testUser.getScreenName().getValue();
             String resultOfGetEmail = testUser.getEmail().getValue();
-            Optional<String> resultOfGetTel = testUser.getTel().getValue();
+            Optional<String> resultOfGetTel = Optional.of(testUser.getTel().get().getValue());
             String resultOfGetProfileImageURL = testUser.getProfileImageURL().getValue().toString();
 
             assertAll(

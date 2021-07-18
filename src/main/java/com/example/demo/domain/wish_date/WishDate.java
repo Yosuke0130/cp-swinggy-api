@@ -37,10 +37,10 @@ public class WishDate {
         this.date = validatedDate;
     }
 
-    public String getWishDateId() {return wishDateId.getValue();}
+    public String getWishDateId() {return this.wishDateId.getValue();}
 
-    public String getOwner() {return owner;}
+    public String getOwner() {return this.owner;}
 
-    public LocalDate getDate() {return date;}
+    public LocalDate getDate() {return this.date;}
 
 }

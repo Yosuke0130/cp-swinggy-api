@@ -19,7 +19,7 @@ public class RegionId {
         this.value = value;
     }
 
-    public int getValue() {return value;}
+    public int getValue() {return this.value;}
 
     public boolean validateValue(int value) {
         logger.debug("validation check");

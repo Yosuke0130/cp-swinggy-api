@@ -13,5 +13,5 @@ public class ProfileImageURL {
 
     }
 
-    public URL getValue() {return profileImageURL;}
+    public URL getValue() {return this.profileImageURL;}
 }

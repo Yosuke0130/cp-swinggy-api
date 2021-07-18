@@ -12,9 +12,9 @@ public class Prefecture {
         this.regionId = new RegionId(regionId);
     }
 
-    public int getPrefectureId() {return prefectureId;}
-    public String getName() {return name;}
+    public int getPrefectureId() {return this.prefectureId;}
+    public String getName() {return this.name;}
     public int getRegionId() {
-        return regionId.getValue();
+        return this.regionId.getValue();
     }
 }

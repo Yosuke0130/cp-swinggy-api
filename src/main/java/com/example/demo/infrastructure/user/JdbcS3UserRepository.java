@@ -54,8 +54,7 @@ public class JdbcS3UserRepository implements UserRepository {
             Date createdDate = new Date();
 
             jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
-
-            if (user.getTel().getValue().isPresent()) {
+            if (user.getTel().isPresent()) {
                 jdbc.update(
                         "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
                                 " values(?, ?, ?, ?, ?, ?, ?, ?)",
@@ -66,9 +65,10 @@ public class JdbcS3UserRepository implements UserRepository {
                         user.getScreenName().getValue(),
                         user.getProfileImageURL().getValue().toString(),
                         user.getEmail().getValue(),
-                        user.getTel().getValue().get());
+                        user.getTel().get().getValue());
 
             } else {
+
                 jdbc.update(
                         "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
                                 " values(?, ?, ?, ?, ?, ?, ?)",
@@ -144,8 +144,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<Map<String, Object>> selectByTel(User user) {
 
-        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().getValue().get());
-
+        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().get().getValue());
         return userSelectedByTel;
     }
 
@@ -177,9 +176,9 @@ public class JdbcS3UserRepository implements UserRepository {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
 
-            if (userData.size() < 1) {
-                throw new IllegalStateException("User Data doesn't exist");
-            }
+//            if (userData.size() < 1) {
+//                throw new IllegalStateException("User Data doesn't exist");
+//            }
 
             URL url = new URL((String) userData.get("profile_image_path"));
 
@@ -198,7 +197,7 @@ public class JdbcS3UserRepository implements UserRepository {
             throw new UserCreateException("Image URL path couldn't be issued.", e);
 
         } catch (DataAccessException e) {
-            throw new UserCreateException("Data access error occurred when getting user_profile data.", e);
+            throw new IllegalStateException("User Data doesn't exist", e);
 
         }
     }
