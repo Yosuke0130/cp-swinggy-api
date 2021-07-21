@@ -24,7 +24,6 @@ public class User {
         if(tel.isPresent()) {
             this.tel = Optional.of(new Tel(tel.get()));
         } else {
-            //todo:telが空の場合
             this.tel = Optional.empty();
         }
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
@@ -45,7 +44,6 @@ public class User {
         this.profileImageURL = new ProfileImageURL(profileImageUrl);
     }
 
-    //todo:this
     public String getUserId() {return this.userId;}
     public UserProfileId getUserProfileId() {return this.userProfileId;}
     public Name getFirstName() {return this.firstName;}

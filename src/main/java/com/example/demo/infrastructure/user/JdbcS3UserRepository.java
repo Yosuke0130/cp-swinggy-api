@@ -176,10 +176,6 @@ public class JdbcS3UserRepository implements UserRepository {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
 
-//            if (userData.size() < 1) {
-//                throw new IllegalStateException("User Data doesn't exist");
-//            }
-
             URL url = new URL((String) userData.get("profile_image_path"));
 
             User user = new User((String) userData.get("user_id"),
@@ -197,6 +193,7 @@ public class JdbcS3UserRepository implements UserRepository {
             throw new UserCreateException("Image URL path couldn't be issued.", e);
 
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new IllegalStateException("User Data doesn't exist", e);
 
         }

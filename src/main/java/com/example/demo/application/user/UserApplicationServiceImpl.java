@@ -37,10 +37,8 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         User user = new User(userId, firstName, lastName, screenName, email, tel, defaultProfileImageUrl);
 
         //ドメインサービス 重複チェッククラス
-        if(user.getTel().isPresent()) {
-            if (userService.telExists(user)) {
-                throw new IllegalStateException("This tel number has already existed");
-            }
+        if (user.getTel().isPresent() && userService.telExists(user)) {
+            throw new IllegalStateException("This tel number has already existed");
         }
         if (userService.emailExists(user)) {
             throw new IllegalStateException(("This email address has already existed"));
