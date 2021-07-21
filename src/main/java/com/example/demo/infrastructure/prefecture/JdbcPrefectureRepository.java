@@ -45,7 +45,7 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     }
 
     private Prefecture convertToPrefecture(Map<String, Object> prefecture) throws IllegalArgumentException {
-        return new Prefecture((int) prefecture.get("id"),
+        return new Prefecture((int) prefecture.get("prefecture_id"),
                 (String) prefecture.get("name"),
                 (int) prefecture.get("region_id"));
     }

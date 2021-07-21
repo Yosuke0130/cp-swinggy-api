@@ -1,6 +1,7 @@
 package com.example.demo.application.user;
 
 import java.net.URL;
+import java.util.Optional;
 
 public class UserModel {
 
@@ -9,11 +10,10 @@ public class UserModel {
     private String lastName;
     private String screenName;
     private String email;
-    private String tel;
+    private Optional<String> tel;
     private URL profileImageURL;
 
-
-    public UserModel(String userId, String firstName, String lastName, String screenName, String email, String tel, URL profileImageURL) {
+    public UserModel(String userId, String firstName, String lastName, String screenName, String email, Optional<String> tel, URL profileImageURL) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,11 +24,11 @@ public class UserModel {
     }
 
 
-    public String getUserId() {return userId;}
-    public String getFirstName() {return firstName;}
-    public String getLastName() {return lastName;}
-    public String getScreenName() {return screenName;}
-    public String getEmail() {return email;}
-    public String getTel() {return tel;}
-    public URL getProfileImageURL() {return profileImageURL;}
+    public String getUserId() {return this.userId;}
+    public String getFirstName() {return this.firstName;}
+    public String getLastName() {return this.lastName;}
+    public String getScreenName() {return this.screenName;}
+    public String getEmail() {return this.email;}
+    public Optional<String> getTel() {return this.tel;}
+    public URL getProfileImageURL() {return this.profileImageURL;}
 }

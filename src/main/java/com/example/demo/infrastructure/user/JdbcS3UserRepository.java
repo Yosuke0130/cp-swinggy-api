@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -53,19 +52,35 @@ public class JdbcS3UserRepository implements UserRepository {
             }
 
             Date createdDate = new Date();
-            jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
 
-            jdbc.update(
-                    "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
-                            " values(?, ?, ?, ?, ?, ?, ?, ?)",
-                    user.getUserProfileId().getValue(),
-                    user.getUserId(),
-                    user.getFirstName().getValue(),
-                    user.getLastName().getValue(),
-                    user.getScreenName().getValue(),
-                    user.getProfileImageURL().getValue().toString(),
-                    user.getEmail().getValue(),
-                    user.getTel().getValue());
+            jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
+            if (user.getTel().isPresent()) {
+                jdbc.update(
+                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
+                                " values(?, ?, ?, ?, ?, ?, ?, ?)",
+                        user.getUserProfileId().getValue(),
+                        user.getUserId(),
+                        user.getFirstName().getValue(),
+                        user.getLastName().getValue(),
+                        user.getScreenName().getValue(),
+                        user.getProfileImageURL().getValue().toString(),
+                        user.getEmail().getValue(),
+                        user.getTel().get().getValue());
+
+            } else {
+
+                jdbc.update(
+                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
+                                " values(?, ?, ?, ?, ?, ?, ?)",
+                        user.getUserProfileId().getValue(),
+                        user.getUserId(),
+                        user.getFirstName().getValue(),
+                        user.getLastName().getValue(),
+                        user.getScreenName().getValue(),
+                        user.getProfileImageURL().getValue().toString(),
+                        user.getEmail().getValue());
+                logger.debug("User created with not tel no.");
+            }
 
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
@@ -129,8 +144,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<Map<String, Object>> selectByTel(User user) {
 
-        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().getValue());
-
+        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().get().getValue());
         return userSelectedByTel;
     }
 
@@ -162,10 +176,6 @@ public class JdbcS3UserRepository implements UserRepository {
 
             Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
 
-            if (userData.size() < 1) {
-                throw new IllegalStateException("User Data doesn't exist");
-            }
-
             URL url = new URL((String) userData.get("profile_image_path"));
 
             User user = new User((String) userData.get("user_id"),
@@ -174,7 +184,7 @@ public class JdbcS3UserRepository implements UserRepository {
                     (String) userData.get("last_name"),
                     (String) userData.get("screen_name"),
                     (String) userData.get("email"),
-                    (String) userData.get("tel"),
+                    Optional.ofNullable((String) userData.get("tel")),
                     url);
 
             return user;
@@ -183,14 +193,15 @@ public class JdbcS3UserRepository implements UserRepository {
             throw new UserCreateException("Image URL path couldn't be issued.", e);
 
         } catch (DataAccessException e) {
-            throw new UserCreateException("Data access error occurred when getting user_profile data.", e);
+            e.printStackTrace();
+            throw new IllegalStateException("User Data doesn't exist", e);
 
         }
     }
 
     @Override
     @Transactional
-    public List<User> selectUsers(int page, int per) throws UserCreateException{
+    public List<User> selectUsers(int page, int per) throws UserCreateException {
 
         int offset = 0;
         if (page > 0) {
@@ -222,7 +233,7 @@ public class JdbcS3UserRepository implements UserRepository {
                 (String) userData.get("last_name"),
                 (String) userData.get("screen_name"),
                 (String) userData.get("email"),
-                (String) userData.get("tel"),
+                Optional.ofNullable((String) userData.get("tel")),
                 url);
     }
 
@@ -233,5 +244,18 @@ public class JdbcS3UserRepository implements UserRepository {
         Integer count = jdbc.queryForObject("select count(*) from user_profile", Integer.class);
 
         return count;
+    }
+
+    @Override
+    @Transactional
+    public int selectCountByScreenName(String screenName) throws UserCreateException {
+        try {
+            Integer count = jdbc.queryForObject("select count(*) from user_profile where screen_name = ?", Integer.class, screenName);
+
+            return count;
+        } catch (DataAccessException e) {
+            e.getMessage();
+            throw new UserCreateException("Couldn't get ScreenName count from DB.");
+        }
     }
 }

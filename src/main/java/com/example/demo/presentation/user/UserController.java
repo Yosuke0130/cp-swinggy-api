@@ -36,7 +36,7 @@ public class UserController {
                                              @RequestParam("screen_name") String screenName,
                                              @RequestParam(name = "profile_image", required = false) MultipartFile profileImageData,
                                              @RequestParam("email") String email,
-                                             @RequestParam(name = "tel", required = false) String tel,
+                                             @RequestParam(name = "tel", required = false) Optional<String> tel,
                                              UriComponentsBuilder uriBuilder) {
         try {
             Optional<MultipartFile> profileImage = Optional.empty();
@@ -67,7 +67,6 @@ public class UserController {
         }
     }
 
-
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
@@ -86,7 +85,7 @@ public class UserController {
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -112,4 +111,17 @@ public class UserController {
         }
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/_count")
+    public int getScreenNameCount(@RequestParam("screen_name") String screenName) {
+
+        try {
+            int count = userApplicationService.getCountByScreenName(screenName);
+
+            return count;
+        } catch (UserCreateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

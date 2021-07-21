@@ -4,19 +4,19 @@ import com.example.demo.application.prefecture.PrefectureModel;
 
 public class PrefectureResource {
 
-    private int id;
+    private int prefectureId;
     private String name;
-    private int region_Id;
+    private int regionId;
 
     public PrefectureResource(PrefectureModel prefectureModel) {
 
-        this.id = prefectureModel.getId();
+        this.prefectureId = prefectureModel.getPrefectureId();
         this.name = prefectureModel.getName();
-        this.region_Id = prefectureModel.getRegion_Id();
+        this.regionId = prefectureModel.getRegionId();
 
     }
 
-    public int getId() {return id;}
+    public int getPrefectureId() {return prefectureId;}
     public String getName() {return name;}
-    public int getRegion_Id() {return region_Id;}
+    public int getRegionId() {return regionId;}
 }

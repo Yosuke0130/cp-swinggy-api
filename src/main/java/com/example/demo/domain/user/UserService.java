@@ -20,17 +20,21 @@ public class UserService {
 
     //screenName, email, telの重複をチェック
     public boolean telExists(User user) {
-        List<Map<String, Object>> users = null;
-        try {
-            users = userRepository.selectByTel(user);
-        } catch (DataAccessException e) {
-            throw new UserCreateException("Failed to access the data source.", e);
-        }
-        if (users == null) {
-            throw new UserCreateException("Unexpected null value was returned from UserRepository.");
-        }
-        return users.size() > 0;
+
+            List<Map<String, Object>> users = null;
+            try {
+                users = userRepository.selectByTel(user);
+
+            } catch (DataAccessException e) {
+                throw new UserCreateException("Failed to access the data source.", e);
+            }
+            if (users == null) {
+                throw new UserCreateException("Unexpected null value was returned from UserRepository.");
+            }
+            return users.size() > 0;
+
     }
+
 
     public boolean emailExists(User user) {
         List<Map<String, Object>> users = null;

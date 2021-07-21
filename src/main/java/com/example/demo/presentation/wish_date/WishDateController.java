@@ -70,7 +70,7 @@ public class WishDateController {
 
     }
 
-    @PostMapping("/{wish-date-id}/participation")
+    @PostMapping("/{wish-date-id}/participations")
     public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
                                                         @RequestParam("participant") String participant) {
         try {
@@ -92,7 +92,7 @@ public class WishDateController {
     }
 
     @ResponseBody
-    @GetMapping("/{wish-date-id}/participation")
+    @GetMapping("/{wish-date-id}/participations")
     public List<Object> getParticipations(@PathVariable("wish-date-id") String wishDateId,
                                           @RequestParam("page") int page,
                                           @RequestParam("per") int per) {

@@ -31,13 +31,13 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
 
     @Override
-    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, String tel)
+    public void create(String userId, String firstName, String lastName, String screenName, Optional<MultipartFile> profileImage, String email, Optional<String> tel)
             throws UserCreateException, IllegalStateException, IllegalArgumentException {
 
         User user = new User(userId, firstName, lastName, screenName, email, tel, defaultProfileImageUrl);
 
         //ドメインサービス 重複チェッククラス
-        if (userService.telExists(user)) {
+        if (user.getTel().isPresent() && userService.telExists(user)) {
             throw new IllegalStateException("This tel number has already existed");
         }
         if (userService.emailExists(user)) {
@@ -65,12 +65,13 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
 
     private UserModel convertToUserModel(User user) {
+
         return new UserModel(user.getUserId(),
                 user.getFirstName().getValue(),
                 user.getLastName().getValue(),
                 user.getScreenName().getValue(),
                 user.getEmail().getValue(),
-                user.getTel().getValue(),
+                user.getTel().isPresent() ? Optional.of(user.getTel().get().getValue()) : Optional.empty(),
                 user.getProfileImageURL().getValue());
     }
 
@@ -93,4 +94,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         return count;
     }
 
+    @Override
+    public int getCountByScreenName(String screenName) throws UserCreateException{
+
+        int count = userRepository.selectCountByScreenName(screenName);
+
+        return count;
+    }
 }

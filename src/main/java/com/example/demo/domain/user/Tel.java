@@ -1,5 +1,8 @@
 package com.example.demo.domain.user;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Tel {
 
     private String tel;
@@ -9,22 +12,20 @@ public class Tel {
     public Tel(String tel) throws IllegalArgumentException {
 
         //半角数字のみ、桁数だけチェック
-        if (isDigitValid(tel)) {
+        String re = "^[0-9]{" + MIN_DIGIT + "," + MAX_DIGIT + "}$";
+        System.out.println(re);
+        Pattern pattern = Pattern.compile(re);
+        Matcher matcher = pattern.matcher(tel);
+
+        if (matcher.find()) {
 
             this.tel = tel;
 
         } else {
-
             throw new IllegalArgumentException("digit of tel num has to be 10-11");
-
         }
     }
 
-    public String getValue() {return tel;}
-
-    public boolean isDigitValid(String tel) {
-
-        return MAX_DIGIT >= tel.length() && MIN_DIGIT <= tel.length();
-    }
+    public String getValue() {return this.tel;}
 
 }

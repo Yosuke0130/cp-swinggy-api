@@ -4,6 +4,8 @@ import com.example.demo.application.user.UserModel;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import java.util.Optional;
+
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserResource {
 
@@ -12,7 +14,7 @@ public class UserResource {
     private String lastName;
     private String screenName;
     private String email;
-    private String tel;
+    private Optional<String> tel;
     private String profileImageURL;
 
     public UserResource(UserModel userModel) {
@@ -45,7 +47,7 @@ public class UserResource {
         return email;
     }
 
-    public String getTel() {
+    public Optional<String> getTel() {
         return tel;
     }
 
