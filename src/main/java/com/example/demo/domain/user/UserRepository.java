@@ -11,11 +11,11 @@ public interface UserRepository {
 
     public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException, IllegalStateException;
 
-    public List<Map<String, Object>> selectByTel(User user);
+    public List<User> selectByTel(User user);
 
-    public List<Map<String, Object>> selectByEmail(User user);
+    public List<User> selectByEmail(User user);
 
-    public List<Map<String, Object>> selectByScreenName(User user);
+    public List<User> selectByScreenName(User user);
 
     public User select(String userId) throws UserCreateException, IllegalStateException;
 

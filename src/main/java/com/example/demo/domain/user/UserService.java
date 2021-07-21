@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -20,8 +19,7 @@ public class UserService {
 
     //screenName, email, telの重複をチェック
     public boolean telExists(User user) {
-
-            List<Map<String, Object>> users = null;
+            List<User> users = null;
             try {
                 users = userRepository.selectByTel(user);
 
@@ -37,7 +35,7 @@ public class UserService {
 
 
     public boolean emailExists(User user) {
-        List<Map<String, Object>> users = null;
+        List<User> users = null;
         try {
             users = userRepository.selectByEmail(user);
 
@@ -51,7 +49,7 @@ public class UserService {
     }
 
     public boolean screenNameExists(User user) {
-        List<Map<String, Object>> users = null;
+        List<User> users = null;
         try {
             users = userRepository.selectByScreenName(user);
 
