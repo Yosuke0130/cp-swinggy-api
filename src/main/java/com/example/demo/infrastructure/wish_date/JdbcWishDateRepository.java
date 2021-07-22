@@ -2,6 +2,7 @@ package com.example.demo.infrastructure.wish_date;
 
 import com.example.demo.application.wish_date.ParticipateWishDateException;
 import com.example.demo.application.wish_date.WishDateRegisterException;
+import com.example.demo.domain.user.User;
 import com.example.demo.domain.wish_date.Participation;
 import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,9 +29,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Override
     @Transactional
     public void insert(WishDate wishDate) throws IOException, WishDateRegisterException {
-
         try {
-
             jdbc.update("insert into wish_date(wish_date_id, owner, wish_date) values(?, ?, ?)", wishDate.getWishDateId(), wishDate.getOwner(), wishDate.getDate());
 
         } catch (DataAccessException e) {
@@ -39,10 +39,15 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<Map<String, Object>> select(String owner, LocalDate date) throws WishDateRegisterException {
+    public List<WishDate> select(String owner, LocalDate date) throws WishDateRegisterException {
         try {
-            List<Map<String, Object>> wishDateList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
+            List<Map<String, Object>> wishDateDataList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
 
+            List<WishDate> wishDateList = new ArrayList();
+            for (Map<String, Object> value : wishDateDataList) {
+                WishDate wishDate = convertToWishDate(value);
+                wishDateList.add(wishDate);
+            }
             return wishDateList;
 
         } catch (DataAccessException e) {
@@ -73,8 +78,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException{
-
+    public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException {
         try {
             jdbc.update("insert into participation(participation_id, wish_date_id, created_at, participant) values(?, ?, ?, ?)",
                     participation.getParticipationId(),
@@ -88,24 +92,32 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public Map<String, Object> selectById(String wishDateId) throws DataAccessException {
+    public WishDate selectById(String wishDateId) throws DataAccessException {
 
         Map<String, Object> wishDateData = jdbc.queryForMap(
                 "select * from wish_date where wish_date_id = ?",
                 wishDateId);
 
-        return wishDateData;
+        WishDate wishDate = convertToWishDate(wishDateData);
+
+        return wishDate;
     }
 
     @Override
     @Transactional
-    public List<Map<String, Object>> participationExists(String wishDateId, String participant) throws DataAccessException {
+    public List<Participation> participationExists(String wishDateId, String participant) throws DataAccessException {
 
-        List<Map<String, Object>> participations = jdbc.queryForList(
+        List<Map<String, Object>> participationData = jdbc.queryForList(
                 "select * from participation where wish_date_id = ? and participant = ?",
                 wishDateId, participant);
 
-        return participations;
+        List<Participation> participationList = new ArrayList();
+        for (Map<String, Object> value : participationData) {
+            Participation participation = convertToParticipation(value);
+            participationList.add(participation);
+        }
+
+        return participationList;
     }
 
     @Override
@@ -113,7 +125,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     public List<Participation> selectParticipation(String wishDateId, int page, int per) {
 
         int offset = 0;
-        if(page > 0) {
+        if (page > 0) {
             offset = page * per;
         }
 
@@ -130,10 +142,10 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     private Participation convertToParticipation(Map<String, Object> participation) {
 
-        return new Participation((String)participation.get("participation_id"),
-                (String)participation.get("wish_date_id"),
+        return new Participation((String) participation.get("participation_id"),
+                (String) participation.get("wish_date_id"),
                 participation.get("created_at").toString(),
-                (String)participation.get("participant"));
+                (String) participation.get("participant"));
     }
 
     @Override

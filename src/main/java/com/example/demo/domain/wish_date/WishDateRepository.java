@@ -12,15 +12,15 @@ public interface WishDateRepository {
 
     public void insert(WishDate wishDate) throws IOException;
 
-    public List<Map<String, Object>> select(String owner, LocalDate date) throws IOException;
+    public List<WishDate> select(String owner, LocalDate date) throws IOException;
 
     public List<WishDate> selectAll();
 
     public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException;
 
-    public Map<String, Object> selectById(String wishDateId) throws DataAccessException;
+    public WishDate selectById(String wishDateId) throws DataAccessException;
 
-    public List<Map<String , Object>> participationExists(String wishDateId, String participant) throws DataAccessException;
+    public List<Participation> participationExists(String wishDateId, String participant) throws DataAccessException;
 
     public List<Participation> selectParticipation(String wishDateId, int page, int per);
 
