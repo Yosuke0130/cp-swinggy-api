@@ -13,7 +13,6 @@ public class Tel {
 
         //半角数字のみ、桁数だけチェック
         String re = "^[0-9]{" + MIN_DIGIT + "," + MAX_DIGIT + "}$";
-        System.out.println(re);
         Pattern pattern = Pattern.compile(re);
         Matcher matcher = pattern.matcher(tel);
 

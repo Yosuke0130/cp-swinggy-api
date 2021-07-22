@@ -142,30 +142,64 @@ public class JdbcS3UserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public List<Map<String, Object>> selectByTel(User user) {
+    public List<User> selectByTel(User user) {
 
-        List<Map<String, Object>> userSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().get().getValue());
-        return userSelectedByTel;
+        List<Map<String, Object>> userDateSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().get().getValue());
+        try {
+            List<User> userList = new ArrayList<>();
+            for (Map<String, Object> value : userDateSelectedByTel) {
+                User userSelectedByTel = convertToUser(value);
+                userList.add(userSelectedByTel);
+            }
+            return userList;
+
+        } catch (MalformedURLException e) {
+            e.getMessage();
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
+        }
+
     }
 
 
     @Override
     @Transactional
-    public List<Map<String, Object>> selectByEmail(User user) {
+    public List<User> selectByEmail(User user) {
 
-        List<Map<String, Object>> userSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail().getValue());
+        List<Map<String, Object>> userDataSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail().getValue());
+        try {
+            List<User> userList = new ArrayList<>();
+            for (Map<String, Object> value : userDataSelectedByEmail) {
+                User userSelectedByEmail = convertToUser(value);
+                userList.add(userSelectedByEmail);
+            }
+            return userList;
 
-        return userSelectedByEmail;
+        } catch (MalformedURLException e) {
+            e.getMessage();
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
+        }
+
     }
 
 
     @Override
     @Transactional
-    public List<Map<String, Object>> selectByScreenName(User user) {
+    public List<User> selectByScreenName(User user) {
 
-        List<Map<String, Object>> userSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName().getValue());
+        List<Map<String, Object>> userDataSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName().getValue());
+        try {
+            List<User> userList = new ArrayList<>();
+            for (Map<String, Object> value : userDataSelectedByScreenName) {
+                User userSelectedByScreenName = convertToUser(value);
+                userList.add(userSelectedByScreenName);
+            }
+            return userList;
 
-        return userSelectedByScreenName;
+        } catch (MalformedURLException e) {
+            e.getMessage();
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
+        }
+
     }
 
 
