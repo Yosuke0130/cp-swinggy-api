@@ -67,8 +67,6 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
         Participation participation = new Participation(wishDateId, participant);
 
-        System.out.println(wishDateService.isSelfParticipation(participation));
-
         if (wishDateService.isSelfParticipation(participation)) {
             throw new IllegalStateException("This Wish date is the one you registered.");
         }

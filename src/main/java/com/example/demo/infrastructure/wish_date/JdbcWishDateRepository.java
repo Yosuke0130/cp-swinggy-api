@@ -80,6 +80,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException {
         try {
+            System.out.println(participation.getParticipant());
             jdbc.update("insert into participation(participation_id, wish_date_id, created_at, participant) values(?, ?, ?, ?)",
                     participation.getParticipationId(),
                     participation.getWishDateId(),

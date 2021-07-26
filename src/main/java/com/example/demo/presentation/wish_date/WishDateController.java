@@ -2,6 +2,11 @@ package com.example.demo.presentation.wish_date;
 
 import com.example.demo.Logging;
 import com.example.demo.application.wish_date.*;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +32,10 @@ public class WishDateController {
     Logging logger;
 
     @PostMapping("")
-    public ResponseEntity<String> registerWishDate(@RequestParam("owner") String owner,
-                                                   @RequestParam("date") String date,
+    public ResponseEntity<String> registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody,
                                                    UriComponentsBuilder uriBuilder) {
         try {
-            wishDateApplicationService.register(owner, date);
+            wishDateApplicationService.register(wishDateRequestBody.getOwner(), wishDateRequestBody.getDate());
 
             HttpHeaders header = new HttpHeaders();
             header.setLocation(uriBuilder.path("/").build().toUri());
@@ -72,9 +77,10 @@ public class WishDateController {
 
     @PostMapping("/{wish-date-id}/participations")
     public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
-                                                        @RequestParam("participant") String participant) {
+                                                        @RequestBody @Valid ParticipantRequestBody participantRequestBody) {
         try {
-            wishDateApplicationService.participate(wishDateId, participant);
+            System.out.println(participantRequestBody.getParticipant());
+            wishDateApplicationService.participate(wishDateId, participantRequestBody.getParticipant());
 
             HttpHeaders header = new HttpHeaders();
             HttpStatus status = HttpStatus.CREATED;
@@ -88,8 +94,10 @@ public class WishDateController {
         } catch (ParticipateWishDateException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
     }
+
 
     @ResponseBody
     @GetMapping("/{wish-date-id}/participations")
