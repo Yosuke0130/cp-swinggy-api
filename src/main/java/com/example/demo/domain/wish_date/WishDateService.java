@@ -17,9 +17,10 @@ public class WishDateService {
     WishDateRepository wishDateRepository;
 
     public boolean wishDateExists(WishDate wishDate) throws WishDateRegisterException {
-        List<Map<String, Object>> wishDates = null;
+
+        List<WishDate> wishDates = null;
         try {
-            wishDates = wishDateRepository.select(wishDate.getOwner(), wishDate.getDate());
+            wishDates = wishDateRepository.selectWishDate(wishDate.getOwner(), wishDate.getDate());
         } catch (IOException e) {
             throw new WishDateRegisterException("Local Date format is wrong", e);
         }
@@ -28,9 +29,11 @@ public class WishDateService {
 
     //意思表示は一人一回
     public boolean participationExists(Participation participation) throws ParticipateWishDateException {
-        List<Map<String, Object>> participations = null;
+
+        List<Participation> participations = null;
+
         try {
-            participations = wishDateRepository.participationExists(participation.getWishDateId(), participation.getParticipant());
+            participations = wishDateRepository.selectParticipation(participation.getWishDateId(), participation.getParticipant());
         } catch (DataAccessException e) {
 
             throw new ParticipateWishDateException("Failed to access the data source.", e);
@@ -43,7 +46,8 @@ public class WishDateService {
 
     //自分のWishDateじゃないかチェック
     public boolean isSelfParticipation(Participation participation) throws ParticipateWishDateException {
-        Map<String, Object> wishDate = null;
+
+        WishDate wishDate = null;
         try {
             wishDate = wishDateRepository.selectById(participation.getWishDateId());
 
@@ -54,7 +58,7 @@ public class WishDateService {
         if (wishDate == null) {
             throw new ParticipateWishDateException("Unexpected null value was returned from WishDateRepository.");
         }
-        return wishDate.get("owner").equals(participation.getParticipant());
+        return wishDate.getOwner().equals(participation.getParticipant());
     }
 
 }

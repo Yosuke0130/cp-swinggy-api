@@ -7,6 +7,7 @@ import com.example.demo.application.user.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -29,22 +31,23 @@ public class UserController {
     Logging logger;
 
 
-    @PostMapping("")
-    public ResponseEntity<String> createUser(@RequestParam("id") String userId,
-                                             @RequestParam("first_name") String firstName,
-                                             @RequestParam("last_name") String lastName,
-                                             @RequestParam("screen_name") String screenName,
-                                             @RequestParam(name = "profile_image", required = false) MultipartFile profileImageData,
-                                             @RequestParam("email") String email,
-                                             @RequestParam(name = "tel", required = false) Optional<String> tel,
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> createUser(@RequestPart @Valid UserRequestBody userRequestBody,
+                                             @RequestPart(required = false) MultipartFile profile_image,
                                              UriComponentsBuilder uriBuilder) {
         try {
             Optional<MultipartFile> profileImage = Optional.empty();
-            if (Objects.nonNull(profileImageData)) {
-                profileImage = Optional.of(profileImageData);
+            if (Objects.nonNull(profile_image)) {
+                profileImage = Optional.of(profile_image);
             }
 
-            userApplicationService.create(userId, firstName, lastName, screenName, profileImage, email, tel);
+            userApplicationService.create(userRequestBody.getId(),
+                    userRequestBody.getFirst_name(),
+                    userRequestBody.getLast_name(),
+                    userRequestBody.getScreen_name(),
+                    profileImage,
+                    userRequestBody.getEmail(),
+                    userRequestBody.getTel() == null ? Optional.empty() : Optional.of(userRequestBody.getTel()));
 
             logger.debug("Your account has created!");
             //リダイレクト先設定
@@ -102,7 +105,7 @@ public class UserController {
                     .collect(Collectors.toList());
 
             int ttlCount = userApplicationService.getCount();
-            userResources.add("ttl: " + ttlCount);
+            userResources.add("total: " + ttlCount);
 
             return userResources;
         } catch (UserCreateException e) {

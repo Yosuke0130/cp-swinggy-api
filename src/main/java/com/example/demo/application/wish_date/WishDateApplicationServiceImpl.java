@@ -67,8 +67,6 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
         Participation participation = new Participation(wishDateId, participant);
 
-        System.out.println(wishDateService.isSelfParticipation(participation));
-
         if (wishDateService.isSelfParticipation(participation)) {
             throw new IllegalStateException("This Wish date is the one you registered.");
         }
@@ -77,13 +75,13 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             throw new IllegalStateException("You're already participated in this wish date.");
         }
 
-        wishDateRepository.insertIntoParticipation(participation);
+        wishDateRepository.insertParticipation(participation);
     }
 
     @Override
     public List<ParticipationModel> getParticipations(String wishDateId, int page, int per) {
 
-        List<Participation> participations = wishDateRepository.selectParticipation(wishDateId, page, per);
+        List<Participation> participations = wishDateRepository.selectParticipationsByPage(wishDateId, page, per);
 
         List<ParticipationModel> participationModels = participations.stream()
                 .map(participationModel -> convertToParticipationModel(participationModel))
