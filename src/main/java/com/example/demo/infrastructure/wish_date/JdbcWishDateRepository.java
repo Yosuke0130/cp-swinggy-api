@@ -39,7 +39,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDate> select(String owner, LocalDate date) throws WishDateRegisterException {
+    public List<WishDate> selectWishDate(String owner, LocalDate date) throws WishDateRegisterException {
         try {
             List<Map<String, Object>> wishDateDataList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
 
@@ -78,7 +78,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void insertIntoParticipation(Participation participation) throws ParticipateWishDateException {
+    public void insertParticipation(Participation participation) throws ParticipateWishDateException {
         try {
             System.out.println(participation.getParticipant());
             jdbc.update("insert into participation(participation_id, wish_date_id, created_at, participant) values(?, ?, ?, ?)",
@@ -106,7 +106,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<Participation> participationExists(String wishDateId, String participant) throws DataAccessException {
+    public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException {
 
         List<Map<String, Object>> participationData = jdbc.queryForList(
                 "select * from participation where wish_date_id = ? and participant = ?",
@@ -123,7 +123,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<Participation> selectParticipation(String wishDateId, int page, int per) {
+    public List<Participation> selectParticipationsByPage(String wishDateId, int page, int per) {
 
         int offset = 0;
         if (page > 0) {

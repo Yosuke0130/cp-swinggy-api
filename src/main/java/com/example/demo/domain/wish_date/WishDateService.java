@@ -20,7 +20,7 @@ public class WishDateService {
 
         List<WishDate> wishDates = null;
         try {
-            wishDates = wishDateRepository.select(wishDate.getOwner(), wishDate.getDate());
+            wishDates = wishDateRepository.selectWishDate(wishDate.getOwner(), wishDate.getDate());
         } catch (IOException e) {
             throw new WishDateRegisterException("Local Date format is wrong", e);
         }
@@ -33,7 +33,7 @@ public class WishDateService {
         List<Participation> participations = null;
 
         try {
-            participations = wishDateRepository.participationExists(participation.getWishDateId(), participation.getParticipant());
+            participations = wishDateRepository.selectParticipation(participation.getWishDateId(), participation.getParticipant());
         } catch (DataAccessException e) {
 
             throw new ParticipateWishDateException("Failed to access the data source.", e);
