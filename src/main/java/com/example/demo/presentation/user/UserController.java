@@ -4,6 +4,9 @@ import com.example.demo.Logging;
 import com.example.demo.application.user.UserApplicationService;
 import com.example.demo.application.user.UserCreateException;
 import com.example.demo.application.user.UserModel;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +35,7 @@ public class UserController {
 
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createUser(@RequestPart @Valid UserRequestBody userRequestBody,
+    public ResponseEntity<String> createUser(@RequestPart @Valid UserRequestBody json,
                                              @RequestPart(required = false) MultipartFile profile_image,
                                              UriComponentsBuilder uriBuilder) {
         try {
@@ -41,13 +44,13 @@ public class UserController {
                 profileImage = Optional.of(profile_image);
             }
 
-            userApplicationService.create(userRequestBody.getId(),
-                    userRequestBody.getFirst_name(),
-                    userRequestBody.getLast_name(),
-                    userRequestBody.getScreen_name(),
+            userApplicationService.create(json.getId(),
+                    json.getFirst_name(),
+                    json.getLast_name(),
+                    json.getScreen_name(),
                     profileImage,
-                    userRequestBody.getEmail(),
-                    userRequestBody.getTel() == null ? Optional.empty() : Optional.of(userRequestBody.getTel()));
+                    json.getEmail(),
+                    json.getTel() == null ? Optional.empty() : Optional.of(json.getTel()));
 
             logger.debug("Your account has created!");
             //リダイレクト先設定
@@ -95,21 +98,30 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public List<Object> getUsers(@RequestParam("page") int page,
+    public String getUsers(@RequestParam("page") int page,
                                  @RequestParam("per") int per) {
         try {
             List<UserModel> userModels = userApplicationService.getUsers(page, per);
 
-            List<Object> userResources = userModels.stream()
+            List<UserResource> userResources = userModels.stream()
                     .map(userResource -> new UserResource(userResource))
                     .collect(Collectors.toList());
 
             int ttlCount = userApplicationService.getCount();
-            userResources.add("total: " + ttlCount);
 
-            return userResources;
+            UserResourceJson userResourceJson = new UserResourceJson(userResources, ttlCount);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            String json = mapper.writeValueAsString(userResourceJson);
+
+            return json;
         } catch (UserCreateException e) {
             logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
