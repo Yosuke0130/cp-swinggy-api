@@ -109,11 +109,11 @@ public class UserController {
 
             int ttlCount = userApplicationService.getCount();
 
-            UserResourceJson userResourceJson = new UserResourceJson(userResources, ttlCount);
+            UserListResource userListResource = new UserListResource(userResources, ttlCount);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            String json = mapper.writeValueAsString(userResourceJson);
+            String json = mapper.writeValueAsString(userListResource);
 
             return json;
         } catch (UserCreateException e) {

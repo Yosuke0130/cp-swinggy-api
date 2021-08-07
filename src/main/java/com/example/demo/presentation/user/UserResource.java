@@ -14,7 +14,7 @@ public class UserResource {
     private String lastName;
     private String screenName;
     private String email;
-    private Optional<String> tel;
+    private String tel;
     private String profileImageURL;
 
     public UserResource(UserModel userModel) {
@@ -23,7 +23,7 @@ public class UserResource {
         this.lastName = userModel.getLastName();
         this.screenName = userModel.getScreenName();
         this.email = userModel.getEmail();
-        this.tel = userModel.getTel();
+        this.tel = userModel.getTel().isPresent() ? userModel.getTel().get() : null;
         this.profileImageURL = userModel.getProfileImageURL().toString();
     }
 
@@ -47,7 +47,7 @@ public class UserResource {
         return email;
     }
 
-    public Optional<String> getTel() {
+    public String getTel() {
         return tel;
     }
 
