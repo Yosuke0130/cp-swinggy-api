@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -61,18 +62,17 @@ public class WishDateController {
 
     @ResponseBody
     @GetMapping("")
-    public List<Object> getWishDates() {
+    public WishDateListResource getWishDates() {
 
         List<WishDateModel> wishDateModelList = wishDateApplicationService.get();
 
-        List<Object> wishDateResourceList = wishDateModelList.stream()
+        List<WishDateResource> wishDateResourceList = wishDateModelList.stream()
                 .map(wishDate -> new WishDateResource(wishDate))
                 .collect(Collectors.toList());
 
-        wishDateResourceList.add("total: " + wishDateResourceList.size());
+        WishDateListResource wishDateListResource = new WishDateListResource(wishDateResourceList, wishDateResourceList.size());
 
-        return wishDateResourceList;
-
+        return wishDateListResource;
     }
 
     @PostMapping("/{wish-date-id}/participations")
@@ -101,21 +101,21 @@ public class WishDateController {
 
     @ResponseBody
     @GetMapping("/{wish-date-id}/participations")
-    public List<Object> getParticipations(@PathVariable("wish-date-id") String wishDateId,
+    public ParticipationListResource getParticipations(@PathVariable("wish-date-id") String wishDateId,
                                           @RequestParam("page") int page,
                                           @RequestParam("per") int per) {
 
         List<ParticipationModel> participations = wishDateApplicationService.getParticipations(wishDateId, page, per);
 
-        List<Object> participationResources = participations.stream()
+        List<ParticipationResource> participationResources = participations.stream()
                 .map(participationResource -> new ParticipationResource(participationResource))
                 .collect(Collectors.toList());
 
         int ttlCount = wishDateApplicationService.getCount(wishDateId);
 
-        participationResources.add("total: " + ttlCount);
+        ParticipationListResource participationListResource = new ParticipationListResource(participationResources, ttlCount);
 
-        return participationResources;
+        return participationListResource;
     }
 
 }
