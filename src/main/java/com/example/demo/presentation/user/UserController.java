@@ -128,12 +128,13 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/_count")
-    public int getScreenNameCount(@RequestParam("screen_name") String screenName) {
+    public UserCountResource getScreenNameCount(@RequestParam("screen_name") String screenName) {
 
         try {
             int count = userApplicationService.getCountByScreenName(screenName);
+            UserCountResource countResource = new UserCountResource(count);
 
-            return count;
+            return countResource;
         } catch (UserCreateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
