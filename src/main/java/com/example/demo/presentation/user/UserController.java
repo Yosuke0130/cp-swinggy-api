@@ -98,7 +98,7 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public String getUsers(@RequestParam("page") int page,
+    public UserListResource getUsers(@RequestParam("page") int page,
                                  @RequestParam("per") int per) {
         try {
             List<UserModel> userModels = userApplicationService.getUsers(page, per);
@@ -111,18 +111,11 @@ public class UserController {
 
             UserListResource userListResource = new UserListResource(userResources, ttlCount);
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            String json = mapper.writeValueAsString(userListResource);
-
-            return json;
+            return userListResource;
         } catch (UserCreateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

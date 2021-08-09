@@ -22,16 +22,18 @@ public class PrefectureController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/")
-    public List<PrefectureResource> getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
+    public PrefectureListResource getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
         try {
 
             List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
 
-            List<PrefectureResource> prefectureResourceList = prefectureModelList.stream()
+            List<PrefectureResource> prefectureResources = prefectureModelList.stream()
                     .map(prefecture -> new PrefectureResource(prefecture))
                     .collect(Collectors.toList());
 
-            return prefectureResourceList;
+            PrefectureListResource prefectureListResource = new PrefectureListResource(prefectureResources);
+
+            return prefectureListResource;
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
