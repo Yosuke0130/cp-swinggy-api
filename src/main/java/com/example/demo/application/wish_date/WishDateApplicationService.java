@@ -3,7 +3,6 @@ package com.example.demo.application.wish_date;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface WishDateApplicationService {
 
@@ -11,9 +10,15 @@ public interface WishDateApplicationService {
 
     public List<WishDateModel> get();
 
+    public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException;
+
     public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException;
 
     public List<ParticipationModel> getParticipations(String wishDateId, int page, int per);
 
     public int getCount(String wishDateId);
+
+    public void deleteParticipation(String wishDateId, String pariticipationId) throws IllegalStateException, ParticipateWishDateException;
+
+
 }

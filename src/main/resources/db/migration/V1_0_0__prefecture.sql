@@ -3,7 +3,8 @@ create table if not exists prefecture(
     prefecture_id int(3) not null,
     region_id int(3) not null,
     name varchar(255) not null,
-    primary key(prefecture_id)
+    primary key(prefecture_id),
+    foreign key(region_id) references region(region_id)
 );
 
 insert into prefecture values

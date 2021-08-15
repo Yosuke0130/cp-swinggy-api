@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class WishDateService {
@@ -16,15 +15,16 @@ public class WishDateService {
     @Autowired
     WishDateRepository wishDateRepository;
 
+    //同じ日付の希望日の登録は登録不可
     public boolean wishDateExists(WishDate wishDate) throws WishDateRegisterException {
-
-        List<WishDate> wishDates = null;
+        List<WishDate> wishDateList = null;
         try {
-            wishDates = wishDateRepository.selectWishDate(wishDate.getOwner(), wishDate.getDate());
+            wishDateList = wishDateRepository.selectWishDateByDate(wishDate.getDate());
+
+            return wishDateList.size() > 0;
         } catch (IOException e) {
             throw new WishDateRegisterException("Local Date format is wrong", e);
         }
-        return wishDates.size() > 0;
     }
 
     //意思表示は一人一回

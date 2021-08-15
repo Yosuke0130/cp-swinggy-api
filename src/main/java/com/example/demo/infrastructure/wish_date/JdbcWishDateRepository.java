@@ -2,7 +2,6 @@ package com.example.demo.infrastructure.wish_date;
 
 import com.example.demo.application.wish_date.ParticipateWishDateException;
 import com.example.demo.application.wish_date.WishDateRegisterException;
-import com.example.demo.domain.user.User;
 import com.example.demo.domain.wish_date.Participation;
 import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
@@ -39,18 +38,17 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDate> selectWishDate(String owner, LocalDate date) throws WishDateRegisterException {
+    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateRegisterException {
         try {
-            List<Map<String, Object>> wishDateDataList = jdbc.queryForList("select * from wish_date where owner = ? and wish_date = ?", owner, date.toString());
+            List<Map<String, Object>> wishDateListData = jdbc.queryForList("select * from wish_date where wish_date = ?", date.toString());
 
-            List<WishDate> wishDateList = new ArrayList();
-            for (Map<String, Object> value : wishDateDataList) {
-                WishDate wishDate = convertToWishDate(value);
-                wishDateList.add(wishDate);
-            }
+            List<WishDate> wishDateList = wishDateListData.stream()
+                    .map(wishDate -> convertToWishDate(wishDate))
+                    .collect(Collectors.toList());
+
             return wishDateList;
-
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new WishDateRegisterException("DB access error occurred while checking if the same wish date exists.", e);
         }
     }
@@ -59,9 +57,9 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public List<WishDate> selectAll() {
 
-        List<Map<String, Object>> wishDateDate = jdbc.queryForList("select * from wish_date");
+        List<Map<String, Object>> wishDateData = jdbc.queryForList("select * from wish_date");
 
-        List<WishDate> wishDateList = wishDateDate.stream()
+        List<WishDate> wishDateList = wishDateData.stream()
                 .map(wishDate -> convertToWishDate(wishDate))
                 .collect(Collectors.toList());
 
@@ -106,6 +104,22 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
+    public void deleteWishDate(WishDate wishDate, List<Participation> participationList) throws WishDateRegisterException {
+
+        try {
+            for (Participation participation : participationList) {
+                jdbc.update("delete from participation where participation_id = ?", participation.getParticipationId());
+            }
+
+            jdbc.update("delete from wish_date where wish_date_id = ?", wishDate.getWishDateId());
+
+        } catch (DataAccessException e) {
+            throw new WishDateRegisterException("DB access error occurred when deleting wishDate.", e);
+        }
+    }
+
+    @Override
+    @Transactional
     public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException {
 
         List<Map<String, Object>> participationData = jdbc.queryForList(
@@ -141,6 +155,21 @@ public class JdbcWishDateRepository implements WishDateRepository {
         return participations;
     }
 
+    @Override
+    @Transactional
+    public List<Participation> selectParticipationsByWishDateId(WishDate wishDate) {
+
+        List<Map<String, Object>> participationData = jdbc.queryForList(
+                "select * from participation where wish_date_id = ?",
+                wishDate.getWishDateId());
+
+        List<Participation> participations = participationData.stream()
+                .map(participation -> convertToParticipation(participation))
+                .collect(Collectors.toList());
+
+        return participations;
+    }
+
     private Participation convertToParticipation(Map<String, Object> participation) {
 
         return new Participation((String) participation.get("participation_id"),
@@ -156,6 +185,34 @@ public class JdbcWishDateRepository implements WishDateRepository {
         Integer count = jdbc.queryForObject("select count(*) from participation where wish_date_id = ?", Integer.class, wishDateId);
 
         return count;
+    }
+
+    @Override
+    @Transactional
+    public Participation selectParticipationById(String participationId) throws IllegalStateException {
+        try {
+            Map<String, Object> participationData = jdbc.queryForMap("select * from participation where participation_id = ?",
+                    participationId);
+
+            Participation participation = convertToParticipation(participationData);
+
+            return participation;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("this participationId doesn't matched with any data.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteParticipation(Participation participation) {
+
+        try {
+            jdbc.update("delete from participation where participation_id = ?", participation.getParticipationId());
+
+        } catch (DataAccessException e) {
+            throw new ParticipateWishDateException("DB access error occurred when deleting participation.", e);
+        }
     }
 
 }

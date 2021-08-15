@@ -6,11 +6,11 @@ import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
 import com.example.demo.domain.wish_date.WishDateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,18 +29,15 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateRegisterException, IOException {
 
         WishDate wishDate = new WishDate(owner, date);
-        logger.info("Registering a wish date:" + wishDate.getDate().toString());
 
         boolean result = wishDateService.wishDateExists(wishDate);
 
         if (!result) {
-
             wishDateRepository.insert(wishDate);
-
+            logger.info("Registered wish date:" + wishDate.getDate().toString());
         } else {
             throw new IllegalStateException("wish date has already existed.");
         }
-
     }
 
     @Override
@@ -61,6 +58,23 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
                 wishDate.getOwner(),
                 wishDate.getDate().toString());
     }
+
+    @Override
+    public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException{
+        try {
+            WishDate wishDate = wishDateRepository.selectById(wishDateId);
+
+            List<Participation> participationList = wishDateRepository.selectParticipationsByWishDateId(wishDate);
+
+            wishDateRepository.deleteWishDate(wishDate, participationList);
+            logger.info("wish date has deleted: " + wishDateId);
+
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("This wishDateId doesn't exist.");
+        }
+    }
+
+
 
     @Override
     public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException {
@@ -87,7 +101,6 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
                 .map(participationModel -> convertToParticipationModel(participationModel))
                 .collect(Collectors.toList());
 
-
         return participationModels;
     }
 
@@ -105,6 +118,19 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
         int count = wishDateRepository.countParticipations(wishDateId);
 
         return count;
+    }
+
+    @Override
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalStateException, ParticipateWishDateException {
+
+        Participation participation = wishDateRepository.selectParticipationById(participationId);
+
+        if(participation.getWishDateId().equals(wishDateId)) {
+            wishDateRepository.deleteParticipation(participation);
+            logger.info("participation has deleted: " + participationId);
+        } else {
+            throw new IllegalStateException("This participation doesn't match with wishDateId.");
+        }
     }
 
 }
