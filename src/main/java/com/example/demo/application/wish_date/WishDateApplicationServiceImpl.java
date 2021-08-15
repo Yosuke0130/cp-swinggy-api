@@ -6,7 +6,6 @@ import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
 import com.example.demo.domain.wish_date.WishDateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -61,19 +60,11 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException{
-        try {
-            WishDate wishDate = wishDateRepository.selectById(wishDateId);
 
-            List<Participation> participationList = wishDateRepository.selectParticipationsByWishDateId(wishDate);
+            wishDateRepository.deleteWishDate(wishDateId);
+            logger.info("wish date has been deleted: " + wishDateId);
 
-            wishDateRepository.deleteWishDate(wishDate, participationList);
-            logger.info("wish date has deleted: " + wishDateId);
-
-        } catch (DataAccessException e) {
-            throw new IllegalStateException("This wishDateId doesn't exist.");
-        }
     }
-
 
 
     @Override
@@ -121,16 +112,10 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public void deleteParticipation(String wishDateId, String participationId) throws IllegalStateException, ParticipateWishDateException {
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
 
-        Participation participation = wishDateRepository.selectParticipationById(participationId);
-
-        if(participation.getWishDateId().equals(wishDateId)) {
-            wishDateRepository.deleteParticipation(participation);
-            logger.info("participation has deleted: " + participationId);
-        } else {
-            throw new IllegalStateException("This participation doesn't match with wishDateId.");
-        }
+        wishDateRepository.deleteParticipation(wishDateId, participationId);
+        logger.info("participation has been deleted:" + participationId);
     }
 
 }

@@ -10,7 +10,7 @@ public interface WishDateApplicationService {
 
     public List<WishDateModel> get();
 
-    public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException;
+    public void deleteWishDate(String wishDateId) throws IllegalArgumentException, WishDateRegisterException;
 
     public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException;
 
@@ -18,7 +18,6 @@ public interface WishDateApplicationService {
 
     public int getCount(String wishDateId);
 
-    public void deleteParticipation(String wishDateId, String pariticipationId) throws IllegalStateException, ParticipateWishDateException;
-
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalStateException;
 
 }

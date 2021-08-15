@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: test
       MYSQL_PASSWORD: root
-      MYSQL_DATABASE: swinggy_api_db
+      MYSQL_DATABASE: swinggy
     command: --default_authentication_plugin=mysql_native_password
 
   app:

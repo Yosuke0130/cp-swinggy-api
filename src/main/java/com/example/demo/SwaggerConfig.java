@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("dev Swinggy API")
+                .title("Swinggy API")
                 .version("1.0")
                 .build();
     }
