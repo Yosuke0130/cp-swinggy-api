@@ -292,9 +292,9 @@ public class JdbcS3UserRepository implements UserRepository {
     @Override
     public boolean exists(String userId) {
         try {
-            String selectedUserId = jdbc.queryForObject("select user_id from user where user_id = ?", String.class,userId);
+            Integer count = jdbc.queryForObject("select count(*) from user where user_id = ?", Integer.class,userId);
 
-            return !selectedUserId.isEmpty();
+            return count > 0;
 
         } catch (DataAccessException e) {
             return false;
