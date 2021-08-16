@@ -2,12 +2,6 @@ package com.example.demo.presentation.wish_date;
 
 import com.example.demo.Logging;
 import com.example.demo.application.wish_date.*;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,15 +39,11 @@ public class WishDateController {
 
         } catch (IllegalArgumentException | IllegalStateException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
 
-        } catch (WishDateRegisterException e) {
+        } catch (WishDateRegisterException | IOException e) {
 
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        } catch (IOException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -75,6 +64,24 @@ public class WishDateController {
         return wishDateListResource;
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{wish-date-id}")
+    public void deleteWishDate(@PathVariable("wish-date-id") String wishDateId) {
+        try {
+
+            wishDateApplicationService.deleteWishDate(wishDateId);
+
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        } catch (WishDateRegisterException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{wish-date-id}/participations")
     public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
                                                         @RequestBody @Valid ParticipantRequestBody participantRequestBody) {
@@ -89,12 +96,11 @@ public class WishDateController {
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         } catch (ParticipateWishDateException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
@@ -102,20 +108,37 @@ public class WishDateController {
     @ResponseBody
     @GetMapping("/{wish-date-id}/participations")
     public ParticipationListResource getParticipations(@PathVariable("wish-date-id") String wishDateId,
-                                          @RequestParam("page") int page,
-                                          @RequestParam("per") int per) {
+                                                       @RequestParam("page") int page,
+                                                       @RequestParam("per") int per) {
+        try {
+            List<ParticipationModel> participations = wishDateApplicationService.getParticipations(wishDateId, page, per);
 
-        List<ParticipationModel> participations = wishDateApplicationService.getParticipations(wishDateId, page, per);
+            List<ParticipationResource> participationResources = participations.stream()
+                    .map(participationResource -> new ParticipationResource(participationResource))
+                    .collect(Collectors.toList());
 
-        List<ParticipationResource> participationResources = participations.stream()
-                .map(participationResource -> new ParticipationResource(participationResource))
-                .collect(Collectors.toList());
+            int ttlCount = wishDateApplicationService.getCount(wishDateId);
 
-        int ttlCount = wishDateApplicationService.getCount(wishDateId);
+            ParticipationListResource participationListResource = new ParticipationListResource(participationResources, ttlCount);
 
-        ParticipationListResource participationListResource = new ParticipationListResource(participationResources, ttlCount);
-
-        return participationListResource;
+            return participationListResource;
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{wish-date-id}/participations/{participation-id}")
+    public void deleteParticipation(@PathVariable("wish-date-id") String wishDateId,
+                                    @PathVariable("participation-id") String participationId) {
+        try {
+            wishDateApplicationService.deleteParticipation(wishDateId, participationId);
+
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
 }

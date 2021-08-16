@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Test API for golf_app")
+                .title("Swinggy API")
                 .version("1.0")
                 .build();
     }

@@ -41,7 +41,6 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public void insert(User user, Optional<MultipartFile> profileImage) throws UserCreateException, IllegalStateException {
         try {
-
             if (profileImage.isPresent()) {
                 //拡張子取得、バイトに変換、アップロードメソッド呼び出し、パスをuserにセット
                 String contentType = profileImage.get().getContentType();
@@ -66,9 +65,7 @@ public class JdbcS3UserRepository implements UserRepository {
                         user.getProfileImageURL().getValue().toString(),
                         user.getEmail().getValue(),
                         user.getTel().get().getValue());
-
             } else {
-
                 jdbc.update(
                         "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
                                 " values(?, ?, ?, ?, ?, ?, ?)",
@@ -81,7 +78,6 @@ public class JdbcS3UserRepository implements UserRepository {
                         user.getEmail().getValue());
                 logger.debug("User created with not tel no.");
             }
-
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {

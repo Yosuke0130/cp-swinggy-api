@@ -23,7 +23,6 @@ public class Participation {
         this.wishDateId = new WishDateId(wishDateId);
         this.date = LocalDateTime.parse(date);
         this.participant = participant;
-
     }
 
 
