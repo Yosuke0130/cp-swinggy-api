@@ -226,4 +226,16 @@ public class JdbcWishDateRepository implements WishDateRepository {
         }
     }
 
+    @Override
+    public boolean userIdExists(String id) {
+        try {
+            String userId = jdbc.queryForObject("select user_id from user where user_id = ?", String.class, id);
+            System.out.println(!userId.isEmpty());
+            return !userId.isEmpty();
+
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
+
 }

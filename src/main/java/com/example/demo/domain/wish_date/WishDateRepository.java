@@ -30,4 +30,6 @@ public interface WishDateRepository {
 
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException;
 
+    public boolean userIdExists(String owner);
+
 }

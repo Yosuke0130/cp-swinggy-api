@@ -61,4 +61,9 @@ public class WishDateService {
         return wishDate.getOwner().equals(participation.getParticipant());
     }
 
+    //owner, participantがuser_idに存在するかチェック
+    public boolean isUserIdValid(String id) {
+        return wishDateRepository.userIdExists(id);
+    }
+
 }
