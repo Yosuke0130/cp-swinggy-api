@@ -2,6 +2,7 @@ package com.example.demo.domain.wish_date;
 
 import com.example.demo.application.wish_date.ParticipateWishDateException;
 import com.example.demo.application.wish_date.WishDateRegisterException;
+import com.example.demo.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class WishDateService {
 
     @Autowired
     WishDateRepository wishDateRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     //同じ日付の希望日の登録は登録不可
     public boolean wishDateExists(WishDate wishDate) throws WishDateRegisterException {

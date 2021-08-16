@@ -1,6 +1,7 @@
 package com.example.demo.application.wish_date;
 
 import com.example.demo.Logging;
+import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.wish_date.Participation;
 import com.example.demo.domain.wish_date.WishDate;
 import com.example.demo.domain.wish_date.WishDateRepository;
@@ -22,10 +23,17 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     WishDateService wishDateService;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     Logging logger;
 
     @Override
     public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateRegisterException, IOException {
+
+        if(!userRepository.exists(owner)) {
+            throw new IllegalArgumentException("This owner doesn't exist on user table.");
+        }
 
         WishDate wishDate = new WishDate(owner, date);
 
@@ -68,7 +76,11 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
 
     @Override
-    public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException {
+    public void participate(String wishDateId, String participant) throws IllegalStateException, IllegalArgumentException, ParticipateWishDateException {
+
+        if(!userRepository.exists(participant)) {
+            throw new IllegalArgumentException("This participant doesn't exist on user table.");
+        }
 
         Participation participation = new Participation(wishDateId, participant);
 

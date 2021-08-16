@@ -37,12 +37,15 @@ public class WishDateController {
 
             return new ResponseEntity<>(header, status);
 
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalStateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT);
 
-        } catch (WishDateRegisterException | IOException e) {
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
+        } catch (WishDateRegisterException | IOException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -86,7 +89,6 @@ public class WishDateController {
     public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
                                                         @RequestBody @Valid ParticipantRequestBody participantRequestBody) {
         try {
-            System.out.println(participantRequestBody.getParticipant());
             wishDateApplicationService.participate(wishDateId, participantRequestBody.getParticipant());
 
             HttpHeaders header = new HttpHeaders();
@@ -97,9 +99,11 @@ public class WishDateController {
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (ParticipateWishDateException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
