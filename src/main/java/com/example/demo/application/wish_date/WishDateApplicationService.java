@@ -12,7 +12,7 @@ public interface WishDateApplicationService {
 
     public void deleteWishDate(String wishDateId) throws IllegalArgumentException, WishDateRegisterException;
 
-    public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException;
+    public void participate(String wishDateId, String participant) throws IllegalStateException, IllegalArgumentException, ParticipateWishDateException;
 
     public List<ParticipationModel> getParticipations(String wishDateId, int page, int per);
 

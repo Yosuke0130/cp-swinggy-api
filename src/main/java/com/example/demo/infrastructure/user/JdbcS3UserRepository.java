@@ -288,4 +288,16 @@ public class JdbcS3UserRepository implements UserRepository {
             throw new UserCreateException("Couldn't get ScreenName count from DB.");
         }
     }
+
+    @Override
+    public boolean exists(String userId) {
+        try {
+            String selectedUserId = jdbc.queryForObject("select user_id from user where user_id = ?", String.class,userId);
+
+            return !selectedUserId.isEmpty();
+
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
 }

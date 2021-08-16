@@ -96,12 +96,14 @@ public class WishDateController {
 
             return new ResponseEntity<>(header, status);
 
-        } catch (IllegalStateException | IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (ParticipateWishDateException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
