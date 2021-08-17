@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface WishDateRepository {
 
@@ -14,7 +15,9 @@ public interface WishDateRepository {
 
     public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateRegisterException, IOException;
 
-    public List<WishDate> selectAll();
+    public List<WishDate> selectWishDatesByPage(Optional<LocalDate> from,Optional<LocalDate> to, int page, int per);
+
+    public int selectWishDateCount(Optional<LocalDate> from,Optional<LocalDate> to);
 
     public void insertParticipation(Participation participation) throws ParticipateWishDateException;
 
