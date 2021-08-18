@@ -68,20 +68,25 @@ public class JdbcWishDateRepository implements WishDateRepository {
             }
 
             List<Map<String, Object>> wishDateData = null;
+            if(from.isPresent()) {
+                if(to.isPresent()) {
+                    //どちらも値あり
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date between ? and ? order by wish_date desc limit ? offset ?",
+                            from.get(), to.get(), per, offset);
+                } else {
+                    //fromだけ
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? order by wish_date desc limit ? offset ?", from.get(), per, offset);
+                }
+            } else {
+                if(to.isPresent()) {
+                    //toだけ
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date <= ? order by wish_date desc limit ? offset ?", to.get(), per, offset);
+                } else {
+                    //どちらも値なし
+                    wishDateData = jdbc.queryForList("select * from wish_date order by wish_date desc limit ? offset ?", per, offset);
+                }
+            }
 
-            if (from.isEmpty() && to.isEmpty()) {
-                wishDateData = jdbc.queryForList("select * from wish_date order by wish_date desc limit ? offset ?", per, offset);
-            }
-            if (from.isPresent() && to.isEmpty()) {
-                wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? order by wish_date desc limit ? offset ?", from.get(), per, offset);
-            }
-            if (from.isEmpty() && to.isPresent()) {
-                wishDateData = jdbc.queryForList("select * from wish_date where wish_date <= ? order by wish_date desc limit ? offset ?", to.get(), per, offset);
-            }
-            if (from.isPresent() && to.isPresent()) {
-                wishDateData = jdbc.queryForList("select * from wish_date where wish_date between ? and ? order by wish_date desc limit ? offset ?",
-                        from.get(), to.get(), per, offset);
-            }
             List<WishDate> wishDateList = wishDateData.stream()
                     .map(wishDate -> convertToWishDate(wishDate))
                     .collect(Collectors.toList());
@@ -95,20 +100,24 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Override
     @Transactional
     public int selectWishDateCount(Optional<LocalDate> from,Optional<LocalDate> to) {
-        //todo: DB access error
         try {
             Integer count = 0;
-            if (from.isEmpty() && to.isEmpty()) {
-                count = jdbc.queryForObject("select count(*) from wish_date", Integer.class);
-            }
-            if (from.isPresent() && to.isEmpty()) {
-                count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ?", Integer.class, from.get());
-            }
-            if (from.isEmpty() && to.isPresent()) {
-                count = jdbc.queryForObject("select count(*) from wish_date where wish_date <= ?", Integer.class, to.get());
-            }
-            if (from.isPresent() && to.isPresent()) {
-                count = jdbc.queryForObject("select count(*) from wish_date where wish_date between ? and ?", Integer.class, from.get(), to.get());
+            if(from.isPresent()) {
+                if(to.isPresent()) {
+                    //どちらも値あり
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date between ? and ?", Integer.class, from.get(), to.get());
+                } else {
+                    //fromだけ
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ?", Integer.class, from.get());
+                }
+            } else {
+                if(to.isPresent()) {
+                    //toだけ
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date <= ?", Integer.class, to.get());
+                } else {
+                    //どちらも値なし
+                    count = jdbc.queryForObject("select count(*) from wish_date", Integer.class);
+                }
             }
             return count;
         } catch (DataAccessException e) {
