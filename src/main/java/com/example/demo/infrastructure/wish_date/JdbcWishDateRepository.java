@@ -71,7 +71,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to.get().plusDays(1);
                     wishDateData = jdbc.queryForList("select * from wish_date where wish_date between ? and ? order by wish_date desc limit ? offset ?",
                             from.get(), to.get(), per, offset);
                 } else {
@@ -81,7 +80,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to.get().plusDays(1);
+                    to = Optional.of(to.get().plusDays(1));
                     wishDateData = jdbc.queryForList("select * from wish_date where wish_date < ? order by wish_date desc limit ? offset ?", to.get(), per, offset);
                 } else {
                     //どちらも値なし
@@ -107,7 +106,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to.get().plusDays(1);
                     count = jdbc.queryForObject("select count(*) from wish_date where wish_date between ? and ?", Integer.class, from.get(), to.get());
                 } else {
                     //fromだけ
@@ -116,7 +114,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to.get().plusDays(1);
+                    to = Optional.of(to.get().plusDays(1));
                     count = jdbc.queryForObject("select count(*) from wish_date where wish_date < ?", Integer.class, to.get());
                 } else {
                     //どちらも値なし
