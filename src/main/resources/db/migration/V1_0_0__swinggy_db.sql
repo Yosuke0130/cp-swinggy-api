@@ -73,7 +73,8 @@ insert into prefecture values
 
 create table if not exists user(
     user_id varchar(255),
-    created_at date,
+    created_at datetime not null,
+    deleted_at datetime,
     primary key(user_id)
     );
 
@@ -87,8 +88,10 @@ create table if not exists user_profile(
     tel varchar(255) unique,
     profile_image_path varchar(255),
     primary key(user_profile_id),
-     foreign key(user_id)
-     references user(user_id)
+    foreign key(user_id) references user(user_id),
+    created_at datetime not null,
+    deleted_at datetime,
+    updated_at datetime not null
     );
 
 create table if not exists wish_date(
@@ -96,8 +99,7 @@ create table if not exists wish_date(
     owner varchar(255) not null,
     wish_date date not null,
     primary key(wish_date_id),
-    foreign key(owner)
-    references user(user_id)
+    foreign key(owner) references user(user_id)
     );
 
 create table if not exists participation(
@@ -106,8 +108,6 @@ create table if not exists participation(
     created_at datetime not null,
     participant varchar(255) not null,
     primary key(participation_id),
-    foreign key(wish_date_id)
-    references wish_date(wish_date_id),
-    foreign key(participant)
-    references user(User_id)
+    foreign key(wish_date_id) references wish_date(wish_date_id),
+    foreign key(participant) references user(User_id)
     );
