@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,11 +41,9 @@ public class WishDateController {
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT);
-
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
         } catch (WishDateRegisterException | IOException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,15 +53,20 @@ public class WishDateController {
 
     @ResponseBody
     @GetMapping("")
-    public WishDateListResource getWishDates() {
+    public WishDateListResource getWishDates(@RequestParam("from") Optional<String> from,
+                                             @RequestParam("to") Optional<String> to,
+                                             @RequestParam("page") int page,
+                                             @RequestParam("per") int per) {
 
-        List<WishDateModel> wishDateModelList = wishDateApplicationService.get();
+        List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per);
 
         List<WishDateResource> wishDateResourceList = wishDateModelList.stream()
                 .map(wishDate -> new WishDateResource(wishDate))
                 .collect(Collectors.toList());
 
-        WishDateListResource wishDateListResource = new WishDateListResource(wishDateResourceList, wishDateResourceList.size());
+        int total = wishDateApplicationService.getWishDateCount(from, to);
+
+        WishDateListResource wishDateListResource = new WishDateListResource(wishDateResourceList, total);
 
         return wishDateListResource;
     }
@@ -121,7 +125,7 @@ public class WishDateController {
                     .map(participationResource -> new ParticipationResource(participationResource))
                     .collect(Collectors.toList());
 
-            int ttlCount = wishDateApplicationService.getCount(wishDateId);
+            int ttlCount = wishDateApplicationService.getParticipationCount(wishDateId);
 
             ParticipationListResource participationListResource = new ParticipationListResource(participationResources, ttlCount);
 

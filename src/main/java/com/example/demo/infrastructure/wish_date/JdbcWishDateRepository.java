@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -59,15 +60,73 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDate> selectAll() {
+    public List<WishDate> selectWishDatesByPage(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per) {
+        try {
+            int offset = 0;
+            if (page > 0) {
+                offset = page * per;
+            }
 
-        List<Map<String, Object>> wishDateData = jdbc.queryForList("select * from wish_date");
+            List<Map<String, Object>> wishDateData = null;
+            if(from.isPresent()) {
+                if(to.isPresent()) {
+                    //どちらも値あり
+                    to = Optional.of(to.get().plusDays(1));
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? and wish_date < ? order by wish_date desc limit ? offset ?",
+                            from.get(), to.get(), per, offset);
+                } else {
+                    //fromだけ
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? order by wish_date desc limit ? offset ?", from.get(), per, offset);
+                }
+            } else {
+                if(to.isPresent()) {
+                    //toだけ
+                    to = Optional.of(to.get().plusDays(1));
+                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date < ? order by wish_date desc limit ? offset ?", to.get(), per, offset);
+                } else {
+                    //どちらも値なし
+                    wishDateData = jdbc.queryForList("select * from wish_date order by wish_date desc limit ? offset ?", per, offset);
+                }
+            }
 
-        List<WishDate> wishDateList = wishDateData.stream()
-                .map(wishDate -> convertToWishDate(wishDate))
-                .collect(Collectors.toList());
+            List<WishDate> wishDateList = wishDateData.stream()
+                    .map(wishDate -> convertToWishDate(wishDate))
+                    .collect(Collectors.toList());
 
-        return wishDateList;
+            return wishDateList;
+        } catch (DataAccessException e) {
+            throw new WishDateRegisterException("DB access error occurred while getting wish-dates.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public int selectWishDateCount(Optional<LocalDate> from,Optional<LocalDate> to) {
+        try {
+            Integer count = 0;
+            if(from.isPresent()) {
+                if(to.isPresent()) {
+                    //どちらも値あり
+                    to = Optional.of(to.get().plusDays(1));
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ? and  wish_date < ?", Integer.class, from.get(), to.get());
+                } else {
+                    //fromだけ
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ?", Integer.class, from.get());
+                }
+            } else {
+                if(to.isPresent()) {
+                    //toだけ
+                    to = Optional.of(to.get().plusDays(1));
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date < ?", Integer.class, to.get());
+                } else {
+                    //どちらも値なし
+                    count = jdbc.queryForObject("select count(*) from wish_date", Integer.class);
+                }
+            }
+            return count;
+        } catch (DataAccessException e) {
+            throw new WishDateRegisterException("DB access error occurred while getting wish-date counts.", e);
+        }
     }
 
     private WishDate convertToWishDate(Map<String, Object> wishDate) {
@@ -116,12 +175,12 @@ public class JdbcWishDateRepository implements WishDateRepository {
             }
 
             List<Map<String, Object>> participationData = jdbc.queryForList(
-                "select * from participation where wish_date_id = ?",
-                wishDateId);
+                    "select * from participation where wish_date_id = ?",
+                    wishDateId);
 
             List<Participation> participations = participationData.stream()
-                .map(participation -> convertToParticipation(participation))
-                .collect(Collectors.toList());
+                    .map(participation -> convertToParticipation(participation))
+                    .collect(Collectors.toList());
 
             for (Participation participation : participations) {
                 jdbc.update("delete from participation where participation_id = ?", participation.getParticipationId());

@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,9 +52,20 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public List<WishDateModel> get() {
+    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per) throws IllegalArgumentException {
 
-        List<WishDate> wishDateList = wishDateRepository.selectAll();
+        Optional<LocalDate> validatedFrom = Optional.empty();
+        if(from.isPresent()) {
+            LocalDate parsedFrom = parseLocalDate(from);
+            validatedFrom = Optional.of(parsedFrom);
+        }
+        Optional<LocalDate> validatedTo = Optional.empty();
+        if(to.isPresent()) {
+            LocalDate parsedTo = parseLocalDate(to);
+            validatedTo = Optional.of(parsedTo);
+        }
+
+        List<WishDate> wishDateList = wishDateRepository.selectWishDatesByPage(validatedFrom, validatedTo, page, per);
 
         List<WishDateModel> wishDateModelList = wishDateList.stream()
                 .map(wishDate -> convertToWishDateModel(wishDate))
@@ -58,6 +73,34 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
         return wishDateModelList;
 
+    }
+
+    public int getWishDateCount(Optional<String> from, Optional<String> to) throws IllegalArgumentException {
+
+        Optional<LocalDate> validatedFrom = Optional.empty();
+        if(from.isPresent()) {
+            LocalDate parsedFrom = parseLocalDate(from);
+            validatedFrom = Optional.of(parsedFrom);
+        }
+        Optional<LocalDate> validatedTo = Optional.empty();
+        if(to.isPresent()) {
+            LocalDate parsedTo = parseLocalDate(to);
+            validatedTo = Optional.of(parsedTo);
+        }
+
+        int count = wishDateRepository.selectWishDateCount(validatedFrom, validatedTo);
+
+        return count;
+    }
+
+    private LocalDate parseLocalDate(Optional<String> value) {
+        try {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate parsedValue = LocalDate.parse(value.get(), dtf);
+            return parsedValue;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Date format error.");
+        }
     }
 
     private WishDateModel convertToWishDateModel(WishDate wishDate) {
@@ -69,14 +112,14 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     @Override
     public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException{
 
-            wishDateRepository.deleteWishDate(wishDateId);
-            logger.info("wish date has been deleted: " + wishDateId);
+        wishDateRepository.deleteWishDate(wishDateId);
+        logger.info("wish date has been deleted: " + wishDateId);
 
     }
 
 
     @Override
-    public void participate(String wishDateId, String participant) throws IllegalStateException, IllegalArgumentException, ParticipateWishDateException {
+    public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException {
 
         if(!userRepository.exists(participant)) {
             throw new IllegalArgumentException("This participant doesn't exist on user table.");
@@ -116,7 +159,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public int getCount(String wishDateId) {
+    public int getParticipationCount(String wishDateId) {
 
         int count = wishDateRepository.countParticipations(wishDateId);
 
