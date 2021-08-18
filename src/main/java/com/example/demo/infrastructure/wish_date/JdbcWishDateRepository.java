@@ -117,7 +117,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 if(to.isPresent()) {
                     //toだけ
                     to.get().plusDays(1);
-                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date <= ?", Integer.class, to.get());
+                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date < ?", Integer.class, to.get());
                 } else {
                     //どちらも値なし
                     count = jdbc.queryForObject("select count(*) from wish_date", Integer.class);
