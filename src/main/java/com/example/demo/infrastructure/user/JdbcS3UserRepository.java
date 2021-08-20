@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.sql.Timestamp;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -50,9 +51,9 @@ public class JdbcS3UserRepository implements UserRepository {
                 user.setProfileImageURL(profileImageUrl);
             }
 
-            Date createdDate = new Date();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-            jdbc.update("insert into user(user_id, created_at) values(?, ?)", user.getUserId(), createdDate);
+            jdbc.update("insert into user(user_id) values(?)", user.getUserId());
             if (user.getTel().isPresent()) {
                 jdbc.update(
                         "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
@@ -81,6 +82,7 @@ public class JdbcS3UserRepository implements UserRepository {
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new UserCreateException("DB access error when insert user data.", e);
 
         } catch (IOException e) {

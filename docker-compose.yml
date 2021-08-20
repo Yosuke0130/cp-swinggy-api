@@ -12,6 +12,7 @@ services:
       MYSQL_USER: test
       MYSQL_PASSWORD: root
       MYSQL_DATABASE: swinggy
+      TZ: 'Asia/Tokyo'
     command: --default_authentication_plugin=mysql_native_password
 
   app:
