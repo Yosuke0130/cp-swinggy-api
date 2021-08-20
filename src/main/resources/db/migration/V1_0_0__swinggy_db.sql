@@ -24,56 +24,18 @@ create table if not exists prefecture(
 
 insert into prefecture values
   (1,1,"北海道"),
-  (2,2,"青森県"),
-  (3,2,"岩手県"),
-  (4,2,"宮城県"),
-  (5,2,"秋田県"),
-  (6,2,"山形県"),
-  (7,2,"福島県"),
-  (8,3,"茨城県"),
-  (9,3,"栃木県"),
-  (10,3,"群馬県"),
-  (11,3,"埼玉県"),
-  (12,3,"千葉県"),
-  (13,3,"東京都"),
-  (14,3,"神奈川県"),
-  (15,4,"新潟県"),
-  (16,4,"富山県"),
-  (17,4,"石川県"),
-  (18,4,"福井県"),
-  (19,4,"山梨県"),
-  (20,4,"長野県"),
-  (21,4,"岐阜県"),
-  (22,4,"静岡県"),
-  (23,4,"愛知県"),
-  (24,5,"三重県"),
-  (25,5,"滋賀県"),
-  (26,5,"京都府"),
-  (27,5,"大阪府"),
-  (28,5,"兵庫県"),
-  (29,5,"奈良県"),
-  (30,5,"和歌山県"),
-  (31,6,"鳥取県"),
-  (32,6,"島根県"),
-  (33,6,"岡山県"),
-  (34,6,"広島県"),
-  (35,6,"山口県"),
-  (36,7,"徳島県"),
-  (37,7,"香川県"),
-  (38,7,"愛媛県"),
-  (39,7,"高知県"),
-  (40,8,"福岡県"),
-  (41,8,"佐賀県"),
-  (42,8,"長崎県"),
-  (43,8,"熊本県"),
-  (44,8,"大分県"),
-  (45,8,"宮崎県"),
-  (46,8,"鹿児島県"),
-  (47,8,"沖縄県");
+  (2,2,"青森県"), (3,2,"岩手県"), (4,2,"宮城県"), (5,2,"秋田県"), (6,2,"山形県"), (7,2,"福島県"),
+  (8,3,"茨城県"), (9,3,"栃木県"), (10,3,"群馬県"), (11,3,"埼玉県"), (12,3,"千葉県"), (13,3,"東京都"), (14,3,"神奈川県"),
+  (15,4,"新潟県"), (16,4,"富山県"), (17,4,"石川県"), (18,4,"福井県"), (19,4,"山梨県"), (20,4,"長野県"), (21,4,"岐阜県"), (22,4,"静岡県"), (23,4,"愛知県"),
+  (24,5,"三重県"), (25,5,"滋賀県"), (26,5,"京都府"), (27,5,"大阪府"), (28,5,"兵庫県"), (29,5,"奈良県"), (30,5,"和歌山県"),
+  (31,6,"鳥取県"), (32,6,"島根県"), (33,6,"岡山県"), (34,6,"広島県"), (35,6,"山口県"),
+  (36,7,"徳島県"), (37,7,"香川県"), (38,7,"愛媛県"), (39,7,"高知県"),
+  (40,8,"福岡県"), (41,8,"佐賀県"), (42,8,"長崎県"), (43,8,"熊本県"), (44,8,"大分県"), (45,8,"宮崎県"), (46,8,"鹿児島県"), (47,8,"沖縄県");
 
 create table if not exists user(
     user_id varchar(255),
-    created_at date,
+    created_at timestamp default current_timestamp not null,
+    deleted_at timestamp,
     primary key(user_id)
     );
 
@@ -86,9 +48,12 @@ create table if not exists user_profile(
     email varchar(255) not null unique,
     tel varchar(255) unique,
     profile_image_path varchar(255),
+    created_at timestamp default current_timestamp not null,
+    deleted_at timestamp,
+    updated_at timestamp default current_timestamp not null,
     primary key(user_profile_id),
-     foreign key(user_id)
-     references user(user_id)
+    foreign key(user_id) references user(user_id)
+
     );
 
 create table if not exists wish_date(
@@ -96,8 +61,7 @@ create table if not exists wish_date(
     owner varchar(255) not null,
     wish_date date not null,
     primary key(wish_date_id),
-    foreign key(owner)
-    references user(user_id)
+    foreign key(owner) references user(user_id)
     );
 
 create table if not exists participation(
@@ -106,8 +70,6 @@ create table if not exists participation(
     created_at datetime not null,
     participant varchar(255) not null,
     primary key(participation_id),
-    foreign key(wish_date_id)
-    references wish_date(wish_date_id),
-    foreign key(participant)
-    references user(User_id)
+    foreign key(wish_date_id) references wish_date(wish_date_id),
+    foreign key(participant) references user(User_id)
     );
