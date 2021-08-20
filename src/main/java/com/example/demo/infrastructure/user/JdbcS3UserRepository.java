@@ -51,8 +51,6 @@ public class JdbcS3UserRepository implements UserRepository {
                 user.setProfileImageURL(profileImageUrl);
             }
 
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
             jdbc.update("insert into user(user_id) values(?)", user.getUserId());
             if (user.getTel().isPresent()) {
                 jdbc.update(
@@ -82,7 +80,6 @@ public class JdbcS3UserRepository implements UserRepository {
             logger.debug("アップロードパス" + user.getProfileImageURL());
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
             throw new UserCreateException("DB access error when insert user data.", e);
 
         } catch (IOException e) {
