@@ -1,7 +1,6 @@
 package com.example.demo.domain.wish_date;
 
-import com.example.demo.application.wish_date.ParticipateWishDateException;
-import com.example.demo.application.wish_date.WishDateRegisterException;
+import com.example.demo.application.wish_date.WishDateException;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
@@ -11,19 +10,19 @@ import java.util.Optional;
 
 public interface WishDateRepository {
 
-    public void insert(WishDate wishDate) throws WishDateRegisterException;
+    public void insert(WishDate wishDate) throws WishDateException;
 
-    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateRegisterException, IOException;
+    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException, IOException;
 
     public List<WishDate> selectWishDatesByPage(Optional<LocalDate> from,Optional<LocalDate> to, int page, int per);
 
     public int selectWishDateCount(Optional<LocalDate> from,Optional<LocalDate> to);
 
-    public void insertParticipation(Participation participation) throws ParticipateWishDateException;
+    public void insertParticipation(Participation participation) throws WishDateException;
 
     public WishDate selectById(String wishDateId) throws DataAccessException;
 
-    public void deleteWishDate(String wishDateid) throws ParticipateWishDateException, IllegalArgumentException;
+    public void deleteWishDate(String wishDateId) throws WishDateException, IllegalArgumentException;
 
     public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException;
 
@@ -33,4 +32,9 @@ public interface WishDateRepository {
 
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException;
 
+    public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException;
+
+    public List<WishDateComment> selectWishDateCommentByPage(WishDate wishDate, int page, int per);
+
+    public int countWishDateComment(String wishDateId);
 }

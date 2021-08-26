@@ -1,10 +1,10 @@
 package com.example.demo.infrastructure.wish_date;
 
 import com.example.demo.Logging;
-import com.example.demo.application.wish_date.ParticipateWishDateException;
-import com.example.demo.application.wish_date.WishDateRegisterException;
+import com.example.demo.application.wish_date.WishDateException;
 import com.example.demo.domain.wish_date.Participation;
 import com.example.demo.domain.wish_date.WishDate;
+import com.example.demo.domain.wish_date.WishDateComment;
 import com.example.demo.domain.wish_date.WishDateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +33,18 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void insert(WishDate wishDate) throws WishDateRegisterException {
+    public void insert(WishDate wishDate) throws WishDateException {
         try {
             jdbc.update("insert into wish_date(wish_date_id, owner, wish_date) values(?, ?, ?)", wishDate.getWishDateId(), wishDate.getOwner(), wishDate.getDate());
 
         } catch (DataAccessException e) {
-            throw new WishDateRegisterException("DB access error occurred when inserting wish date.", e);
+            throw new WishDateException("DB access error occurred when inserting wish date.", e);
         }
     }
 
     @Override
     @Transactional
-    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateRegisterException, IOException {
+    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException, IOException {
         try {
             List<Map<String, Object>> wishDateListData = jdbc.queryForList("select * from wish_date where wish_date = ?", date.toString());
 
@@ -54,7 +55,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             return wishDateList;
         } catch (DataAccessException e) {
             logger.error(e.getMessage());
-            throw new WishDateRegisterException("DB access error occurred while checking if the same wish date exists.", e);
+            throw new WishDateException("DB access error occurred while checking if the same wish date exists.", e);
         }
     }
 
@@ -95,7 +96,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
             return wishDateList;
         } catch (DataAccessException e) {
-            throw new WishDateRegisterException("DB access error occurred while getting wish-dates.", e);
+            throw new WishDateException("DB access error occurred while getting wish-dates.", e);
         }
     }
 
@@ -125,7 +126,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             }
             return count;
         } catch (DataAccessException e) {
-            throw new WishDateRegisterException("DB access error occurred while getting wish-date counts.", e);
+            throw new WishDateException("DB access error occurred while getting wish-date counts.", e);
         }
     }
 
@@ -139,7 +140,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void insertParticipation(Participation participation) throws ParticipateWishDateException {
+    public void insertParticipation(Participation participation) throws WishDateException {
         try {
             jdbc.update("insert into participation(participation_id, wish_date_id, created_at, participant) values(?, ?, ?, ?)",
                     participation.getParticipationId(),
@@ -147,26 +148,29 @@ public class JdbcWishDateRepository implements WishDateRepository {
                     participation.getDate(),
                     participation.getParticipant());
         } catch (DataAccessException e) {
-            throw new ParticipateWishDateException("DB access error occurred when insert into Participation.", e);
+            throw new WishDateException("DB access error occurred when insert into Participation.", e);
         }
     }
 
     @Override
     @Transactional
-    public WishDate selectById(String wishDateId) throws DataAccessException {
+    public WishDate selectById(String wishDateId) throws WishDateException {
+        try {
+            Map<String, Object> wishDateData = jdbc.queryForMap(
+                    "select * from wish_date where wish_date_id = ?",
+                    wishDateId);
 
-        Map<String, Object> wishDateData = jdbc.queryForMap(
-                "select * from wish_date where wish_date_id = ?",
-                wishDateId);
+            WishDate wishDate = convertToWishDate(wishDateData);
 
-        WishDate wishDate = convertToWishDate(wishDateData);
-
-        return wishDate;
+            return wishDate;
+        } catch (DataAccessException e) {
+            throw new WishDateException("This wishDateId doesn't exist.", e);
+        }
     }
 
     @Override
     @Transactional
-    public void deleteWishDate(String wishDateId) throws WishDateRegisterException, IllegalArgumentException {
+    public void deleteWishDate(String wishDateId) throws WishDateException, IllegalArgumentException {
         try {
 
             boolean existWishDate = wishDateExists(wishDateId);
@@ -188,7 +192,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             jdbc.update("delete from wish_date where wish_date_id = ?", wishDateId);
 
         } catch (DataAccessException e) {
-            throw new WishDateRegisterException("DB access error occurred when deleting wishDate.", e);
+            throw new WishDateException("DB access error occurred when deleting wishDate.", e);
         }
     }
 
@@ -283,6 +287,55 @@ public class JdbcWishDateRepository implements WishDateRepository {
         } catch (DataAccessException e) {
             return false;
         }
+    }
+
+    @Override
+    @Transactional
+    public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException{
+        try {
+            jdbc.update("insert into wish_date_comment(comment_id, wish_date_id, author, text, created_at) values(?, ?, ?, ?, ?)",
+                    wishDateComment.getWishDateCommentId(),
+                    wishDateComment.getWishDateId(),
+                    wishDateComment.getAuthor(),
+                    wishDateComment.getText(),
+                    wishDateComment.getCreated_at());
+        } catch (DataAccessException e) {
+            throw new WishDateException("DB access error occurred when inserting wishDateComment.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<WishDateComment> selectWishDateCommentByPage(WishDate wishDate, int page, int per) {
+
+        int offset = 0;
+        if (page > 0) {offset = page * per;}
+
+        List<Map<String, Object>> wishDateCommentsData = null;
+        wishDateCommentsData = jdbc.queryForList("select * from wish_date_comment where wish_date_id = ? order by created_at desc limit ? offset ?",
+                wishDate.getWishDateId(), per, offset);
+
+        List<WishDateComment> wishDateCommentList = wishDateCommentsData.stream()
+                .map(wishDateComment -> convertToWishDateComment(wishDateComment))
+                .collect(Collectors.toList());
+
+        return wishDateCommentList;
+    }
+
+    private WishDateComment convertToWishDateComment(Map<String, Object> wishDateComment) {
+        return new WishDateComment((String)wishDateComment.get("comment_id"),
+                (String)wishDateComment.get("wish_date_id"),
+                (String)wishDateComment.get("author"),
+                (String)wishDateComment.get("text"),
+                (Timestamp)wishDateComment.get("created_at"));
+    }
+
+    @Override
+    public int countWishDateComment(String wishDateId) {
+
+        Integer count = jdbc.queryForObject("select count(*) from wish_date_comment where wish_date_id = ?", Integer.class, wishDateId);
+
+        return count;
     }
 
 }

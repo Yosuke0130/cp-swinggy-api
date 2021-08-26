@@ -73,3 +73,13 @@ create table if not exists participation(
     foreign key(wish_date_id) references wish_date(wish_date_id),
     foreign key(participant) references user(User_id)
     );
+
+create table if not exists wish_date_comment(
+    comment_id varchar(255) not null,
+    wish_date_id varchar(255) not null,
+    author varchar(255) not null,
+    text varchar(512) not null,
+    created_at timestamp default current_timestamp not null,
+    primary key(comment_id),
+    foreign key(wish_date_id) references wish_date(wish_date_id)
+);
