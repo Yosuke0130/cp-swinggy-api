@@ -175,10 +175,17 @@ public class WishDateController {
     @ResponseBody
     @GetMapping("{wish-date-id}/comments")
     public WishDateCommentListResource getWishDateComment(@PathVariable("wish-date-id") String wishDateId,
-                           @RequestParam("page") int page,
-                           @RequestParam("per") int per) {
+                           @RequestParam(name = "page") Optional<Integer> page,
+                           @RequestParam(name = "per") Optional<Integer> per) {
         try {
-            List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComment(wishDateId, page, per);
+            if (page.isEmpty()) {
+                page = Optional.of(0);
+            }
+            if (per.isEmpty()) {
+                per = Optional.of(100);
+            }
+
+            List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComment(wishDateId, page.get(), per.get());
 
             List<WishDateCommentResource> wishDateResources = wishDateCommentModelList.stream()
                     .map(wishDateCommentModel -> new WishDateCommentResource(wishDateCommentModel))
@@ -189,9 +196,13 @@ public class WishDateController {
             WishDateCommentListResource wishDateCommentListResource = new WishDateCommentListResource(wishDateResources, total);
 
             return wishDateCommentListResource;
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (WishDateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

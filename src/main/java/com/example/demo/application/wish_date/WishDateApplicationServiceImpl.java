@@ -169,12 +169,15 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     @Override
     public void postWishDateComment(String wishDateId, String author, String text) throws IllegalStateException, IllegalArgumentException, WishDateException {
         if(!userRepository.exists(author)) {
-            throw new IllegalArgumentException("This author doesn't exist on user table.");
+            throw new IllegalStateException("This author doesn't exist on user table.");
         }
 
-        WishDate wishdate = wishDateRepository.selectById(wishDateId);
+        WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDatId doesn't exist.");
+        }
 
-        WishDateComment wishdateComment = new WishDateComment(wishdate.getWishDateId(), author, text);
+        WishDateComment wishdateComment = new WishDateComment(wishDate.getWishDateId(), author, text);
 
         wishDateRepository.insertWishDateComment(wishdateComment);
     }
@@ -182,6 +185,9 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     @Override
     public List<WishDateCommentModel> getWishDateComment(String wishDateId, int page, int per) throws WishDateException {
         WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDatId doesn't exist.");
+        }
 
         List<WishDateComment> wishDateCommentList = wishDateRepository.selectWishDateCommentByPage(wishDate, page, per);
 

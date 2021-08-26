@@ -8,6 +8,7 @@ import com.example.demo.domain.wish_date.WishDateComment;
 import com.example.demo.domain.wish_date.WishDateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,8 +164,11 @@ public class JdbcWishDateRepository implements WishDateRepository {
             WishDate wishDate = convertToWishDate(wishDateData);
 
             return wishDate;
+
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
-            throw new WishDateException("This wishDateId doesn't exist.", e);
+            throw new WishDateException("Query failed.", e);
         }
     }
 
@@ -293,12 +297,11 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException{
         try {
-            jdbc.update("insert into wish_date_comment(comment_id, wish_date_id, author, text, created_at) values(?, ?, ?, ?, ?)",
+            jdbc.update("insert into wish_date_comment(comment_id, wish_date_id, author, text) values(?, ?, ?, ?)",
                     wishDateComment.getWishDateCommentId(),
                     wishDateComment.getWishDateId(),
                     wishDateComment.getAuthor(),
-                    wishDateComment.getText(),
-                    wishDateComment.getCreated_at());
+                    wishDateComment.getText());
         } catch (DataAccessException e) {
             throw new WishDateException("DB access error occurred when inserting wishDateComment.", e);
         }
