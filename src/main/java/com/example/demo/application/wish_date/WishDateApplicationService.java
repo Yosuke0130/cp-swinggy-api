@@ -25,7 +25,7 @@ public interface WishDateApplicationService {
 
     public void postWishDateComment(String wishDateId, String author, String text) throws IllegalStateException, IllegalArgumentException, WishDateException;
 
-    public List<WishDateCommentModel> getWishDateComment(String wishDateId, int page, int per) throws WishDateException;
+    public List<WishDateCommentModel> getWishDateComments(String wishDateId, Optional<Integer> page, Optional<Integer> per) throws WishDateException;
 
     public int getWishDateCommentCount(String wishDateId);
 }

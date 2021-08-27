@@ -34,7 +34,7 @@ public interface WishDateRepository {
 
     public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException;
 
-    public List<WishDateComment> selectWishDateCommentByPage(WishDate wishDate, int page, int per);
+    public List<WishDateComment> selectWishDateCommentsByPage(WishDate wishDate, int page, int per);
 
     public int countWishDateComment(String wishDateId);
 }

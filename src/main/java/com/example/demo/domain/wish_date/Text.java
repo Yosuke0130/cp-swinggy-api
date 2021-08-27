@@ -1,8 +1,5 @@
 package com.example.demo.domain.wish_date;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Text {
 
     private String text;
@@ -10,12 +7,7 @@ public class Text {
     final private static int MAX_CHAR = 500;
 
     public Text(String text) throws IllegalStateException {
-
-        String re = "^.{" + MIN_CHAR + "," + MAX_CHAR + "}$";
-        Pattern pattern = Pattern.compile(re);
-        Matcher matcher = pattern.matcher(text);
-
-        if (matcher.find()) {
+        if(text.length() >= MIN_CHAR && text.length() <= MAX_CHAR) {
             this.text = text;
         } else {
             throw new IllegalStateException("text must be within 500 characters.");

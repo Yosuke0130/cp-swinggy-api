@@ -309,7 +309,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDateComment> selectWishDateCommentByPage(WishDate wishDate, int page, int per) {
+    public List<WishDateComment> selectWishDateCommentsByPage(WishDate wishDate, int page, int per) {
 
         int offset = 0;
         if (page > 0) {offset = page * per;}

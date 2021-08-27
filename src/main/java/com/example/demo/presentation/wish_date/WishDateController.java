@@ -178,14 +178,8 @@ public class WishDateController {
                            @RequestParam(name = "page") Optional<Integer> page,
                            @RequestParam(name = "per") Optional<Integer> per) {
         try {
-            if (page.isEmpty()) {
-                page = Optional.of(0);
-            }
-            if (per.isEmpty()) {
-                per = Optional.of(100);
-            }
 
-            List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComment(wishDateId, page.get(), per.get());
+            List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComments(wishDateId, page, per);
 
             List<WishDateCommentResource> wishDateResources = wishDateCommentModelList.stream()
                     .map(wishDateCommentModel -> new WishDateCommentResource(wishDateCommentModel))
