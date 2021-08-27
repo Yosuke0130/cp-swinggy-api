@@ -119,7 +119,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public void participate(String wishDateId, String participant) throws IllegalStateException, WishDateException {
 
         if(!userRepository.exists(participant)) {
-            throw new IllegalArgumentException("This participant doesn't exist on user table.");
+            throw new IllegalStateException("This participant doesn't exist on user table.");
         }
 
         Participation participation = new Participation(wishDateId, participant);

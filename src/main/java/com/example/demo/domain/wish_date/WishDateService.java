@@ -48,13 +48,12 @@ public class WishDateService {
     }
 
     //自分のWishDateじゃないかチェック
-    public boolean isSelfParticipation(Participation participation) throws WishDateException {
+    public boolean isSelfParticipation(Participation participation) throws IllegalArgumentException {
 
-        WishDate wishDate = null;
-        wishDate = wishDateRepository.selectById(participation.getWishDateId());
-
+//        WishDate wishDate = null;
+        WishDate wishDate = wishDateRepository.selectById(participation.getWishDateId());
         if (wishDate == null) {
-            throw new WishDateException("Unexpected null value was returned from WishDateRepository.");
+            throw new IllegalArgumentException("This wishDateId doesn't exist.");
         }
         return wishDate.getOwner().equals(participation.getParticipant());
     }

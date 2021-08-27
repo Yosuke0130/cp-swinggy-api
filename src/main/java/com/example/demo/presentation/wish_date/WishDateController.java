@@ -102,10 +102,10 @@ public class WishDateController {
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (WishDateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
