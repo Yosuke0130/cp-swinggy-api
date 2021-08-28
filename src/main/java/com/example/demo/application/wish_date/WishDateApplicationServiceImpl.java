@@ -182,8 +182,8 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
         wishDateRepository.insertWishDateComment(wishdateComment);
     }
 
-    final static private int DEFAULT_PAGE = 0;
-    final static private int DEFAULT_PER = 100;
+    private static final int COMMENT_DEFAULT_PAGE = 0;
+    private static final int COMMENT_DEFAULT_PER = 100;
     @Override
     public List<WishDateCommentModel> getWishDateComments(String wishDateId, Optional<Integer> page, Optional<Integer> per) throws WishDateException {
 
@@ -192,10 +192,10 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             throw new IllegalArgumentException("This wishDateId doesn't exist.");
         }
 
-        if (page.isEmpty()) {page = Optional.of(DEFAULT_PAGE);}
-        if (per.isEmpty()) {per = Optional.of(DEFAULT_PER);}
+        int pageValue = page.orElse(COMMENT_DEFAULT_PAGE);
+        int perValue = per.orElse(COMMENT_DEFAULT_PER);
 
-        List<WishDateComment> wishDateCommentList = wishDateRepository.selectWishDateCommentsByPage(wishDate, page.get(), per.get());
+        List<WishDateComment> wishDateCommentList = wishDateRepository.selectWishDateCommentsByPage(wishDate, pageValue, perValue);
 
         List<WishDateCommentModel> wishDateCommentModelList = wishDateCommentList.stream()
                 .map(wishDateComment -> convertToWishDateCommentModel(wishDateComment))
