@@ -108,10 +108,8 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateException {
-
         wishDateRepository.deleteWishDate(wishDateId);
         logger.info("wish date has been deleted: " + wishDateId);
-
     }
 
 
@@ -162,7 +160,11 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
-        wishDateRepository.deleteParticipation(wishDateId, participationId);
+        WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDatId doesn't exist.");
+        }
+        wishDateRepository.deleteParticipation(wishDate.getWishDateId(), participationId);
         logger.info("participation has been deleted:" + participationId);
     }
 
@@ -216,6 +218,17 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public int getWishDateCommentCount(String wishDateId) {
         int count = wishDateRepository.countWishDateComment(wishDateId);
         return count;
+    }
+
+    @Override
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
+        WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDatId doesn't exist.");
+        }
+
+        wishDateRepository.deleteWishDateComment(wishDate.getWishDateId(), wishDateCommentId);
+        logger.info("wishDateCommentId has been deleted:" + wishDateCommentId);
     }
 
 }

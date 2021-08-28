@@ -199,4 +199,18 @@ public class WishDateController {
         }
     }
 
+    //todo: success 204
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{wish-date-id}/comments/{comment-id}")
+    public void deleteWishDateComment(@PathVariable("wish-date-id")String wishDateId,
+                                      @PathVariable("comment-id")String wishDateCommentId) {
+        try {
+            wishDateApplicationService.deleteWishDateComment(wishDateId, wishDateCommentId);
+
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -1,10 +1,8 @@
-create table if not exists region(
-    region_id int(3) not null,
-    name varchar(255) not null,
-    primary key(region_id)
-    );
-
-insert into region values
+CREATE TABLE IF NOT EXISTS region(
+    region_id INT(3) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY(region_id)
+    );INSERT INTO region VALUES
       (1,"北海道地方"),
       (2,"東北地方"),
       (3,"関東地方"),
@@ -14,15 +12,15 @@ insert into region values
       (7,"四国地方"),
       (8,"九州地方");
 
-create table if not exists prefecture(
-    prefecture_id int(3) not null,
-    region_id int(3) not null,
-    name varchar(255) not null,
-    primary key(prefecture_id),
-    foreign key(region_id) references region(region_id)
+CREATE TABLE IF NOT EXISTS prefecture(
+    prefecture_id INT(3) NOT NULL,
+    region_id INT(3) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY(prefecture_id),
+    FOREIGN KEY(region_id) REFERENCES region(region_id)
 );
 
-insert into prefecture values
+INSERT INTO prefecture VALUES
   (1,1,"北海道"),
   (2,2,"青森県"), (3,2,"岩手県"), (4,2,"宮城県"), (5,2,"秋田県"), (6,2,"山形県"), (7,2,"福島県"),
   (8,3,"茨城県"), (9,3,"栃木県"), (10,3,"群馬県"), (11,3,"埼玉県"), (12,3,"千葉県"), (13,3,"東京都"), (14,3,"神奈川県"),
@@ -32,54 +30,54 @@ insert into prefecture values
   (36,7,"徳島県"), (37,7,"香川県"), (38,7,"愛媛県"), (39,7,"高知県"),
   (40,8,"福岡県"), (41,8,"佐賀県"), (42,8,"長崎県"), (43,8,"熊本県"), (44,8,"大分県"), (45,8,"宮崎県"), (46,8,"鹿児島県"), (47,8,"沖縄県");
 
-create table if not exists user(
-    user_id varchar(255),
-    created_at timestamp default current_timestamp not null,
-    deleted_at timestamp,
-    primary key(user_id)
+CREATE TABLE IF NOT EXISTS user(
+    user_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,
+    PRIMARY KEY(user_id)
     );
 
-create table if not exists user_profile(
-    user_profile_id varchar(255),
-    user_id varchar(255) not null,
-    first_name varchar(255) not null,
-    last_name varchar(255) not null,
-    screen_name varchar(255) not null unique,
-    email varchar(255) not null unique,
-    tel varchar(255) unique,
-    profile_image_path varchar(255),
-    created_at timestamp default current_timestamp not null,
-    deleted_at timestamp,
-    updated_at timestamp default current_timestamp not null,
-    primary key(user_profile_id),
-    foreign key(user_id) references user(user_id)
+CREATE TABLE IF NOT EXISTS user_profile(
+    user_profile_id VARCHAR(255),
+    user_id VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    screen_name VARCHAR(255) NOT NULL unique,
+    email VARCHAR(255) NOT NULL unique,
+    tel VARCHAR(255) unique,
+    profile_image_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_profile_id),
+    FOREIGN KEY(user_id) REFERENCES user(user_id)
 
     );
 
-create table if not exists wish_date(
-    wish_date_id varchar(255) not null,
-    owner varchar(255) not null,
-    wish_date date not null,
-    primary key(wish_date_id),
-    foreign key(owner) references user(user_id)
+CREATE TABLE IF NOT EXISTS wish_date(
+    wish_date_id VARCHAR(255) NOT NULL,
+    owner VARCHAR(255) NOT NULL,
+    wish_date DATE NOT NULL,
+    PRIMARY KEY(wish_date_id),
+    FOREIGN KEY(owner) REFERENCES user(user_id)
     );
 
-create table if not exists participation(
-    participation_id varchar(255) not null,
-    wish_date_id varchar(255) not null,
-    created_at datetime not null,
-    participant varchar(255) not null,
-    primary key(participation_id),
-    foreign key(wish_date_id) references wish_date(wish_date_id),
-    foreign key(participant) references user(User_id)
+CREATE TABLE IF NOT EXISTS participation(
+    participation_id VARCHAR(255) NOT NULL,
+    wish_date_id VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    participant VARCHAR(255) NOT NULL,
+    PRIMARY KEY(participation_id),
+    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id),
+    FOREIGN KEY(participant) REFERENCES user(User_id)
     );
 
-create table if not exists wish_date_comment(
-    comment_id varchar(255) not null,
-    wish_date_id varchar(255) not null,
-    author varchar(255) not null,
-    text varchar(512) not null,
-    created_at timestamp default current_timestamp not null,
-    primary key(comment_id),
-    foreign key(wish_date_id) references wish_date(wish_date_id)
+CREATE TABLE IF NOT EXISTS wish_date_comment(
+    comment_id VARCHAR(255) NOT NULL,
+    wish_date_id VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    text VARCHAR(512) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(comment_id),
+    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id)
 );

@@ -36,7 +36,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insert(WishDate wishDate) throws WishDateException {
         try {
-            jdbc.update("insert into wish_date(wish_date_id, owner, wish_date) values(?, ?, ?)", wishDate.getWishDateId(), wishDate.getOwner(), wishDate.getDate());
+            jdbc.update("INSERT INTO wish_date(wish_date_id, owner, wish_date) VALUES(?, ?, ?)", wishDate.getWishDateId(), wishDate.getOwner(), wishDate.getDate());
 
         } catch (DataAccessException e) {
             throw new WishDateException("DB access error occurred when inserting wish date.", e);
@@ -47,7 +47,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException, IOException {
         try {
-            List<Map<String, Object>> wishDateListData = jdbc.queryForList("select * from wish_date where wish_date = ?", date.toString());
+            List<Map<String, Object>> wishDateListData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date = ?", date.toString());
 
             List<WishDate> wishDateList = wishDateListData.stream()
                     .map(wishDate -> convertToWishDate(wishDate))
@@ -74,20 +74,20 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 if(to.isPresent()) {
                     //どちらも値あり
                     to = Optional.of(to.get().plusDays(1));
-                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? and wish_date < ? order by wish_date desc limit ? offset ?",
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
                             from.get(), to.get(), per, offset);
                 } else {
                     //fromだけ
-                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date >= ? order by wish_date desc limit ? offset ?", from.get(), per, offset);
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", from.get(), per, offset);
                 }
             } else {
                 if(to.isPresent()) {
                     //toだけ
                     to = Optional.of(to.get().plusDays(1));
-                    wishDateData = jdbc.queryForList("select * from wish_date where wish_date < ? order by wish_date desc limit ? offset ?", to.get(), per, offset);
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", to.get(), per, offset);
                 } else {
                     //どちらも値なし
-                    wishDateData = jdbc.queryForList("select * from wish_date order by wish_date desc limit ? offset ?", per, offset);
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date ORDER BY wish_date DESC LIMIT ? OFFSET ?", per, offset);
                 }
             }
 
@@ -110,19 +110,19 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 if(to.isPresent()) {
                     //どちらも値あり
                     to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ? and  wish_date < ?", Integer.class, from.get(), to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ? AND wish_date < ?", Integer.class, from.get(), to.get());
                 } else {
                     //fromだけ
-                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date >= ?", Integer.class, from.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ?", Integer.class, from.get());
                 }
             } else {
                 if(to.isPresent()) {
                     //toだけ
                     to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("select count(*) from wish_date where wish_date < ?", Integer.class, to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date < ?", Integer.class, to.get());
                 } else {
                     //どちらも値なし
-                    count = jdbc.queryForObject("select count(*) from wish_date", Integer.class);
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date", Integer.class);
                 }
             }
             return count;
@@ -143,7 +143,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insertParticipation(Participation participation) throws WishDateException {
         try {
-            jdbc.update("insert into participation(participation_id, wish_date_id, created_at, participant) values(?, ?, ?, ?)",
+            jdbc.update("INSERT INTO participation(participation_id, wish_date_id, created_at, participant) VALUES(?, ?, ?, ?)",
                     participation.getParticipationId(),
                     participation.getWishDateId(),
                     participation.getDate(),
@@ -158,7 +158,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     public WishDate selectById(String wishDateId) throws WishDateException {
         try {
             Map<String, Object> wishDateData = jdbc.queryForMap(
-                    "select * from wish_date where wish_date_id = ?",
+                    "SELECT * FROM wish_date WHERE wish_date_id = ?",
                     wishDateId);
 
             WishDate wishDate = convertToWishDate(wishDateData);
@@ -181,19 +181,28 @@ public class JdbcWishDateRepository implements WishDateRepository {
             if(!existWishDate) {
                 throw new IllegalArgumentException("This wishDateId doesn't exist.");
             }
-
+            //delete Participation
             List<Map<String, Object>> participationData = jdbc.queryForList(
-                    "select * from participation where wish_date_id = ?",
+                    "SELECT * FROM participation WHERE wish_date_id = ?",
                     wishDateId);
-
             List<Participation> participations = participationData.stream()
                     .map(participation -> convertToParticipation(participation))
                     .collect(Collectors.toList());
-
             for (Participation participation : participations) {
-                jdbc.update("delete from participation where participation_id = ?", participation.getParticipationId());
+                jdbc.update("DELETE FROM participation WHERE participation_id = ?", participation.getParticipationId());
             }
-            jdbc.update("delete from wish_date where wish_date_id = ?", wishDateId);
+            //delete WishDateComment
+            List<Map<String, Object>> wishDateCommentData = jdbc.queryForList(
+                    "SELECT * FROM wish_date_comment WHERE wish_date_id = ?",
+                    wishDateId);
+            List<WishDateComment> wishDateComments = wishDateCommentData.stream()
+                    .map(wishDateComment -> convertToWishDateComment(wishDateComment))
+                    .collect(Collectors.toList());
+            for(WishDateComment wishDateComment: wishDateComments) {
+                jdbc.update("DELETE FROM wish_date_comment WHERE comment_id = ?", wishDateComment.getWishDateCommentId());
+            }
+            //delete wishDate
+            jdbc.update("DELETE FROM wish_date WHERE wish_date_id = ?", wishDateId);
 
         } catch (DataAccessException e) {
             throw new WishDateException("DB access error occurred when deleting wishDate.", e);
@@ -205,7 +214,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException {
 
         List<Map<String, Object>> participationData = jdbc.queryForList(
-                "select * from participation where wish_date_id = ? and participant = ?",
+                "SELECT * FROM participation WHERE wish_date_id = ? AND participant = ?",
                 wishDateId, participant);
 
         List<Participation> participationList = new ArrayList();
@@ -230,7 +239,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
         }
 
         List<Map<String, Object>> participationData = jdbc.queryForList(
-                "select * from participation where wish_date_id = ? order by created_at desc limit ? offset ?",
+                "SELECT * FROM participation WHERE wish_date_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
                 wishDateId, per, offset);
 
         List<Participation> participations = participationData.stream()
@@ -253,7 +262,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public int countParticipations(String wishDateId) {
 
-        Integer count = jdbc.queryForObject("select count(*) from participation where wish_date_id = ?", Integer.class, wishDateId);
+        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM participation WHERE wish_date_id = ?", Integer.class, wishDateId);
 
         return count;
     }
@@ -263,15 +272,10 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
         try {
-            boolean existWishDate = wishDateExists(wishDateId);
-            if(!existWishDate) {
-                throw new IllegalArgumentException("The wishDateId doesn't exist.");
-            }
-
-            String selectedWishDateId = jdbc.queryForObject("select wish_date_id from participation where participation_id = ?",String.class, participationId);
+            String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM participation WHERE participation_id = ?",String.class, participationId);
 
             if(selectedWishDateId.equals(wishDateId)) {
-                jdbc.update("delete from participation where participation_id = ?", participationId);
+                jdbc.update("DELETE FROM participation WHERE participation_id = ?", participationId);
 
             } else {
                 throw new IllegalArgumentException("The wishDateId is not related to the participationId.");
@@ -285,7 +289,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     private boolean wishDateExists(String wishDateId) {
         try {
-            Map<String, Object> wishDate = jdbc.queryForMap("select * from wish_date where wish_date_id = ?", wishDateId);
+            Map<String, Object> wishDate = jdbc.queryForMap("SELECT * FROM wish_date WHERE wish_date_id = ?", wishDateId);
             return !wishDate.isEmpty();
 
         } catch (DataAccessException e) {
@@ -297,7 +301,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException{
         try {
-            jdbc.update("insert into wish_date_comment(comment_id, wish_date_id, author, text) values(?, ?, ?, ?)",
+            jdbc.update("INSERT INTO wish_date_comment(comment_id, wish_date_id, author, text) VALUES(?, ?, ?, ?)",
                     wishDateComment.getWishDateCommentId(),
                     wishDateComment.getWishDateId(),
                     wishDateComment.getAuthor(),
@@ -315,7 +319,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
         if (page > 0) {offset = page * per;}
 
         List<Map<String, Object>> wishDateCommentsData = null;
-        wishDateCommentsData = jdbc.queryForList("select * from wish_date_comment where wish_date_id = ? order by created_at desc limit ? offset ?",
+        wishDateCommentsData = jdbc.queryForList("SELECT * FROM wish_date_comment WHERE wish_date_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
                 wishDate.getWishDateId(), per, offset);
 
         List<WishDateComment> wishDateCommentList = wishDateCommentsData.stream()
@@ -336,9 +340,27 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Override
     public int countWishDateComment(String wishDateId) {
 
-        Integer count = jdbc.queryForObject("select count(*) from wish_date_comment where wish_date_id = ?", Integer.class, wishDateId);
+        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date_comment WHERE wish_date_id = ?", Integer.class, wishDateId);
 
         return count;
+    }
+
+    @Override
+    @Transactional
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
+        try {
+            String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM wish_date_comment WHERE comment_id = ?",String.class, wishDateCommentId);
+
+            if(selectedWishDateId.equals(wishDateId)) {
+                jdbc.update("DELETE FROM wish_date_comment WHERE comment_id = ?", wishDateCommentId);
+
+            } else {
+                throw new IllegalArgumentException("The wishDateId is not related to the wishDateCommentId.");
+            }
+
+        } catch (DataAccessException e) {
+            throw new IllegalArgumentException("The wishDateCommentId is not proper value.");
+        }
     }
 
 }
