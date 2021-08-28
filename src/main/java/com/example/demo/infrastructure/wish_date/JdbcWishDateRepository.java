@@ -272,11 +272,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
         try {
-            boolean existWishDate = wishDateExists(wishDateId);
-            if(!existWishDate) {
-                throw new IllegalArgumentException("The wishDateId doesn't exist.");
-            }
-
             String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM participation WHERE participation_id = ?",String.class, participationId);
 
             if(selectedWishDateId.equals(wishDateId)) {
@@ -354,11 +349,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
         try {
-            boolean existWishDate = wishDateExists(wishDateId);
-            if(!existWishDate) {
-                throw new IllegalArgumentException("The wishDateId doesn't exist.");
-            }
-
             String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM wish_date_comment WHERE comment_id = ?",String.class, wishDateCommentId);
 
             if(selectedWishDateId.equals(wishDateId)) {
