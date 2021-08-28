@@ -1,7 +1,6 @@
 package com.example.demo.domain.wish_date;
 
-import com.example.demo.application.wish_date.ParticipateWishDateException;
-import com.example.demo.application.wish_date.WishDateRegisterException;
+import com.example.demo.application.wish_date.WishDateException;
 import com.example.demo.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,19 +19,19 @@ public class WishDateService {
     UserRepository userRepository;
 
     //同じ日付の希望日の登録は登録不可
-    public boolean wishDateExists(WishDate wishDate) throws WishDateRegisterException {
+    public boolean wishDateExists(WishDate wishDate) throws WishDateException {
         List<WishDate> wishDateList = null;
         try {
             wishDateList = wishDateRepository.selectWishDateByDate(wishDate.getDate());
 
             return wishDateList.size() > 0;
         } catch (IOException e) {
-            throw new WishDateRegisterException("Local Date format is wrong", e);
+            throw new WishDateException("Local Date format is wrong", e);
         }
     }
 
     //意思表示は一人一回
-    public boolean participationExists(Participation participation) throws ParticipateWishDateException {
+    public boolean participationExists(Participation participation) throws WishDateException {
 
         List<Participation> participations = null;
 
@@ -40,27 +39,21 @@ public class WishDateService {
             participations = wishDateRepository.selectParticipation(participation.getWishDateId(), participation.getParticipant());
         } catch (DataAccessException e) {
 
-            throw new ParticipateWishDateException("Failed to access the data source.", e);
+            throw new WishDateException("Failed to access the data source.", e);
         }
         if (participations == null) {
-            throw new ParticipateWishDateException("Unexpected null value was returned from WishDateRepository.");
+            throw new WishDateException("Unexpected null value was returned from WishDateRepository.");
         }
         return participations.size() > 0;
     }
 
     //自分のWishDateじゃないかチェック
-    public boolean isSelfParticipation(Participation participation) throws ParticipateWishDateException {
+    public boolean isSelfParticipation(Participation participation) throws IllegalArgumentException {
 
-        WishDate wishDate = null;
-        try {
-            wishDate = wishDateRepository.selectById(participation.getWishDateId());
-
-        } catch (DataAccessException e) {
-
-            throw new ParticipateWishDateException("Failed to access the data source.", e);
-        }
+//        WishDate wishDate = null;
+        WishDate wishDate = wishDateRepository.selectById(participation.getWishDateId());
         if (wishDate == null) {
-            throw new ParticipateWishDateException("Unexpected null value was returned from WishDateRepository.");
+            throw new IllegalArgumentException("This wishDateId doesn't exist.");
         }
         return wishDate.getOwner().equals(participation.getParticipant());
     }

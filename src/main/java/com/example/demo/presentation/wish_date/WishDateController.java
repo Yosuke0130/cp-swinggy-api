@@ -44,7 +44,7 @@ public class WishDateController {
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } catch (WishDateRegisterException | IOException e) {
+        } catch (WishDateException | IOException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -82,7 +82,7 @@ public class WishDateController {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        } catch (WishDateRegisterException e) {
+        } catch (WishDateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -102,11 +102,11 @@ public class WishDateController {
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } catch (ParticipateWishDateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (WishDateException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -149,4 +149,54 @@ public class WishDateController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("{wish-date-id}/comments")
+    public void postComment(@PathVariable("wish-date-id") String wishDateId,
+                              @RequestBody @Valid WishDateCommentRequestBody wishDateCommentRequestBody) {
+        try {
+            wishDateApplicationService.postWishDateComment(wishDateId,
+                    wishDateCommentRequestBody.getAuthor(),
+                    wishDateCommentRequestBody.getText());
+
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (WishDateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @ResponseBody
+    @GetMapping("{wish-date-id}/comments")
+    public WishDateCommentListResource getWishDateComment(@PathVariable("wish-date-id") String wishDateId,
+                           @RequestParam(name = "page") Optional<Integer> page,
+                           @RequestParam(name = "per") Optional<Integer> per) {
+        try {
+
+            List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComments(wishDateId, page, per);
+
+            List<WishDateCommentResource> wishDateResources = wishDateCommentModelList.stream()
+                    .map(wishDateCommentModel -> new WishDateCommentResource(wishDateCommentModel))
+                    .collect(Collectors.toList());
+
+            int total = wishDateApplicationService.getWishDateCommentCount(wishDateId);
+
+            WishDateCommentListResource wishDateCommentListResource = new WishDateCommentListResource(wishDateResources, total);
+
+            return wishDateCommentListResource;
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (WishDateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

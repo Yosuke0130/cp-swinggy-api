@@ -2,10 +2,7 @@ package com.example.demo.application.wish_date;
 
 import com.example.demo.Logging;
 import com.example.demo.domain.user.UserRepository;
-import com.example.demo.domain.wish_date.Participation;
-import com.example.demo.domain.wish_date.WishDate;
-import com.example.demo.domain.wish_date.WishDateRepository;
-import com.example.demo.domain.wish_date.WishDateService;
+import com.example.demo.domain.wish_date.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +30,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     Logging logger;
 
     @Override
-    public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateRegisterException, IOException {
+    public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException {
 
         if(!userRepository.exists(owner)) {
             throw new IllegalArgumentException("This owner doesn't exist on user table.");
@@ -110,7 +107,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateRegisterException{
+    public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateException {
 
         wishDateRepository.deleteWishDate(wishDateId);
         logger.info("wish date has been deleted: " + wishDateId);
@@ -119,10 +116,10 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
 
     @Override
-    public void participate(String wishDateId, String participant) throws IllegalStateException, ParticipateWishDateException {
+    public void participate(String wishDateId, String participant) throws IllegalStateException, WishDateException {
 
         if(!userRepository.exists(participant)) {
-            throw new IllegalArgumentException("This participant doesn't exist on user table.");
+            throw new IllegalStateException("This participant doesn't exist on user table.");
         }
 
         Participation participation = new Participation(wishDateId, participant);
@@ -151,7 +148,6 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     private ParticipationModel convertToParticipationModel(Participation participation) {
-
         return new ParticipationModel(participation.getParticipationId(),
                 participation.getWishDateId(),
                 participation.getDate(),
@@ -160,17 +156,66 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public int getParticipationCount(String wishDateId) {
-
         int count = wishDateRepository.countParticipations(wishDateId);
-
         return count;
     }
 
     @Override
     public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
-
         wishDateRepository.deleteParticipation(wishDateId, participationId);
         logger.info("participation has been deleted:" + participationId);
+    }
+
+    @Override
+    public void postWishDateComment(String wishDateId, String author, String text) throws IllegalStateException, IllegalArgumentException, WishDateException {
+        if(!userRepository.exists(author)) {
+            throw new IllegalStateException("This author doesn't exist on user table.");
+        }
+
+        WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDatId doesn't exist.");
+        }
+
+        WishDateComment wishdateComment = new WishDateComment(wishDate.getWishDateId(), author, text);
+
+        wishDateRepository.insertWishDateComment(wishdateComment);
+    }
+
+    private static final int COMMENT_DEFAULT_PAGE = 0;
+    private static final int COMMENT_DEFAULT_PER = 100;
+    @Override
+    public List<WishDateCommentModel> getWishDateComments(String wishDateId, Optional<Integer> page, Optional<Integer> per) throws WishDateException {
+
+        WishDate wishDate = wishDateRepository.selectById(wishDateId);
+        if(wishDate == null) {
+            throw new IllegalArgumentException("This wishDateId doesn't exist.");
+        }
+
+        int pageValue = page.orElse(COMMENT_DEFAULT_PAGE);
+        int perValue = per.orElse(COMMENT_DEFAULT_PER);
+
+        List<WishDateComment> wishDateCommentList = wishDateRepository.selectWishDateCommentsByPage(wishDate, pageValue, perValue);
+
+        List<WishDateCommentModel> wishDateCommentModelList = wishDateCommentList.stream()
+                .map(wishDateComment -> convertToWishDateCommentModel(wishDateComment))
+                .collect(Collectors.toList());
+
+        return wishDateCommentModelList;
+    }
+
+    private WishDateCommentModel convertToWishDateCommentModel(WishDateComment wishDateComment) {
+        return new WishDateCommentModel(wishDateComment.getWishDateCommentId(),
+                wishDateComment.getWishDateId(),
+                wishDateComment.getAuthor(),
+                wishDateComment.getText(),
+                wishDateComment.getCreated_at());
+    }
+
+    @Override
+    public int getWishDateCommentCount(String wishDateId) {
+        int count = wishDateRepository.countWishDateComment(wishDateId);
+        return count;
     }
 
 }

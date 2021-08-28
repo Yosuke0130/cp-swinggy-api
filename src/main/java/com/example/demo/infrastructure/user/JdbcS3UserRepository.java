@@ -11,6 +11,8 @@ import com.example.demo.Logging;
 import com.example.demo.application.user.UserCreateException;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.wish_date.WishDate;
+import com.example.demo.domain.wish_date.WishDateComment;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
