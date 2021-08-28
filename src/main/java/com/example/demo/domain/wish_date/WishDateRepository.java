@@ -37,4 +37,6 @@ public interface WishDateRepository {
     public List<WishDateComment> selectWishDateCommentsByPage(WishDate wishDate, int page, int per);
 
     public int countWishDateComment(String wishDateId);
+
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException;
 }

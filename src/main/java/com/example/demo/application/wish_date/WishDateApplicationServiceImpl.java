@@ -108,10 +108,8 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public void deleteWishDate(String wishDateId) throws IllegalStateException, WishDateException {
-
         wishDateRepository.deleteWishDate(wishDateId);
         logger.info("wish date has been deleted: " + wishDateId);
-
     }
 
 
@@ -216,6 +214,12 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public int getWishDateCommentCount(String wishDateId) {
         int count = wishDateRepository.countWishDateComment(wishDateId);
         return count;
+    }
+
+    @Override
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
+        wishDateRepository.deleteWishDateComment(wishDateId, wishDateCommentId);
+        logger.info("wishDateCommentId has been deleted:" + wishDateCommentId);
     }
 
 }

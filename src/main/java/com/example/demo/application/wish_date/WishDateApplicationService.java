@@ -28,4 +28,6 @@ public interface WishDateApplicationService {
     public List<WishDateCommentModel> getWishDateComments(String wishDateId, Optional<Integer> page, Optional<Integer> per) throws WishDateException;
 
     public int getWishDateCommentCount(String wishDateId);
+
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException;
 }
