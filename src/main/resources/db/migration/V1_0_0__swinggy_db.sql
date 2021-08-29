@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS wish_date(
 CREATE TABLE IF NOT EXISTS participation(
     participation_id VARCHAR(255) NOT NULL,
     wish_date_id VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     participant VARCHAR(255) NOT NULL,
     PRIMARY KEY(participation_id),
     FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id),

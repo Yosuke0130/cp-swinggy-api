@@ -1,19 +1,19 @@
 package com.example.demo.application.wish_date;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class ParticipationModel {
 
     private String participationId;
     private String wishDateId;
-    private LocalDateTime date;
+    private Timestamp createdAt;
     private String participant;
 
-    public ParticipationModel(String participationId, String wishDateId, LocalDateTime date, String participant) {
+    public ParticipationModel(String participationId, String wishDateId, Timestamp createdAt, String participant) {
 
         this.participationId = participationId;
         this.wishDateId = wishDateId;
-        this.date = date;
+        this.createdAt = createdAt;
         this.participant = participant;
     }
 
@@ -21,7 +21,7 @@ public class ParticipationModel {
 
     public String getWishDateId() {return wishDateId;}
 
-    public LocalDateTime getDate() {return date;}
+    public Timestamp getCreatedAt() {return createdAt;}
 
     public String getParticipant() {return  participant;}
 

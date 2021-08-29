@@ -11,8 +11,6 @@ import com.example.demo.Logging;
 import com.example.demo.application.user.UserCreateException;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserRepository;
-import com.example.demo.domain.wish_date.WishDate;
-import com.example.demo.domain.wish_date.WishDateComment;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.sql.Timestamp;
 
 @Repository
 public class JdbcS3UserRepository implements UserRepository {
@@ -53,11 +50,11 @@ public class JdbcS3UserRepository implements UserRepository {
                 user.setProfileImageURL(profileImageUrl);
             }
 
-            jdbc.update("insert into user(user_id) values(?)", user.getUserId());
+            jdbc.update("INSERT INTO user(user_id) VALUES(?)", user.getUserId());
             if (user.getTel().isPresent()) {
                 jdbc.update(
-                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
-                                " values(?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email, tel)" +
+                                " VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
                         user.getUserProfileId().getValue(),
                         user.getUserId(),
                         user.getFirstName().getValue(),
@@ -68,8 +65,8 @@ public class JdbcS3UserRepository implements UserRepository {
                         user.getTel().get().getValue());
             } else {
                 jdbc.update(
-                        "insert into user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
-                                " values(?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO user_profile(user_profile_id, user_id, first_name, last_name, screen_name, profile_image_path, email)" +
+                                " VALUES(?, ?, ?, ?, ?, ?, ?)",
                         user.getUserProfileId().getValue(),
                         user.getUserId(),
                         user.getFirstName().getValue(),
@@ -141,7 +138,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<User> selectByTel(User user) {
 
-        List<Map<String, Object>> userDateSelectedByTel = jdbc.queryForList("select * from user_profile where tel = ?", user.getTel().get().getValue());
+        List<Map<String, Object>> userDateSelectedByTel = jdbc.queryForList("SELECT * FROM user_profile WHERE tel = ?", user.getTel().get().getValue());
         try {
             List<User> userList = new ArrayList<>();
             for (Map<String, Object> value : userDateSelectedByTel) {
@@ -162,7 +159,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<User> selectByEmail(User user) {
 
-        List<Map<String, Object>> userDataSelectedByEmail = jdbc.queryForList("select * from user_profile where email = ?", user.getEmail().getValue());
+        List<Map<String, Object>> userDataSelectedByEmail = jdbc.queryForList("SELECT * FROM user_profile WHERE email = ?", user.getEmail().getValue());
         try {
             List<User> userList = new ArrayList<>();
             for (Map<String, Object> value : userDataSelectedByEmail) {
@@ -183,7 +180,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public List<User> selectByScreenName(User user) {
 
-        List<Map<String, Object>> userDataSelectedByScreenName = jdbc.queryForList("select * from user_profile where screen_name = ?", user.getScreenName().getValue());
+        List<Map<String, Object>> userDataSelectedByScreenName = jdbc.queryForList("SELECT * FROM user_profile WHERE screen_name = ?", user.getScreenName().getValue());
         try {
             List<User> userList = new ArrayList<>();
             for (Map<String, Object> value : userDataSelectedByScreenName) {
@@ -205,7 +202,7 @@ public class JdbcS3UserRepository implements UserRepository {
     public User select(String userId) throws UserCreateException, IllegalStateException {
         try {
 
-            Map<String, Object> userData = jdbc.queryForMap("select * from user_profile where user_id = ?", userId);
+            Map<String, Object> userData = jdbc.queryForMap("SELECT * FROM user_profile WHERE user_id = ?", userId);
 
             URL url = new URL((String) userData.get("profile_image_path"));
 
@@ -239,7 +236,7 @@ public class JdbcS3UserRepository implements UserRepository {
             offset = page * per;
         }
 
-        List<Map<String, Object>> userData = jdbc.queryForList("select * from user_profile order by user_id limit ? offset ?", per, offset);
+        List<Map<String, Object>> userData = jdbc.queryForList("SELECT * FROM user_profile ORDER BY user_id LIMIT ? OFFSET ?", per, offset);
         try {
             List<User> userList = new ArrayList<>();
             for (Map<String, Object> value : userData) {
@@ -272,7 +269,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public int selectCount() {
 
-        Integer count = jdbc.queryForObject("select count(*) from user_profile", Integer.class);
+        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_profile", Integer.class);
 
         return count;
     }
@@ -281,7 +278,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Transactional
     public int selectCountByScreenName(String screenName) throws UserCreateException {
         try {
-            Integer count = jdbc.queryForObject("select count(*) from user_profile where screen_name = ?", Integer.class, screenName);
+            Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_profile WHERE screen_name = ?", Integer.class, screenName);
 
             return count;
         } catch (DataAccessException e) {
@@ -293,7 +290,7 @@ public class JdbcS3UserRepository implements UserRepository {
     @Override
     public boolean exists(String userId) {
         try {
-            Integer count = jdbc.queryForObject("select count(*) from user where user_id = ?", Integer.class,userId);
+            Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user WHERE user_id = ?", Integer.class,userId);
 
             return count > 0;
 

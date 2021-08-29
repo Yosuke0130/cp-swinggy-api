@@ -4,21 +4,21 @@ import com.example.demo.application.wish_date.ParticipationModel;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ParticipationResource {
 
     private String participationId;
     private String wishDateId;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
     private String participant;
 
     public ParticipationResource(ParticipationModel participationModel) {
 
         this.participationId = participationModel.getParticipationId();
         this.wishDateId = participationModel.getWishDateId();
-        this.createdAt = participationModel.getDate();
+        this.createdAt = participationModel.getCreatedAt();
         this.participant = participationModel.getParticipant();
     }
 
@@ -26,7 +26,7 @@ public class ParticipationResource {
 
     public String getWishDateId() {return wishDateId;}
 
-    public LocalDateTime getCreatedAt() {return createdAt;}
+    public Timestamp getCreatedAt() {return createdAt;}
 
     public String getParticipant() {return  participant;}
 

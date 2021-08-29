@@ -24,7 +24,7 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     public List<Prefecture> findAll() throws IllegalArgumentException {
         //全件取得
         logger.debug("take all data");
-        List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture");
+        List<Map<String, Object>> prefectureData = jdbc.queryForList("SELECT * FROM prefecture");
 
         List<Prefecture> allPrefectureList = prefectureData.stream()
                 .map(prefecture -> convertToPrefecture(prefecture))
@@ -36,7 +36,7 @@ public class JdbcPrefectureRepository implements PrefectureRepository {
     public List<Prefecture> find(int regionId) throws IllegalArgumentException {
         //地域ごとデータ取得
         logger.debug("take regional data");
-        List<Map<String, Object>> prefectureData = jdbc.queryForList("select * from prefecture where region_id = ?", regionId);
+        List<Map<String, Object>> prefectureData = jdbc.queryForList("SELECT * FROM prefecture WHERE region_id = ?", regionId);
 
         List<Prefecture> prefectureList = prefectureData.stream()
                 .map(prefecture -> convertToPrefecture(prefecture))
