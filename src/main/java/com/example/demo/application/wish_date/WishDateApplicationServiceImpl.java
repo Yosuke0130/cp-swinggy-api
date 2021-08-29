@@ -148,7 +148,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     private ParticipationModel convertToParticipationModel(Participation participation) {
         return new ParticipationModel(participation.getParticipationId(),
                 participation.getWishDateId(),
-                participation.getDate(),
+                participation.getCreatedAt(),
                 participation.getParticipant());
     }
 

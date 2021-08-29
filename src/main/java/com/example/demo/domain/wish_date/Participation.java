@@ -1,27 +1,26 @@
 package com.example.demo.domain.wish_date;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Participation {
 
     private ParticipationId participationId;
     private WishDateId wishDateId;
-    private LocalDateTime date;
+    private Timestamp createdAt;
     private String participant;
 
     public Participation(String wishDateId, String participant) {
 
         this.participationId = new ParticipationId();
         this.wishDateId = new WishDateId(wishDateId);
-        this.date = LocalDateTime.now();
         this.participant = participant;
     }
 
-    public Participation(String participationId, String wishDateId, String date, String participant) {
+    public Participation(String participationId, String wishDateId, Timestamp createdAt, String participant) {
 
         this.participationId = new ParticipationId(participationId);
         this.wishDateId = new WishDateId(wishDateId);
-        this.date = LocalDateTime.parse(date);
+        this.createdAt = createdAt;
         this.participant = participant;
     }
 
@@ -30,7 +29,7 @@ public class Participation {
 
     public String getWishDateId() {return this.wishDateId.getValue();}
 
-    public LocalDateTime getDate() {return this.date;}
+    public Timestamp getCreatedAt() {return this.createdAt;}
 
     public String getParticipant() {return this.participant;}
 

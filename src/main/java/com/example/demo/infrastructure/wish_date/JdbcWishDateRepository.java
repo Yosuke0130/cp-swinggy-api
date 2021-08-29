@@ -143,10 +143,9 @@ public class JdbcWishDateRepository implements WishDateRepository {
     @Transactional
     public void insertParticipation(Participation participation) throws WishDateException {
         try {
-            jdbc.update("INSERT INTO participation(participation_id, wish_date_id, created_at, participant) VALUES(?, ?, ?, ?)",
+            jdbc.update("INSERT INTO participation(participation_id, wish_date_id, participant) VALUES(?, ?, ?)",
                     participation.getParticipationId(),
                     participation.getWishDateId(),
-                    participation.getDate(),
                     participation.getParticipant());
         } catch (DataAccessException e) {
             throw new WishDateException("DB access error occurred when insert into Participation.", e);
@@ -254,7 +253,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
         return new Participation((String) participation.get("participation_id"),
                 (String) participation.get("wish_date_id"),
-                participation.get("created_at").toString(),
+                (Timestamp) participation.get("created_at"),
                 (String) participation.get("participant"));
     }
 
