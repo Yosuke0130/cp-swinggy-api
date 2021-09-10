@@ -2,15 +2,16 @@ CREATE TABLE IF NOT EXISTS region(
     region_id INT(3) NOT NULL,
     name VARCHAR(255) NOT NULL,
     PRIMARY KEY(region_id)
-    );INSERT INTO region VALUES
-      (1,"北海道地方"),
-      (2,"東北地方"),
-      (3,"関東地方"),
-      (4,"中部地方"),
-      (5,"近畿地方"),
-      (6,"中国地方"),
-      (7,"四国地方"),
-      (8,"九州地方");
+    );
+INSERT INTO region VALUES
+    (1,"北海道地方"),
+    (2,"東北地方"),
+    (3,"関東地方"),
+    (4,"中部地方"),
+    (5,"近畿地方"),
+    (6,"中国地方"),
+    (7,"四国地方"),
+    (8,"九州地方");
 
 CREATE TABLE IF NOT EXISTS prefecture(
     prefecture_id INT(3) NOT NULL,
@@ -31,14 +32,14 @@ INSERT INTO prefecture VALUES
   (40,8,"福岡県"), (41,8,"佐賀県"), (42,8,"長崎県"), (43,8,"熊本県"), (44,8,"大分県"), (45,8,"宮崎県"), (46,8,"鹿児島県"), (47,8,"沖縄県");
 
 CREATE TABLE IF NOT EXISTS user(
-    user_id VARCHAR(255),
+    user_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP,
     PRIMARY KEY(user_id)
     );
 
 CREATE TABLE IF NOT EXISTS user_profile(
-    user_profile_id VARCHAR(255),
+    user_profile_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS participation(
     participant VARCHAR(255) NOT NULL,
     PRIMARY KEY(participation_id),
     FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id),
-    FOREIGN KEY(participant) REFERENCES user(User_id)
+    FOREIGN KEY(participant) REFERENCES user(user_id)
     );
 
 CREATE TABLE IF NOT EXISTS wish_date_comment(
@@ -80,4 +81,23 @@ CREATE TABLE IF NOT EXISTS wish_date_comment(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(comment_id),
     FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_group(
+    group_id VARCHAR(255) NOT NULL,
+    created_by VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    group_name VARCHAR(255) NOT NULL,
+    PRIMARY KEY(group_id),
+    FOREIGN KEY(created_by) REFERENCES user(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS group_user_belonging(
+    group_user_id VARCHAR(255) NOT NULL,
+    group_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(group_user_id),
+    FOREIGN KEY(group_id) REFERENCES user_group(group_id),
+    FOREIGN KEY(user_id) REFERENCES user(user_id)
 );

@@ -50,7 +50,6 @@ public class WishDateService {
     //自分のWishDateじゃないかチェック
     public boolean isSelfParticipation(Participation participation) throws IllegalArgumentException {
 
-//        WishDate wishDate = null;
         WishDate wishDate = wishDateRepository.selectById(participation.getWishDateId());
         if (wishDate == null) {
             throw new IllegalArgumentException("This wishDateId doesn't exist.");
