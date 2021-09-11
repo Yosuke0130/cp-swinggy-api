@@ -7,7 +7,7 @@ public class GroupName {
 
     private String groupName;
     final private static int MAX_LENGTH = 32;
-    final private static int MIN_LENGTH = 4;
+    final private static int MIN_LENGTH = 1;
 
     public GroupName(String groupName) throws IllegalArgumentException{
         // validate limit of characters, kinds of characters
@@ -17,9 +17,10 @@ public class GroupName {
         if (matcher.find()) {
             this.groupName = groupName;
         } else {
-            throw new IllegalArgumentException("length has to be 4-32 & characters, numbers, and _ are approved to use.");
+            throw new IllegalArgumentException("length has to be 1-32 & characters, numbers, and _ are approved to use.");
         }
     }
 
     public String getValue() {return this.groupName;}
+
 }

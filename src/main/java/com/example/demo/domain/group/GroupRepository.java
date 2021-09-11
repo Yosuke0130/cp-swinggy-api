@@ -1,8 +1,9 @@
 package com.example.demo.domain.group;
 
+import org.springframework.dao.DataAccessException;
+
 public interface GroupRepository {
 
-    public int selectGroupByGroupName(String groupName);
+    public void insertGroup(Group group) throws DataAccessException;
 
-    public void insertGroup(Group group);
 }

@@ -9,11 +9,4 @@ public class GroupService {
     @Autowired
     GroupRepository groupRepository;
 
-    public boolean groupExistsByGroupName(String groupName) {
-        if(groupRepository.selectGroupByGroupName(groupName) > 0) {
-            return true;
-        }
-        return false;
-    }
-
 }

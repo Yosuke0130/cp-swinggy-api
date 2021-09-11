@@ -26,10 +26,7 @@ public class GroupApplicationServiceImpl implements GroupApplicationService {
         if(!userRepository.exists(createdBy)) {
             throw new IllegalArgumentException("This created_by doesn't exist on user table.");
         }
-        // check with groupService if same name exists
-        if(groupService.groupExistsByGroupName(groupName)) {
-            throw new IllegalStateException("This groupName has already used.");
-        }
+
         // create group
         Group group = new Group(groupName, createdBy);
 

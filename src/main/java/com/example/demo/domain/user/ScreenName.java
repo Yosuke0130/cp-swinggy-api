@@ -11,7 +11,7 @@ public class ScreenName {
 
     public ScreenName(String screenName) throws IllegalArgumentException {
 
-        String re = "^[ぁ-んァ-ン一-龥a-zA-Z0-9_]{" + MIN_LENGTH + "," + MAX_LENGTH + "}$";
+        String re = "^[a-zA-Z0-9_]{" + MIN_LENGTH + "," + MAX_LENGTH + "}$";
         Pattern pattern = Pattern.compile(re);
         Matcher matcher = pattern.matcher(screenName);
 
