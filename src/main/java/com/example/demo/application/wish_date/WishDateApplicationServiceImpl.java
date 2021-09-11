@@ -33,7 +33,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException {
 
         if(!userRepository.exists(owner)) {
-            throw new IllegalArgumentException("This owner doesn't exist on user table.");
+            throw new IllegalArgumentException("This owner doesn't exist.");
         }
 
         WishDate wishDate = new WishDate(owner, date);
@@ -117,7 +117,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     public void participate(String wishDateId, String participant) throws IllegalStateException, WishDateException {
 
         if(!userRepository.exists(participant)) {
-            throw new IllegalStateException("This participant doesn't exist on user table.");
+            throw new IllegalStateException("This participant doesn't exist.");
         }
 
         Participation participation = new Participation(wishDateId, participant);

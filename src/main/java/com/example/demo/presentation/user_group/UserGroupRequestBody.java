@@ -1,4 +1,4 @@
-package com.example.demo.presentation.group;
+package com.example.demo.presentation.user_group;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import javax.validation.constraints.NotNull;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class GroupRequestBody {
+public class UserGroupRequestBody {
 
     @NotNull
     private String name;

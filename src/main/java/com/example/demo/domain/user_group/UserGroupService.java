@@ -1,12 +1,12 @@
-package com.example.demo.domain.group;
+package com.example.demo.domain.user_group;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GroupService {
+public class UserGroupService {
 
     @Autowired
-    GroupRepository groupRepository;
+    UserGroupRepository userGroupRepository;
 
 }

@@ -1,4 +1,4 @@
-package com.example.demo.application.group;
+package com.example.demo.application.user_group;
 
 public class GroupException extends RuntimeException{
     public GroupException(String msg) {super(msg);}

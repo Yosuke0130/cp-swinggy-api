@@ -32,14 +32,14 @@ INSERT INTO prefecture VALUES
   (40,8,"福岡県"), (41,8,"佐賀県"), (42,8,"長崎県"), (43,8,"熊本県"), (44,8,"大分県"), (45,8,"宮崎県"), (46,8,"鹿児島県"), (47,8,"沖縄県");
 
 CREATE TABLE IF NOT EXISTS user(
-    user_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP,
     PRIMARY KEY(user_id)
     );
 
 CREATE TABLE IF NOT EXISTS user_profile(
-    user_profile_id VARCHAR(255) NOT NULL,
+    user_profile_id VARCHAR(255),
     user_id VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS user_profile(
     );
 
 CREATE TABLE IF NOT EXISTS wish_date(
-    wish_date_id VARCHAR(255) NOT NULL,
+    wish_date_id VARCHAR(255),
     owner VARCHAR(255) NOT NULL,
     wish_date DATE NOT NULL,
     PRIMARY KEY(wish_date_id),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS wish_date(
     );
 
 CREATE TABLE IF NOT EXISTS participation(
-    participation_id VARCHAR(255) NOT NULL,
+    participation_id VARCHAR(255),
     wish_date_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     participant VARCHAR(255) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS participation(
     );
 
 CREATE TABLE IF NOT EXISTS wish_date_comment(
-    comment_id VARCHAR(255) NOT NULL,
+    comment_id VARCHAR(255),
     wish_date_id VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
     text VARCHAR(512) NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS wish_date_comment(
 );
 
 CREATE TABLE IF NOT EXISTS user_group(
-    group_id VARCHAR(255) NOT NULL,
+    group_id VARCHAR(255),
     created_by VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     group_name VARCHAR(255) NOT NULL,
@@ -93,11 +93,11 @@ CREATE TABLE IF NOT EXISTS user_group(
 );
 
 CREATE TABLE IF NOT EXISTS group_user_belonging(
-    group_user_id VARCHAR(255) NOT NULL,
+    belonging_id VARCHAR(255),
     group_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    PRIMARY KEY(group_user_id),
+    PRIMARY KEY(belonging_id),
     FOREIGN KEY(group_id) REFERENCES user_group(group_id),
     FOREIGN KEY(user_id) REFERENCES user(user_id)
 );

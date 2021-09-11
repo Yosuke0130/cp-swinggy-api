@@ -1,19 +1,19 @@
-package com.example.demo.presentation.group;
+package com.example.demo.presentation.user_group;
 
 import com.example.demo.Logging;
-import com.example.demo.application.group.GroupApplicationService;
-import com.example.demo.application.group.GroupException;
+import com.example.demo.application.user_group.UserGroupApplicationService;
+import com.example.demo.application.user_group.GroupException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/groups")
-public class GroupController {
+@RequestMapping("/user-groups")
+public class UserGroupController {
 
     @Autowired
-    GroupApplicationService groupApplicationService;
+    UserGroupApplicationService groupApplicationService;
 
     @Autowired
     Logging logger;
@@ -21,10 +21,10 @@ public class GroupController {
     // return 204 for success
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("")
-    public void createGroup(@RequestBody GroupRequestBody groupRequestBody) {
+    public void createUserGroup(@RequestBody UserGroupRequestBody userGroupRequestBody) {
         try {
             // application call
-            groupApplicationService.createGroup(groupRequestBody.getName(), groupRequestBody.getCreatedBy());
+            groupApplicationService.createUserGroup(userGroupRequestBody.getName(), userGroupRequestBody.getCreatedBy());
 
         } catch (IllegalStateException | IllegalArgumentException e) {
             logger.error(e.getMessage());
