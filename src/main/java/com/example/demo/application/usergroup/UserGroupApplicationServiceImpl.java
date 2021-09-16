@@ -22,15 +22,12 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     @Override
     public void createUserGroup(String userGroupName, String createdBy) throws IllegalStateException, IllegalArgumentException, GroupException {
 
-        // check with userService if this user exists
         if(!userRepository.exists(createdBy)) {
             throw new IllegalArgumentException("This created_by doesn't exist.");
         }
 
-        // create userGroup
         UserGroup userGroup = new UserGroup(userGroupName, createdBy);
 
-        // calls repository to insert data
         userGroupRepository.insertUserGroup(userGroup);
     }
 

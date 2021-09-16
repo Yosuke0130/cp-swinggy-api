@@ -18,12 +18,10 @@ public class UserGroupController {
     @Autowired
     Logging logger;
 
-    // return 204 for success
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("")
     public void createUserGroup(@RequestBody UserGroupRequestBody userGroupRequestBody) {
         try {
-            // application call
             groupApplicationService.createUserGroup(userGroupRequestBody.getName(), userGroupRequestBody.getCreatedBy());
 
         } catch (IllegalStateException | IllegalArgumentException e) {

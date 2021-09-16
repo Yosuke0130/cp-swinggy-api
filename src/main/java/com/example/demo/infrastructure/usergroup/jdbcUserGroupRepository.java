@@ -26,7 +26,6 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
                     userGroup.getUserGroupName(),
                     userGroup.getCreatedBy());
 
-            // insert data to group user belonging
             UUID belongingId = UUID.randomUUID();
             jdbc.update("INSERT INTO group_user_belonging(belonging_id, group_id, user_id) VALUES(?, ?, ?)",
                     belongingId.toString(),
