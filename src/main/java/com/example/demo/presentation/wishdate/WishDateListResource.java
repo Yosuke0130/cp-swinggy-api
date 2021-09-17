@@ -18,8 +18,8 @@ public class WishDateListResource {
     public List<WishDateResource> getWishDates() {
         return wishDates;
     }
-
     public int getTotal() {
         return total;
     }
+
 }

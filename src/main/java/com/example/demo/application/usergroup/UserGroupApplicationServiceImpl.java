@@ -7,6 +7,11 @@ import com.example.demo.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class UserGroupApplicationServiceImpl implements UserGroupApplicationService {
 
@@ -19,6 +24,9 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserGroupQueryService userGroupQueryService;
+
     @Override
     public void createUserGroup(String userGroupName, String createdBy) throws IllegalStateException, IllegalArgumentException, GroupException {
 
@@ -29,6 +37,30 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
         UserGroup userGroup = new UserGroup(userGroupName, createdBy);
 
         userGroupRepository.insertUserGroup(userGroup);
+    }
+
+    private static final int USER_GROUP_DEFAULT_PAGE = 0;
+    private static final int USER_GROUP_DEFAULT_PER = 100;
+    @Override
+    public List<UserGroupDTO> getUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
+
+        int pageValue = page.orElse(USER_GROUP_DEFAULT_PAGE);
+        int perValue = per.orElse(USER_GROUP_DEFAULT_PER);
+
+        if(!userRepository.exists(userId)) {
+            throw new IllegalArgumentException("This userId doesn't exist.");
+        }
+        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupById(userId, pageValue, perValue);
+
+        return userGroups;
+    }
+
+    @Override
+    public int getUserGroupCount(String userId) {
+
+        int total = userGroupQueryService.selectUserGroupCountById(userId);
+
+        return total;
     }
 
 }

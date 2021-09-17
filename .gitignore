@@ -38,3 +38,6 @@ out/
 
 ### Env file
 .env
+
+### test command ###
+testCommand.txt
