@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserGroupApplicationServiceImpl implements UserGroupApplicationService {
@@ -28,7 +26,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     UserGroupQueryService userGroupQueryService;
 
     @Override
-    public void createUserGroup(String userGroupName, String createdBy) throws IllegalStateException, IllegalArgumentException, GroupException {
+    public void createUserGroup(String userGroupName, String createdBy) throws IllegalStateException, IllegalArgumentException, UserGroupException {
 
         if(!userRepository.exists(createdBy)) {
             throw new IllegalArgumentException("This created_by doesn't exist.");
@@ -42,25 +40,33 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_DEFAULT_PER = 100;
     @Override
-    public List<UserGroupDTO> getUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
+    public List<UserGroupDTO> getOwnedUserGroups(String createdBy, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
 
         int pageValue = page.orElse(USER_GROUP_DEFAULT_PAGE);
         int perValue = per.orElse(USER_GROUP_DEFAULT_PER);
 
-        if(!userRepository.exists(userId)) {
+        if(!userRepository.exists(createdBy)) {
             throw new IllegalArgumentException("This userId doesn't exist.");
         }
-        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupById(userId, pageValue, perValue);
+        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupByCreatedBy(createdBy, pageValue, perValue);
 
         return userGroups;
     }
 
     @Override
-    public int getUserGroupCount(String userId) {
+    public int getOwnedUserGroupCount(String createdBy) {
 
-        int total = userGroupQueryService.selectUserGroupCountById(userId);
+        int total = userGroupQueryService.selectUserGroupCountById(createdBy);
 
         return total;
+    }
+
+    @Override
+    public UserGroupDTO getUserGroup(String userGroupId) throws UserGroupException{
+
+        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupById(userGroupId);
+
+        return userGroupDTO;
     }
 
 }

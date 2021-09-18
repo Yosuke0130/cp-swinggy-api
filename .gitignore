@@ -40,4 +40,4 @@ out/
 .env
 
 ### test command ###
-testCommand.txt
+test_command.txt

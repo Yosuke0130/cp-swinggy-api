@@ -1,6 +1,6 @@
 package com.example.demo.infrastructure.usergroup;
 
-import com.example.demo.application.usergroup.GroupException;
+import com.example.demo.application.usergroup.UserGroupException;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
                     userGroup.getCreatedBy());
 
         } catch (DataAccessException e) {
-            throw new GroupException("DB access error occurred when registering new user_group.", e);
+            throw new UserGroupException("DB access error occurred when registering new user_group.", e);
         }
     }
 
