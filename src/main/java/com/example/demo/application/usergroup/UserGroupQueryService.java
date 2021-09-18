@@ -8,5 +8,5 @@ public interface UserGroupQueryService {
 
     public int selectUserGroupCountById(String createdBy);
 
-    public UserGroupDTO selectUserGroupById(String userGroupId);
+    public UserGroupDTO selectUserGroupById(String userGroupId) throws UserGroupException;
 }

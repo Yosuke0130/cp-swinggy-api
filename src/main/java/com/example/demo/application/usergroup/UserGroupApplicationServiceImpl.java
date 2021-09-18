@@ -1,5 +1,6 @@
 package com.example.demo.application.usergroup;
 
+import com.example.demo.Logging;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import com.example.demo.domain.usergroup.UserGroupService;
@@ -12,6 +13,9 @@ import java.util.Optional;
 
 @Service
 public class UserGroupApplicationServiceImpl implements UserGroupApplicationService {
+
+    @Autowired
+    Logging logger;
 
     @Autowired
     UserGroupService userGroupService;
@@ -67,6 +71,29 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
         UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupById(userGroupId);
 
         return userGroupDTO;
+    }
+
+    @Override
+    public void changeUserGroupName(String userGroupId, String userGroupName) throws UserGroupException, IllegalArgumentException{
+        // クエリサービスからDTOを取得
+        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupById(userGroupId);
+
+        //memo: 同じ名前を受け付けない=ドメインルールなのでドメインサービスに書きたい
+        if(userGroupDTO.getUserGroupName().equals(userGroupName)) {
+            throw new IllegalStateException("This userGroupName is same as it is.");
+        }
+
+        // DTOからドメインのエンティティを生成
+        UserGroup userGroup = new UserGroup(userGroupDTO.getUserGroupId(),
+                userGroupDTO.getUserGroupName(),
+                userGroupDTO.getCreatedBy());
+
+        // エンティティの名前変更
+        userGroup.changeUserGroupName(userGroupName);
+
+        // エンティティを引数にリポジトリに名前変更の永続化依頼
+        userGroupRepository.updateUserGroupName(userGroup);
+        logger.info(userGroup.getUserGroupId() + ": userGroupName has changed to " + userGroupName);
     }
 
 }

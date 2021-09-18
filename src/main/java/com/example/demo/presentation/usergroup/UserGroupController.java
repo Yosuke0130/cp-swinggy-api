@@ -55,6 +55,7 @@ public class UserGroupController {
         UserGroupListResource userGroupListResource = new UserGroupListResource(userGroupResouces, total);
 
         return userGroupListResource;
+
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -69,10 +70,28 @@ public class UserGroupController {
             UserGroupResource userGroupResource = new UserGroupResource(userGroupDTO);
 
             return userGroupResource;
+
         } catch (UserGroupException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{group-id}")
+    public void changeUserGroupName(@PathVariable("group-id")String userGroupId,
+                                    @RequestParam("name")String userGroupName) {
+        try {
+            userGroupApplicationService.changeUserGroupName(userGroupId, userGroupName);
+        } catch (UserGroupException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //todo: delete group
 
 }

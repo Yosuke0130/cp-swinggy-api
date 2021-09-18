@@ -12,4 +12,6 @@ public interface UserGroupApplicationService {
     public int getOwnedUserGroupCount(String createdBy);
 
     public UserGroupDTO getUserGroup(String userGroupId);
+
+    public void changeUserGroupName(String userGroupId, String userGroupName) throws UserGroupException, IllegalArgumentException;
 }

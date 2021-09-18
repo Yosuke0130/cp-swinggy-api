@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.util.UUID;
 
 @Repository
@@ -35,6 +36,19 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
         } catch (DataAccessException e) {
             throw new UserGroupException("DB access error occurred when registering new user_group.", e);
         }
+    }
+
+    @Override
+    public void updateUserGroupName(UserGroup userGroup) throws DataAccessException{
+        try {
+            jdbc.update("UPDATE user_group SET group_name = ? WHERE group_id = ?",
+                    userGroup.getUserGroupName(),
+                    userGroup.getUserGroupId());
+
+        } catch (DataAccessException e) {
+            throw new UserGroupException("DB access error occurred when updating userGroupName.", e);
+        }
+
     }
 
 }

@@ -48,7 +48,7 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     }
 
     @Override
-    public UserGroupDTO selectUserGroupById(String userGroupId) {
+    public UserGroupDTO selectUserGroupById(String userGroupId) throws UserGroupException{
         try {
             Map<String, Object> userGroupData = jdbc.queryForMap("SELECT * FROM user_group WHERE group_id = ?", userGroupId);
 

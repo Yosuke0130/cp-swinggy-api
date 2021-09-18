@@ -18,5 +18,7 @@ public class UserGroupId {
         logger.info("UserGroupId issued: " + this.userGroupId);
     }
 
+    public UserGroupId(String userGroupId) {this.userGroupId = userGroupId;}
+
     public String getValue() {return this.userGroupId;}
 }

@@ -6,4 +6,6 @@ public interface UserGroupRepository {
 
     public void insertUserGroup(UserGroup userGroup) throws DataAccessException;
 
+    public void updateUserGroupName(UserGroup userGroup) throws DataAccessException;
+
 }
