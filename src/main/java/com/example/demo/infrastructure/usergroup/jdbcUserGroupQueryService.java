@@ -1,13 +1,12 @@
 package com.example.demo.infrastructure.usergroup;
 
 import com.example.demo.application.usergroup.UserGroupException;
-import com.example.demo.application.usergroup.UserGroupDTO;
+import com.example.demo.application.usergroup.UserGroupQueryModel;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     JdbcTemplate jdbc;
 
     @Override
-    public List<UserGroupDTO> selectUserGroupByUserId(String userId, int page, int per) {
+    public List<UserGroupQueryModel> selectUserGroupByUserId(String userId, int page, int per) {
         int offset = 0;
         if(page > 0) {offset = page * per;}
 
@@ -29,15 +28,15 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
                 "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE user_id = ?)",
                 userId);
 
-        List<UserGroupDTO> userGroupDTOList = userGroups.stream()
-                .map(userGroup -> convertToUserGroupDTO(userGroup))
+        List<UserGroupQueryModel> userGroupQueryModels = userGroups.stream()
+                .map(userGroup -> convertToUserGroupQueryModel(userGroup))
                 .collect(Collectors.toList());
 
-        return userGroupDTOList;
+        return userGroupQueryModels;
     }
 
-    public UserGroupDTO convertToUserGroupDTO(Map<String, Object> userGroup) {
-        return new UserGroupDTO((String)userGroup.get("group_id"),
+    public UserGroupQueryModel convertToUserGroupQueryModel(Map<String, Object> userGroup) {
+        return new UserGroupQueryModel((String)userGroup.get("group_id"),
                 (String)userGroup.get("created_by"),
                 (String)userGroup.get("group_name"));
     }
@@ -52,13 +51,13 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     }
 
     @Override
-    public UserGroupDTO selectUserGroupByGroupId(String userGroupId) throws UserGroupException{
+    public UserGroupQueryModel selectUserGroupByGroupId(String userGroupId) throws UserGroupException{
         try {
             Map<String, Object> userGroupData = jdbc.queryForMap("SELECT * FROM user_group WHERE group_id = ?", userGroupId);
 
-            UserGroupDTO userGroupDTO = convertToUserGroupDTO(userGroupData);
+            UserGroupQueryModel userGroupQueryModel = convertToUserGroupQueryModel(userGroupData);
 
-            return userGroupDTO;
+            return userGroupQueryModel;
         } catch (EmptyResultDataAccessException e) {
             throw new UserGroupException("This userGroupId doesn't exist.", e);
         }

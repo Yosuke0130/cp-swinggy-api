@@ -1,6 +1,6 @@
 package com.example.demo.presentation.usergroup;
 
-import com.example.demo.application.usergroup.UserGroupDTO;
+import com.example.demo.application.usergroup.UserGroupQueryModel;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -13,7 +13,7 @@ public class UserGroupResource {
 
     //ユースケースごとにDTOが返却されるとしたら、このクラス不要？
     //FEの求める形（命名など）に変換するから必要？
-    public UserGroupResource(UserGroupDTO userGroup) {
+    public UserGroupResource(UserGroupQueryModel userGroup) {
         this.groupId = userGroup.getUserGroupId();
         this.createdBy = userGroup.getCreatedBy();
         this.groupName = userGroup.getUserGroupName();

@@ -1,12 +1,12 @@
 package com.example.demo.application.usergroup;
 
-public class UserGroupDTO {
+public class UserGroupQueryModel {
 
     private String userGroupId;
     private String createdBy;
     private String UserGroupName;
 
-    public UserGroupDTO(String userGroupId, String createdBy, String userGroupName) {
+    public UserGroupQueryModel(String userGroupId, String createdBy, String userGroupName) {
         this.userGroupId = userGroupId;
         this.createdBy = createdBy;
         this.UserGroupName = userGroupName;

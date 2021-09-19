@@ -44,7 +44,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_DEFAULT_PER = 100;
     @Override
-    public List<UserGroupDTO> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
+    public List<UserGroupQueryModel> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
 
         int pageValue = page.orElse(USER_GROUP_DEFAULT_PAGE);
         int perValue = per.orElse(USER_GROUP_DEFAULT_PER);
@@ -52,7 +52,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
         if(!userRepository.exists(userId)) {
             throw new IllegalArgumentException("This userId doesn't exist.");
         }
-        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupByUserId(userId, pageValue, perValue);
+        List<UserGroupQueryModel> userGroups = userGroupQueryService.selectUserGroupByUserId(userId, pageValue, perValue);
 
         return userGroups;
     }
@@ -66,26 +66,38 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     }
 
     @Override
-    public UserGroupDTO getUserGroup(String userGroupId) throws UserGroupException{
+    public UserGroupQueryModel getUserGroup(String userGroupId) throws UserGroupException{
 
-        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
+        UserGroupQueryModel userGroupQueryModel = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
 
-        return userGroupDTO;
+        return userGroupQueryModel;
     }
 
     @Override
     public void changeUserGroupName(String userGroupId, String userGroupName) throws UserGroupException, IllegalArgumentException{
 
-        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
+        UserGroupQueryModel userGroupQueryModel = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
 
-        UserGroup userGroup = new UserGroup(userGroupDTO.getUserGroupId(),
-                userGroupDTO.getUserGroupName(),
-                userGroupDTO.getCreatedBy());
+        UserGroup userGroup = new UserGroup(userGroupQueryModel.getUserGroupId(),
+                userGroupQueryModel.getUserGroupName(),
+                userGroupQueryModel.getCreatedBy());
 
         userGroup.changeUserGroupName(userGroupName);
 
         userGroupRepository.updateUserGroupName(userGroup);
         logger.info(userGroup.getUserGroupId() + ": userGroupName has changed to " + userGroupName);
+    }
+
+    @Override
+    public void deleteUserGroup(String userGroupId) throws UserGroupException, IllegalArgumentException{
+
+        UserGroupQueryModel userGroupQueryModel = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
+
+        UserGroup userGroup = new UserGroup(userGroupQueryModel.getUserGroupId(),
+                userGroupQueryModel.getUserGroupName(),
+                userGroupQueryModel.getCreatedBy());
+
+        userGroupRepository.deleteUserGroup(userGroup);
     }
 
 }

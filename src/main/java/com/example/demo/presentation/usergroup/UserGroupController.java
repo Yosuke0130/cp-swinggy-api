@@ -3,7 +3,7 @@ package com.example.demo.presentation.usergroup;
 import com.example.demo.Logging;
 import com.example.demo.application.usergroup.UserGroupApplicationService;
 import com.example.demo.application.usergroup.UserGroupException;
-import com.example.demo.application.usergroup.UserGroupDTO;
+import com.example.demo.application.usergroup.UserGroupQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +38,12 @@ public class UserGroupController {
         }
     }
 
-    //memo: user-idの参加しているグループをListで返却、自分の作ったグループはどうする？
     @GetMapping("")
     public UserGroupListResource getBelongedUserGroups(@RequestParam("user-id")String userId,
                              @RequestParam("page")Optional<Integer> page,
                              @RequestParam("per") Optional<Integer> per) {
         try {
-        List<UserGroupDTO> userGroups = userGroupApplicationService.getBelongedUserGroups(userId, page, per);
+        List<UserGroupQueryModel> userGroups = userGroupApplicationService.getBelongedUserGroups(userId, page, per);
 
         List<UserGroupResource> userGroupResources = userGroups.stream()
                 .map(userGroup -> new UserGroupResource(userGroup))
@@ -65,9 +64,9 @@ public class UserGroupController {
     @GetMapping("/{group-id}")
     public UserGroupResource getUserGroup(@PathVariable("group-id")String userGroupId) {
         try {
-            UserGroupDTO userGroupDTO = userGroupApplicationService.getUserGroup(userGroupId);
+            UserGroupQueryModel userGroupQueryModel = userGroupApplicationService.getUserGroup(userGroupId);
 
-            UserGroupResource userGroupResource = new UserGroupResource(userGroupDTO);
+            UserGroupResource userGroupResource = new UserGroupResource(userGroupQueryModel);
 
             return userGroupResource;
 
@@ -93,6 +92,18 @@ public class UserGroupController {
         }
     }
 
-    //todo: delete group
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{group-id}")
+    public void deleteUserGroup(@PathVariable("group-id")String userGroupId) {
+        try {
+            userGroupApplicationService.deleteUserGroup(userGroupId);
+        } catch (UserGroupException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

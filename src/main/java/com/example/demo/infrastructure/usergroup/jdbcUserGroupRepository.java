@@ -19,7 +19,7 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void insertUserGroup(UserGroup userGroup) throws DataAccessException{
+    public void insertUserGroup(UserGroup userGroup) throws UserGroupException{
         try {
             jdbc.update("INSERT INTO user_group(group_id, group_name, created_by) VALUES(?, ?, ?)",
                     userGroup.getUserGroupId(),
@@ -38,7 +38,8 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
     }
 
     @Override
-    public void updateUserGroupName(UserGroup userGroup) throws DataAccessException{
+    @Transactional
+    public void updateUserGroupName(UserGroup userGroup) throws UserGroupException{
         try {
             jdbc.update("UPDATE user_group SET group_name = ? WHERE group_id = ?",
                     userGroup.getUserGroupName(),
@@ -47,7 +48,18 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
         } catch (DataAccessException e) {
             throw new UserGroupException("DB access error occurred when updating userGroupName.", e);
         }
+    }
 
+    @Override
+    @Transactional
+    public void deleteUserGroup(UserGroup userGroup) throws UserGroupException{
+        try {
+            jdbc.update("DELETE FROM group_user_belonging WHERE group_id = ?", userGroup.getUserGroupId());
+            jdbc.update("DELETE FROM user_group WHERE group_id = ?", userGroup.getUserGroupId());
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            throw new UserGroupException("DB access error occurred when deleting userGroup", e);
+        }
     }
 
 }
