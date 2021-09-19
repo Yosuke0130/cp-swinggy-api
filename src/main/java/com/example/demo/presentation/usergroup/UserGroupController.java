@@ -38,21 +38,21 @@ public class UserGroupController {
         }
     }
 
-    //memo: user-idのパラメータ、参加してるグループを取得するのか、自分が作成したグループを取得するのか紛らわしい？
+    //memo: user-idの参加しているグループをListで返却、自分の作ったグループはどうする？
     @GetMapping("")
-    public UserGroupListResource getOwnedUserGroups(@RequestParam("user-id")String createdBy,
+    public UserGroupListResource getBelongedUserGroups(@RequestParam("user-id")String userId,
                              @RequestParam("page")Optional<Integer> page,
                              @RequestParam("per") Optional<Integer> per) {
         try {
-        List<UserGroupDTO> userGroups = userGroupApplicationService.getOwnedUserGroups(createdBy, page, per);
+        List<UserGroupDTO> userGroups = userGroupApplicationService.getBelongedUserGroups(userId, page, per);
 
-        List<UserGroupResource> userGroupResouces = userGroups.stream()
+        List<UserGroupResource> userGroupResources = userGroups.stream()
                 .map(userGroup -> new UserGroupResource(userGroup))
                 .collect(Collectors.toList());;
 
-        int total = userGroupApplicationService.getOwnedUserGroupCount(createdBy);
+        int total = userGroupApplicationService.getBelongedUserGroupCount(userId);
 
-        UserGroupListResource userGroupListResource = new UserGroupListResource(userGroupResouces, total);
+        UserGroupListResource userGroupListResource = new UserGroupListResource(userGroupResources, total);
 
         return userGroupListResource;
 
@@ -77,6 +77,7 @@ public class UserGroupController {
         }
     }
 
+    //memo: パラメータが増えてくる可能性。changeUserGroupProfileのように汎用化するかも。
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{group-id}")
     public void changeUserGroupName(@PathVariable("group-id")String userGroupId,

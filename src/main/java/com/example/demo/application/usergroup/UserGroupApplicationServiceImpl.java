@@ -44,23 +44,23 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_DEFAULT_PER = 100;
     @Override
-    public List<UserGroupDTO> getOwnedUserGroups(String createdBy, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
+    public List<UserGroupDTO> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
 
         int pageValue = page.orElse(USER_GROUP_DEFAULT_PAGE);
         int perValue = per.orElse(USER_GROUP_DEFAULT_PER);
 
-        if(!userRepository.exists(createdBy)) {
+        if(!userRepository.exists(userId)) {
             throw new IllegalArgumentException("This userId doesn't exist.");
         }
-        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupByCreatedBy(createdBy, pageValue, perValue);
+        List<UserGroupDTO> userGroups = userGroupQueryService.selectUserGroupByUserId(userId, pageValue, perValue);
 
         return userGroups;
     }
 
     @Override
-    public int getOwnedUserGroupCount(String createdBy) {
+    public int getBelongedUserGroupCount(String userId) {
 
-        int total = userGroupQueryService.selectUserGroupCountById(createdBy);
+        int total = userGroupQueryService.selectUserGroupCountByUserId(userId);
 
         return total;
     }
@@ -68,30 +68,22 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     @Override
     public UserGroupDTO getUserGroup(String userGroupId) throws UserGroupException{
 
-        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupById(userGroupId);
+        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
 
         return userGroupDTO;
     }
 
     @Override
     public void changeUserGroupName(String userGroupId, String userGroupName) throws UserGroupException, IllegalArgumentException{
-        // クエリサービスからDTOを取得
-        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupById(userGroupId);
 
-        //memo: 同じ名前を受け付けない=ドメインルールなのでドメインサービスに書きたい
-        if(userGroupDTO.getUserGroupName().equals(userGroupName)) {
-            throw new IllegalStateException("This userGroupName is same as it is.");
-        }
+        UserGroupDTO userGroupDTO = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
 
-        // DTOからドメインのエンティティを生成
         UserGroup userGroup = new UserGroup(userGroupDTO.getUserGroupId(),
                 userGroupDTO.getUserGroupName(),
                 userGroupDTO.getCreatedBy());
 
-        // エンティティの名前変更
         userGroup.changeUserGroupName(userGroupName);
 
-        // エンティティを引数にリポジトリに名前変更の永続化依頼
         userGroupRepository.updateUserGroupName(userGroup);
         logger.info(userGroup.getUserGroupId() + ": userGroupName has changed to " + userGroupName);
     }

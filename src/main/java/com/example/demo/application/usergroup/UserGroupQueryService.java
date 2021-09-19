@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface UserGroupQueryService {
 
-    public List<UserGroupDTO> selectUserGroupByCreatedBy(String createdBy, int page, int per);
+    public List<UserGroupDTO> selectUserGroupByUserId(String userId, int page, int per);
 
-    public int selectUserGroupCountById(String createdBy);
+    public int selectUserGroupCountByUserId(String userId);
 
-    public UserGroupDTO selectUserGroupById(String userGroupId) throws UserGroupException;
+    public UserGroupDTO selectUserGroupByGroupId(String userGroupId) throws UserGroupException;
 }

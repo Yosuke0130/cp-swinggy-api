@@ -7,9 +7,9 @@ public interface UserGroupApplicationService {
 
     public void createUserGroup(String groupName, String createdBy) throws IllegalStateException, IllegalArgumentException, UserGroupException;
 
-    public List<UserGroupDTO> getOwnedUserGroups(String createdBy, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
+    public List<UserGroupDTO> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
 
-    public int getOwnedUserGroupCount(String createdBy);
+    public int getBelongedUserGroupCount(String userId);
 
     public UserGroupDTO getUserGroup(String userGroupId);
 

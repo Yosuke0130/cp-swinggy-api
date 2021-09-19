@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -20,12 +21,13 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     JdbcTemplate jdbc;
 
     @Override
-    public List<UserGroupDTO> selectUserGroupByCreatedBy(String createdBy, int page, int per) {
+    public List<UserGroupDTO> selectUserGroupByUserId(String userId, int page, int per) {
         int offset = 0;
         if(page > 0) {offset = page * per;}
 
-        List<Map<String, Object>> userGroups = jdbc.queryForList("SELECT * FROM user_group WHERE created_by = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
-                createdBy, per, offset);
+        List<Map<String, Object>> userGroups = jdbc.queryForList(
+                "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE user_id = ?)",
+                userId);
 
         List<UserGroupDTO> userGroupDTOList = userGroups.stream()
                 .map(userGroup -> convertToUserGroupDTO(userGroup))
@@ -41,14 +43,16 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     }
 
     @Override
-    public int selectUserGroupCountById(String createdBy) {
-        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_group WHERE created_by = ?", Integer.class, createdBy);
+    public int selectUserGroupCountByUserId(String userId) {
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE user_id = ?)",
+                Integer.class, userId);
 
         return count;
     }
 
     @Override
-    public UserGroupDTO selectUserGroupById(String userGroupId) throws UserGroupException{
+    public UserGroupDTO selectUserGroupByGroupId(String userGroupId) throws UserGroupException{
         try {
             Map<String, Object> userGroupData = jdbc.queryForMap("SELECT * FROM user_group WHERE group_id = ?", userGroupId);
 
