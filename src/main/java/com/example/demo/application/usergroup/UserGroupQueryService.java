@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface UserGroupQueryService {
 
-    public List<UserGroupQueryModel> selectUserGroupByUserId(String userId, int page, int per);
+    public List<UserGroupQueryModel> selectUserGroupByMemberId(String member, int page, int per);
 
-    public int selectUserGroupCountByUserId(String userId);
+    public int selectUserGroupCountByMemberId(String member);
 
     public UserGroupQueryModel selectUserGroupByGroupId(String userGroupId) throws UserGroupException;
 }

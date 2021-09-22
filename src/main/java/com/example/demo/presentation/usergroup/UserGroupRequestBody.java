@@ -12,8 +12,8 @@ public class UserGroupRequestBody {
     private String name;
 
     @NotNull
-    private String createdBy;
+    private String owner;
 
     public String getName() {return this.name;}
-    public String getCreatedBy() {return this.createdBy;}
+    public String getOwner() {return this.owner;}
 }

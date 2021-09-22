@@ -10,7 +10,7 @@ public class UserGroupName {
         if(userGroupName.length() > MIN_LENGTH && userGroupName.length() < MAX_LENGTH) {
             this.userGroupName = userGroupName;
         } else {
-            throw new IllegalArgumentException("length has to be 1-32 & characters, numbers, and _ are approved to use.");
+            throw new IllegalArgumentException("number of characters has to be 1-32 and characters, numbers, and underscore can be used.");
         }
     }
 

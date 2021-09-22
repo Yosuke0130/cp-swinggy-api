@@ -20,14 +20,15 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     JdbcTemplate jdbc;
 
     @Override
-    public List<UserGroupQueryModel> selectUserGroupByUserId(String userId, int page, int per) {
+    public List<UserGroupQueryModel> selectUserGroupByMemberId(String member, int page, int per) {
         int offset = 0;
         if(page > 0) {offset = page * per;}
 
         List<Map<String, Object>> userGroups = jdbc.queryForList(
-                "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE user_id = ?)",
-                userId);
+                "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE member = ?)",
+                member);
 
+        //todo: belonged のクエリーモデルに入れる
         List<UserGroupQueryModel> userGroupQueryModels = userGroups.stream()
                 .map(userGroup -> convertToUserGroupQueryModel(userGroup))
                 .collect(Collectors.toList());
@@ -35,17 +36,17 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
         return userGroupQueryModels;
     }
 
-    public UserGroupQueryModel convertToUserGroupQueryModel(Map<String, Object> userGroup) {
+    private UserGroupQueryModel convertToUserGroupQueryModel(Map<String, Object> userGroup) {
         return new UserGroupQueryModel((String)userGroup.get("group_id"),
-                (String)userGroup.get("created_by"),
+                (String)userGroup.get("owner"),
                 (String)userGroup.get("group_name"));
     }
 
     @Override
-    public int selectUserGroupCountByUserId(String userId) {
+    public int selectUserGroupCountByMemberId(String member) {
         Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE user_id = ?)",
-                Integer.class, userId);
+                "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE member = ?)",
+                Integer.class, member);
 
         return count;
     }

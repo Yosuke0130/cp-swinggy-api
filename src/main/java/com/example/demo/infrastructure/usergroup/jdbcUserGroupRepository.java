@@ -19,18 +19,18 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void insertUserGroup(UserGroup userGroup) throws UserGroupException{
+    public void insert(UserGroup userGroup) throws UserGroupException{
         try {
-            jdbc.update("INSERT INTO user_group(group_id, group_name, created_by) VALUES(?, ?, ?)",
+            jdbc.update("INSERT INTO user_group(group_id, group_name, owner) VALUES(?, ?, ?)",
                     userGroup.getUserGroupId(),
                     userGroup.getUserGroupName(),
-                    userGroup.getCreatedBy());
+                    userGroup.getOwner());
 
             UUID belongingId = UUID.randomUUID();
-            jdbc.update("INSERT INTO group_user_belonging(belonging_id, group_id, user_id) VALUES(?, ?, ?)",
+            jdbc.update("INSERT INTO group_user_belonging(belonging_id, group_id, member) VALUES(?, ?, ?)",
                     belongingId.toString(),
                     userGroup.getUserGroupId(),
-                    userGroup.getCreatedBy());
+                    userGroup.getOwner());
 
         } catch (DataAccessException e) {
             throw new UserGroupException("DB access error occurred when registering new user_group.", e);
@@ -39,7 +39,7 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void updateUserGroupName(UserGroup userGroup) throws UserGroupException{
+    public void update(UserGroup userGroup) throws UserGroupException{
         try {
             jdbc.update("UPDATE user_group SET group_name = ? WHERE group_id = ?",
                     userGroup.getUserGroupName(),
@@ -52,7 +52,7 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void deleteUserGroup(UserGroup userGroup) throws UserGroupException{
+    public void delete(UserGroup userGroup) throws UserGroupException{
         try {
             jdbc.update("DELETE FROM group_user_belonging WHERE group_id = ?", userGroup.getUserGroupId());
             jdbc.update("DELETE FROM user_group WHERE group_id = ?", userGroup.getUserGroupId());

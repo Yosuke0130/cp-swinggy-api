@@ -38,6 +38,3 @@ out/
 
 ### Env file
 .env
-
-### test command ###
-test_command.txt

@@ -8,19 +8,17 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 public class UserGroupResource {
 
     private String groupId;
-    private String createdBy;
+    private String owner;
     private String groupName;
 
-    //ユースケースごとにDTOが返却されるとしたら、このクラス不要？
-    //FEの求める形（命名など）に変換するから必要？
     public UserGroupResource(UserGroupQueryModel userGroup) {
         this.groupId = userGroup.getUserGroupId();
-        this.createdBy = userGroup.getCreatedBy();
+        this.owner = userGroup.getOwner();
         this.groupName = userGroup.getUserGroupName();
     }
 
     public String getGroupId() {return this.groupId;}
-    public String getCreatedBy() {return this.createdBy;}
+    public String getOwner() {return this.owner;}
     public String getGroupName() {return this.groupName;}
 
 }

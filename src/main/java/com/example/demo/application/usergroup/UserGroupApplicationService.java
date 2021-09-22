@@ -5,11 +5,11 @@ import java.util.Optional;
 
 public interface UserGroupApplicationService {
 
-    public void createUserGroup(String groupName, String createdBy) throws IllegalStateException, IllegalArgumentException, UserGroupException;
+    public void createUserGroup(String groupName, String owner) throws IllegalStateException, IllegalArgumentException, UserGroupException;
 
-    public List<UserGroupQueryModel> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
+    public List<UserGroupQueryModel> getBelongedUserGroups(String member, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
 
-    public int getBelongedUserGroupCount(String userId);
+    public int getBelongedUserGroupCount(String member);
 
     public UserGroupQueryModel getUserGroup(String userGroupId);
 

@@ -27,7 +27,7 @@ public class UserGroupController {
     @PostMapping("")
     public void createUserGroup(@RequestBody UserGroupRequestBody userGroupRequestBody) {
         try {
-            userGroupApplicationService.createUserGroup(userGroupRequestBody.getName(), userGroupRequestBody.getCreatedBy());
+            userGroupApplicationService.createUserGroup(userGroupRequestBody.getName(), userGroupRequestBody.getOwner());
 
         } catch (IllegalStateException | IllegalArgumentException e) {
             logger.error(e.getMessage());
@@ -39,17 +39,17 @@ public class UserGroupController {
     }
 
     @GetMapping("")
-    public UserGroupListResource getBelongedUserGroups(@RequestParam("user-id")String userId,
+    public UserGroupListResource getBelongedUserGroups(@RequestParam("user-id")String member,
                              @RequestParam("page")Optional<Integer> page,
                              @RequestParam("per") Optional<Integer> per) {
         try {
-        List<UserGroupQueryModel> userGroups = userGroupApplicationService.getBelongedUserGroups(userId, page, per);
+        List<UserGroupQueryModel> userGroups = userGroupApplicationService.getBelongedUserGroups(member, page, per);
 
         List<UserGroupResource> userGroupResources = userGroups.stream()
                 .map(userGroup -> new UserGroupResource(userGroup))
                 .collect(Collectors.toList());;
 
-        int total = userGroupApplicationService.getBelongedUserGroupCount(userId);
+        int total = userGroupApplicationService.getBelongedUserGroupCount(member);
 
         UserGroupListResource userGroupListResource = new UserGroupListResource(userGroupResources, total);
 

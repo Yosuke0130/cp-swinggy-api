@@ -85,19 +85,19 @@ CREATE TABLE IF NOT EXISTS wish_date_comment(
 
 CREATE TABLE IF NOT EXISTS user_group(
     group_id VARCHAR(255),
-    created_by VARCHAR(255) NOT NULL,
+    owner VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     group_name VARCHAR(255) NOT NULL,
     PRIMARY KEY(group_id),
-    FOREIGN KEY(created_by) REFERENCES user(user_id)
+    FOREIGN KEY(owner) REFERENCES user(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS group_user_belonging(
     belonging_id VARCHAR(255),
     group_id VARCHAR(255) NOT NULL,
-    user_id VARCHAR(255) NOT NULL,
+    member VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(belonging_id),
     FOREIGN KEY(group_id) REFERENCES user_group(group_id),
-    FOREIGN KEY(user_id) REFERENCES user(user_id)
+    FOREIGN KEY(member) REFERENCES user(user_id)
 );

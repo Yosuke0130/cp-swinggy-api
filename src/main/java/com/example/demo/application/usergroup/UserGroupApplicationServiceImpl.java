@@ -3,7 +3,6 @@ package com.example.demo.application.usergroup;
 import com.example.demo.Logging;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
-import com.example.demo.domain.usergroup.UserGroupService;
 import com.example.demo.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,6 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     Logging logger;
 
     @Autowired
-    UserGroupService userGroupService;
-
-    @Autowired
     UserGroupRepository userGroupRepository;
 
     @Autowired
@@ -30,37 +26,37 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     UserGroupQueryService userGroupQueryService;
 
     @Override
-    public void createUserGroup(String userGroupName, String createdBy) throws IllegalStateException, IllegalArgumentException, UserGroupException {
+    public void createUserGroup(String userGroupName, String owner) throws IllegalStateException, IllegalArgumentException, UserGroupException {
 
-        if(!userRepository.exists(createdBy)) {
-            throw new IllegalArgumentException("This created_by doesn't exist.");
+        if(!userRepository.exists(owner)) {
+            throw new IllegalArgumentException("This owner doesn't exist.");
         }
 
-        UserGroup userGroup = new UserGroup(userGroupName, createdBy);
+        UserGroup userGroup = new UserGroup(userGroupName, owner);
 
-        userGroupRepository.insertUserGroup(userGroup);
+        userGroupRepository.insert(userGroup);
     }
 
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_DEFAULT_PER = 100;
     @Override
-    public List<UserGroupQueryModel> getBelongedUserGroups(String userId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
+    public List<UserGroupQueryModel> getBelongedUserGroups(String member, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException{
 
         int pageValue = page.orElse(USER_GROUP_DEFAULT_PAGE);
         int perValue = per.orElse(USER_GROUP_DEFAULT_PER);
 
-        if(!userRepository.exists(userId)) {
-            throw new IllegalArgumentException("This userId doesn't exist.");
+        if(!userRepository.exists(member)) {
+            throw new IllegalArgumentException("This member doesn't exist.");
         }
-        List<UserGroupQueryModel> userGroups = userGroupQueryService.selectUserGroupByUserId(userId, pageValue, perValue);
+        List<UserGroupQueryModel> userGroups = userGroupQueryService.selectUserGroupByMemberId(member, pageValue, perValue);
 
         return userGroups;
     }
 
     @Override
-    public int getBelongedUserGroupCount(String userId) {
+    public int getBelongedUserGroupCount(String member) {
 
-        int total = userGroupQueryService.selectUserGroupCountByUserId(userId);
+        int total = userGroupQueryService.selectUserGroupCountByMemberId(member);
 
         return total;
     }
@@ -80,11 +76,11 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
         UserGroup userGroup = new UserGroup(userGroupQueryModel.getUserGroupId(),
                 userGroupQueryModel.getUserGroupName(),
-                userGroupQueryModel.getCreatedBy());
+                userGroupQueryModel.getOwner());
 
         userGroup.changeUserGroupName(userGroupName);
 
-        userGroupRepository.updateUserGroupName(userGroup);
+        userGroupRepository.update(userGroup);
         logger.info(userGroup.getUserGroupId() + ": userGroupName has changed to " + userGroupName);
     }
 
@@ -95,9 +91,9 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
         UserGroup userGroup = new UserGroup(userGroupQueryModel.getUserGroupId(),
                 userGroupQueryModel.getUserGroupName(),
-                userGroupQueryModel.getCreatedBy());
+                userGroupQueryModel.getOwner());
 
-        userGroupRepository.deleteUserGroup(userGroup);
+        userGroupRepository.delete(userGroup);
     }
 
 }

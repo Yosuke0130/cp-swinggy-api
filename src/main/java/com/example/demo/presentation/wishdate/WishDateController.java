@@ -51,6 +51,7 @@ public class WishDateController {
 
     }
 
+    //todo: Optioanlでgroup_id単位で取得可能に
     @ResponseBody
     @GetMapping("")
     public WishDateListResource getWishDates(@RequestParam("from") Optional<String> from,
