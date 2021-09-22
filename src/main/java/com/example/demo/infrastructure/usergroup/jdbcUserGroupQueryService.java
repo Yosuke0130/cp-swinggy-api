@@ -28,7 +28,6 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
                 "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE member = ?)",
                 member);
 
-        //todo: belonged のクエリーモデルに入れる
         List<UserGroupQueryModel> userGroupQueryModels = userGroups.stream()
                 .map(userGroup -> convertToUserGroupQueryModel(userGroup))
                 .collect(Collectors.toList());
