@@ -11,9 +11,9 @@ public interface UserApplicationService {
 
     public UserModel get(String userId) throws UserCreateException, IllegalStateException;
 
-    public List<UserModel> getUsers(int page, int per) throws UserCreateException;
+    public List<UserModel> getUsers(int page, int per, Optional<String> userGroupId) throws UserCreateException;
 
-    public int getCount();
+    public int getCount(Optional<String> userGroupId);
 
     public int getCountByScreenName(String screenName) throws UserCreateException;
 

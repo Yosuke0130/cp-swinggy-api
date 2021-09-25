@@ -96,16 +96,17 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public UserListResource getUsers(@RequestParam("page") int page,
-                                 @RequestParam("per") int per) {
+    public UserListResource getUsers(@RequestParam("page")int page,
+                                     @RequestParam("per")int per,
+                                     @RequestParam("group-id")Optional<String> userGroupId) {
         try {
-            List<UserModel> userModels = userApplicationService.getUsers(page, per);
+            List<UserModel> userModels = userApplicationService.getUsers(page, per, userGroupId);
 
             List<UserResource> userResources = userModels.stream()
                     .map(userResource -> new UserResource(userResource))
                     .collect(Collectors.toList());
 
-            int ttlCount = userApplicationService.getCount();
+            int ttlCount = userApplicationService.getCount(userGroupId);
 
             UserListResource userListResource = new UserListResource(userResources, ttlCount);
 
