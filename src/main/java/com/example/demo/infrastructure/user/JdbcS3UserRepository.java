@@ -252,6 +252,29 @@ public class JdbcS3UserRepository implements UserRepository {
 
     }
 
+    @Override
+    public List<User> selectUsersByGroupId(int page, int per, String userGroupId) throws UserCreateException {
+        int offset = 0;
+        if (page > 0) {
+            offset = page * per;
+        }
+        List<Map<String, Object>> userData = jdbc.queryForList(
+                "SELECT * FROM user_profile WHERE user_id IN (SELECT member FROM group_user_belonging WHERE group_id = ?) ORDER BY user_id LIMIT ? OFFSET ?",
+                userGroupId, per, offset);
+        try {
+            List<User> userList = new ArrayList<>();
+            for (Map<String, Object> value : userData) {
+                User user = convertToUser(value);
+                userList.add(user);
+            }
+            return userList;
+
+        } catch (MalformedURLException e) {
+            e.getMessage();
+            throw new UserCreateException("Image URL path couldn't be issued.", e);
+        }
+    }
+
     private User convertToUser(Map<String, Object> userData) throws MalformedURLException {
         URL url = new URL((String) userData.get("profile_image_path"));
 
@@ -270,6 +293,15 @@ public class JdbcS3UserRepository implements UserRepository {
     public int selectCount() {
 
         Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_profile", Integer.class);
+
+        return count;
+    }
+
+    public int selectCountByGroupId(String userGroupId) {
+
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM user_profile WHERE user_id IN (SELECT member FROM group_user_belonging WHERE group_id = ?)",
+                Integer.class, userGroupId);
 
         return count;
     }
