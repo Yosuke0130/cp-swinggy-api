@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface WishDateApplicationService {
 
-    public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException;
+    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException;
 
-    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per) throws IllegalArgumentException;
+    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId) throws IllegalArgumentException;
 
-    public int getWishDateCount(Optional<String> from, Optional<String> to) throws IllegalArgumentException;
+    public int getWishDateCount(Optional<String> from, Optional<String> to, Optional<String> userGroupId) throws IllegalArgumentException;
 
     public void deleteWishDate(String wishDateId) throws IllegalArgumentException, WishDateException;
 

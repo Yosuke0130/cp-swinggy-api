@@ -1,6 +1,7 @@
 package com.example.demo.application.wishdate;
 
 import com.example.demo.Logging;
+import com.example.demo.application.usergroup.UserGroupQueryService;
 import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.wishdate.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +28,22 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     UserRepository userRepository;
 
     @Autowired
+    UserGroupQueryService userGroupQueryService;
+
+    @Autowired
     Logging logger;
 
     @Override
-    public void register(String owner, String date) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException {
+    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException {
 
         if(!userRepository.exists(owner)) {
             throw new IllegalArgumentException("This owner doesn't exist.");
         }
+        if(!userGroupQueryService.exists(userGroupId)) {
+            throw new IllegalArgumentException("This groupId doesn't exist.");
+        }
 
-        WishDate wishDate = new WishDate(owner, date);
+        WishDate wishDate = new WishDate(owner, date, userGroupId);
 
         boolean result = wishDateService.wishDateExists(wishDate);
 
@@ -49,7 +56,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per) throws IllegalArgumentException {
+    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId) throws IllegalArgumentException {
 
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
@@ -62,7 +69,12 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             validatedTo = Optional.of(parsedTo);
         }
 
-        List<WishDate> wishDateList = wishDateRepository.selectWishDatesByPage(validatedFrom, validatedTo, page, per);
+        List<WishDate> wishDateList = null;
+        if(!userGroupId.isEmpty()) {
+            wishDateList = wishDateRepository.selectWishDates(validatedFrom, validatedTo, page, per);
+        } else {
+            wishDateList = wishDateRepository.selectWishDatesByGroupId(validatedFrom, validatedTo, page, per, userGroupId.get());
+        }
 
         List<WishDateModel> wishDateModelList = wishDateList.stream()
                 .map(wishDate -> convertToWishDateModel(wishDate))
@@ -72,7 +84,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     }
 
-    public int getWishDateCount(Optional<String> from, Optional<String> to) throws IllegalArgumentException {
+    public int getWishDateCount(Optional<String> from, Optional<String> to, Optional<String> userGroupId) throws IllegalArgumentException {
 
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
@@ -85,7 +97,13 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             validatedTo = Optional.of(parsedTo);
         }
 
-        int count = wishDateRepository.selectWishDateCount(validatedFrom, validatedTo);
+        int count = 0;
+        if(userGroupId.isEmpty()) {
+
+            count = wishDateRepository.selectWishDateCount(validatedFrom, validatedTo);
+        } else {
+            count = wishDateRepository.selectWishDateCountByGroupId(validatedFrom, validatedTo, userGroupId.get());
+        }
 
         return count;
     }
@@ -103,7 +121,8 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     private WishDateModel convertToWishDateModel(WishDate wishDate) {
         return new WishDateModel(wishDate.getWishDateId(),
                 wishDate.getOwner(),
-                wishDate.getDate().toString());
+                wishDate.getDate().toString(),
+                wishDate.getUserGroupId());
     }
 
     @Override

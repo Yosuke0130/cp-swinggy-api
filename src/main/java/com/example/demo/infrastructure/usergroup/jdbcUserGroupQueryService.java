@@ -4,6 +4,7 @@ import com.example.demo.application.usergroup.UserGroupException;
 import com.example.demo.application.usergroup.UserGroupQueryModel;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -60,6 +61,18 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
             return userGroupQueryModel;
         } catch (EmptyResultDataAccessException e) {
             throw new UserGroupException("This userGroupId doesn't exist.", e);
+        }
+    }
+
+    @Override
+    public boolean exists(String userGroupId) {
+        try {
+            Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_group WHERE group_id = ?", Integer.class, userGroupId);
+
+            return count > 0;
+
+        } catch (DataAccessException e) {
+            return false;
         }
     }
 

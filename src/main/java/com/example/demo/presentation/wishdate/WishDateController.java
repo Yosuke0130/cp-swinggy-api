@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -26,17 +25,13 @@ public class WishDateController {
     @Autowired
     Logging logger;
 
-    @PostMapping("")
-    public ResponseEntity<String> registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody,
-                                                   UriComponentsBuilder uriBuilder) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{group-id}")
+    public void registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody,
+                                 @PathVariable("group-id")String userGroupId) {
         try {
-            wishDateApplicationService.register(wishDateRequestBody.getOwner(), wishDateRequestBody.getDate());
-
-            HttpHeaders header = new HttpHeaders();
-            header.setLocation(uriBuilder.path("/").build().toUri());
-            HttpStatus status = HttpStatus.CREATED;
-
-            return new ResponseEntity<>(header, status);
+            wishDateApplicationService.register(wishDateRequestBody.getOwner(),
+                    wishDateRequestBody.getDate(), userGroupId);
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
@@ -48,24 +43,23 @@ public class WishDateController {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    //todo: Optioanlでgroup_id単位で取得可能に
     @ResponseBody
     @GetMapping("")
     public WishDateListResource getWishDates(@RequestParam("from") Optional<String> from,
                                              @RequestParam("to") Optional<String> to,
                                              @RequestParam("page") int page,
-                                             @RequestParam("per") int per) {
+                                             @RequestParam("per") int per,
+                                             @RequestParam("group-id")Optional<String> userGroupId) {
 
-        List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per);
+        List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per, userGroupId);
 
         List<WishDateResource> wishDateResourceList = wishDateModelList.stream()
                 .map(wishDate -> new WishDateResource(wishDate))
                 .collect(Collectors.toList());
 
-        int total = wishDateApplicationService.getWishDateCount(from, to);
+        int total = wishDateApplicationService.getWishDateCount(from, to, userGroupId);
 
         WishDateListResource wishDateListResource = new WishDateListResource(wishDateResourceList, total);
 

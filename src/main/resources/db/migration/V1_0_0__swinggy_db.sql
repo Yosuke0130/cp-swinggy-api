@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS user(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP,
     PRIMARY KEY(user_id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS user_profile(
     user_profile_id VARCHAR(255),
@@ -52,35 +52,6 @@ CREATE TABLE IF NOT EXISTS user_profile(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(user_profile_id),
     FOREIGN KEY(user_id) REFERENCES user(user_id)
-
-    );
-
-CREATE TABLE IF NOT EXISTS wish_date(
-    wish_date_id VARCHAR(255),
-    owner VARCHAR(255) NOT NULL,
-    wish_date DATE NOT NULL,
-    PRIMARY KEY(wish_date_id),
-    FOREIGN KEY(owner) REFERENCES user(user_id)
-    );
-
-CREATE TABLE IF NOT EXISTS participation(
-    participation_id VARCHAR(255),
-    wish_date_id VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    participant VARCHAR(255) NOT NULL,
-    PRIMARY KEY(participation_id),
-    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id),
-    FOREIGN KEY(participant) REFERENCES user(user_id)
-    );
-
-CREATE TABLE IF NOT EXISTS wish_date_comment(
-    comment_id VARCHAR(255),
-    wish_date_id VARCHAR(255) NOT NULL,
-    author VARCHAR(255) NOT NULL,
-    text VARCHAR(512) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    PRIMARY KEY(comment_id),
-    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id)
 );
 
 CREATE TABLE IF NOT EXISTS user_group(
@@ -93,11 +64,43 @@ CREATE TABLE IF NOT EXISTS user_group(
 );
 
 CREATE TABLE IF NOT EXISTS group_user_belonging(
-    belonging_id VARCHAR(255),
+      belonging_id VARCHAR(255),
+      group_id VARCHAR(255) NOT NULL,
+      member VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+      PRIMARY KEY(belonging_id),
+      FOREIGN KEY(group_id) REFERENCES user_group(group_id),
+      FOREIGN KEY(member) REFERENCES user(user_id)
+  );
+
+CREATE TABLE IF NOT EXISTS wish_date(
+    wish_date_id VARCHAR(255),
+    owner VARCHAR(255) NOT NULL,
+    wish_date DATE NOT NULL,
     group_id VARCHAR(255) NOT NULL,
-    member VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    PRIMARY KEY(belonging_id),
-    FOREIGN KEY(group_id) REFERENCES user_group(group_id),
-    FOREIGN KEY(member) REFERENCES user(user_id)
+    PRIMARY KEY(wish_date_id),
+    FOREIGN KEY(owner) REFERENCES user(user_id),
+    FOREIGN KEY(group_id) REFERENCES user_group(group_id)
 );
+
+CREATE TABLE IF NOT EXISTS participation(
+    participation_id VARCHAR(255),
+    wish_date_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    participant VARCHAR(255) NOT NULL,
+    PRIMARY KEY(participation_id),
+    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id),
+    FOREIGN KEY(participant) REFERENCES user(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS wish_date_comment(
+    comment_id VARCHAR(255),
+    wish_date_id VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    text VARCHAR(512) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(comment_id),
+    FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id)
+);
+
+
