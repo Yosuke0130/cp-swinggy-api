@@ -1,6 +1,7 @@
 package com.example.demo.application.wishdate;
 
 import com.example.demo.Logging;
+import com.example.demo.application.usergroup.UserGroupException;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.wishdate.*;
@@ -34,7 +35,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     Logging logger;
 
     @Override
-    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException {
+    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, UserGroupException, IOException {
 
         if(!userRepository.exists(owner)) {
             throw new IllegalArgumentException("This owner doesn't exist.");
@@ -57,20 +58,19 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     @Override
     public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId) throws IllegalArgumentException {
-
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
-            LocalDate parsedFrom = parseLocalDate(from);
+            LocalDate parsedFrom = parseLocalDate(from.get());
             validatedFrom = Optional.of(parsedFrom);
         }
         Optional<LocalDate> validatedTo = Optional.empty();
         if(to.isPresent()) {
-            LocalDate parsedTo = parseLocalDate(to);
+            LocalDate parsedTo = parseLocalDate(to.get());
             validatedTo = Optional.of(parsedTo);
         }
 
         List<WishDate> wishDateList = null;
-        if(!userGroupId.isEmpty()) {
+        if(userGroupId.isEmpty()) {
             wishDateList = wishDateRepository.selectWishDates(validatedFrom, validatedTo, page, per);
         } else {
             wishDateList = wishDateRepository.selectWishDatesByGroupId(validatedFrom, validatedTo, page, per, userGroupId.get());
@@ -88,12 +88,12 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
-            LocalDate parsedFrom = parseLocalDate(from);
+            LocalDate parsedFrom = parseLocalDate(from.get());
             validatedFrom = Optional.of(parsedFrom);
         }
         Optional<LocalDate> validatedTo = Optional.empty();
         if(to.isPresent()) {
-            LocalDate parsedTo = parseLocalDate(to);
+            LocalDate parsedTo = parseLocalDate(to.get());
             validatedTo = Optional.of(parsedTo);
         }
 
@@ -108,10 +108,10 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
         return count;
     }
 
-    private LocalDate parseLocalDate(Optional<String> value) {
+    private LocalDate parseLocalDate(String value) {
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate parsedValue = LocalDate.parse(value.get(), dtf);
+            LocalDate parsedValue = LocalDate.parse(value, dtf);
             return parsedValue;
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Date format error.");

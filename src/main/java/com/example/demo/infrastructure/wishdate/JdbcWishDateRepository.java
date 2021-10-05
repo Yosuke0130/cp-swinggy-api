@@ -43,7 +43,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
                     wishDate.getUserGroupId());
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new WishDateException("DB access error occurred when inserting wish date.", e);
         }
     }
@@ -74,13 +74,17 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 offset = page * per;
             }
 
+            LocalDate toValue = null;
+            if(to.isPresent()) {
+                toValue = to.get().plusDays(1);
+            }
+
             List<Map<String, Object>> wishDateData = null;
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to = Optional.of(to.get().plusDays(1));
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
-                            from.get(), to.get(), per, offset);
+                            from.get(), toValue, per, offset);
                 } else {
                     //fromだけ
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", from.get(), per, offset);
@@ -88,8 +92,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to = Optional.of(to.get().plusDays(1));
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", to.get(), per, offset);
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", toValue, per, offset);
                 } else {
                     //どちらも値なし
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date ORDER BY wish_date DESC LIMIT ? OFFSET ?", per, offset);
@@ -115,13 +118,18 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 offset = page * per;
             }
 
+            LocalDate toValue = null;
+            if(to.isPresent()) {
+                toValue = to.get().plusDays(1);
+            }
+
             List<Map<String, Object>> wishDateData = null;
+
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to = Optional.of(to.get().plusDays(1));
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE group_id = ? AND wish_date >= ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
-                            userGroupId, from.get(), to.get(), per, offset);
+                            userGroupId, from.get(), toValue, per, offset);
                 } else {
                     //fromだけ
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE group_id = ? AND wish_date >= ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", userGroupId, from.get(), per, offset);
@@ -129,8 +137,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to = Optional.of(to.get().plusDays(1));
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE group_id = ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", to.get(), per, offset);
+                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE group_id = ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", userGroupId, toValue, per, offset);
                 } else {
                     //どちらも値なし
                     wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE group_id = ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", userGroupId, per, offset);
@@ -149,14 +156,18 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public int selectWishDateCount(Optional<LocalDate> from,Optional<LocalDate> to) {
+    public int selectWishDateCount(Optional<LocalDate> from, Optional<LocalDate> to) {
         try {
             Integer count = 0;
+            LocalDate toValue = null;
+            if(to.isPresent()) {
+                toValue = to.get().plusDays(1);
+            }
+
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ? AND wish_date < ?", Integer.class, from.get(), to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ? AND wish_date < ?", Integer.class, from.get(), toValue);
                 } else {
                     //fromだけ
                     count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ?", Integer.class, from.get());
@@ -164,8 +175,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date < ?", Integer.class, to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date < ?", Integer.class, toValue);
                 } else {
                     //どちらも値なし
                     count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date", Integer.class);
@@ -179,14 +189,18 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public int selectWishDateCountByGroupId(Optional<LocalDate> from,Optional<LocalDate> to, String userGroupId) {
+    public int selectWishDateCountByGroupId(Optional<LocalDate> from, Optional<LocalDate> to, String userGroupId) {
         try {
             Integer count = 0;
+            LocalDate toValue = null;
+            if(to.isPresent()) {
+                toValue = to.get().plusDays(1);
+            }
+
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ? AND wish_date >= ? AND wish_date < ?", Integer.class, userGroupId, from.get(), to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ? AND wish_date >= ? AND wish_date < ?", Integer.class, userGroupId, from.get(), toValue);
                 } else {
                     //fromだけ
                     count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ? AND wish_date >= ?", Integer.class, userGroupId, from.get());
@@ -194,8 +208,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    to = Optional.of(to.get().plusDays(1));
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ? AND wish_date < ?", Integer.class, userGroupId, to.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ? AND wish_date < ?", Integer.class, userGroupId, toValue);
                 } else {
                     //どちらも値なし
                     count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = ?", Integer.class, userGroupId);

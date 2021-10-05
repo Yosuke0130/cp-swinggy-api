@@ -10,5 +10,5 @@ public interface UserGroupQueryService {
 
     public UserGroupQueryModel selectUserGroupByGroupId(String userGroupId) throws UserGroupException;
 
-    public boolean exists(String userGroupId);
+    public boolean exists(String userGroupId) throws UserGroupException;
 }

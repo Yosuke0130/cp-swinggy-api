@@ -1,13 +1,15 @@
 package com.example.demo.application.wishdate;
 
 
+import com.example.demo.application.usergroup.UserGroupException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public interface WishDateApplicationService {
 
-    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, IOException;
+    public void register(String owner, String date, String userGroupId) throws IllegalArgumentException ,IllegalStateException, WishDateException, UserGroupException, IOException;
 
     public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId) throws IllegalArgumentException;
 

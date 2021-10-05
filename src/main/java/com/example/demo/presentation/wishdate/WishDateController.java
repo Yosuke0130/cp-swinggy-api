@@ -1,6 +1,7 @@
 package com.example.demo.presentation.wishdate;
 
 import com.example.demo.Logging;
+import com.example.demo.application.usergroup.UserGroupException;
 import com.example.demo.application.wishdate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +40,7 @@ public class WishDateController {
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } catch (WishDateException | IOException e) {
+        } catch (WishDateException | UserGroupException | IOException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }

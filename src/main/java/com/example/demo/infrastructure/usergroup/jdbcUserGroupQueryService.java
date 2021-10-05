@@ -65,14 +65,16 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
     }
 
     @Override
-    public boolean exists(String userGroupId) {
+    public boolean exists(String userGroupId) throws UserGroupException{
         try {
             Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_group WHERE group_id = ?", Integer.class, userGroupId);
 
             return count > 0;
 
-        } catch (DataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return false;
+        } catch (DataAccessException e) {
+            throw new UserGroupException("DB access error when checking if userGroup exists.");
         }
     }
 
