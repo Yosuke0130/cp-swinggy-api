@@ -9,4 +9,6 @@ public interface UserGroupQueryService {
     public int selectUserGroupCountByMemberId(String member);
 
     public UserGroupQueryModel selectUserGroupByGroupId(String userGroupId) throws UserGroupException;
+
+    public boolean exists(String userGroupId) throws UserGroupException;
 }
