@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -359,7 +360,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException, WishDateException {
         try {
             String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM participation WHERE participation_id = ?",String.class, participationId);
 
@@ -370,8 +371,10 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 throw new IllegalArgumentException("The wishDateId is not related to the participationId.");
             }
 
-        } catch (DataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             throw new IllegalArgumentException("The participationId is not proper value.");
+        } catch (DataAccessException e) {
+            throw new WishDateException("query fails at deleteParticipation method.", e);
         }
     }
 
@@ -381,7 +384,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
             Map<String, Object> wishDate = jdbc.queryForMap("SELECT * FROM wish_date WHERE wish_date_id = ?", wishDateId);
             return !wishDate.isEmpty();
 
-        } catch (DataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             return false;
         }
     }
@@ -436,7 +439,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException, WishDateException{
         try {
             String selectedWishDateId = jdbc.queryForObject("SELECT wish_date_id FROM wish_date_comment WHERE comment_id = ?",String.class, wishDateCommentId);
 
@@ -447,8 +450,10 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 throw new IllegalArgumentException("The wishDateId is not related to the wishDateCommentId.");
             }
 
-        } catch (DataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             throw new IllegalArgumentException("The wishDateCommentId is not proper value.");
+        } catch (DataAccessException e) {
+            throw new WishDateException("query fails.", e);
         }
     }
 

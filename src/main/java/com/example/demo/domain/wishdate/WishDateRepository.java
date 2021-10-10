@@ -34,7 +34,7 @@ public interface WishDateRepository {
 
     public int countParticipations(String wishDateId);
 
-    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException;
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException, WishDateException;
 
     public void insertWishDateComment(WishDateComment wishDateComment) throws WishDateException;
 
@@ -42,5 +42,5 @@ public interface WishDateRepository {
 
     public int countWishDateComment(String wishDateId);
 
-    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException;
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException, WishDateException;
 }
