@@ -39,7 +39,7 @@ public class UserGroupController {
     }
 
     @GetMapping("")
-    public UserGroupListResource getBelongedUserGroups(@RequestParam("user-id")String member,
+    public UserGroupListResource getBelongedUserGroups(@RequestParam("user_id")String member,
                              @RequestParam("page")Optional<Integer> page,
                              @RequestParam("per") Optional<Integer> per) {
         try {
