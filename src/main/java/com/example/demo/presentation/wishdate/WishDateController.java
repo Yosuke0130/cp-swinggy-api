@@ -143,6 +143,9 @@ public class WishDateController {
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (WishDateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -205,6 +208,9 @@ public class WishDateController {
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (WishDateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

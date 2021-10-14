@@ -178,7 +178,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException {
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalArgumentException, WishDateException {
         WishDate wishDate = wishDateRepository.selectById(wishDateId);
         if(wishDate == null) {
             throw new IllegalArgumentException("This wishDatId doesn't exist.");
@@ -240,7 +240,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException {
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException, WishDateException {
         WishDate wishDate = wishDateRepository.selectById(wishDateId);
         if(wishDate == null) {
             throw new IllegalArgumentException("This wishDatId doesn't exist.");

@@ -6,6 +6,7 @@ import com.example.demo.application.usergroup.UserGroupQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -59,7 +60,7 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
             UserGroupQueryModel userGroupQueryModel = convertToUserGroupQueryModel(userGroupData);
 
             return userGroupQueryModel;
-        } catch (EmptyResultDataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             throw new UserGroupException("This userGroupId doesn't exist.", e);
         }
     }
@@ -71,7 +72,7 @@ public class jdbcUserGroupQueryService implements UserGroupQueryService {
 
             return count > 0;
 
-        } catch (EmptyResultDataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             return false;
         } catch (DataAccessException e) {
             throw new UserGroupException("DB access error when checking if userGroup exists.");

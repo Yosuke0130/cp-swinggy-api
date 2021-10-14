@@ -23,7 +23,7 @@ public interface WishDateApplicationService {
 
     public int getParticipationCount(String wishDateId);
 
-    public void deleteParticipation(String wishDateId, String participationId) throws IllegalStateException;
+    public void deleteParticipation(String wishDateId, String participationId) throws IllegalStateException, WishDateException;
 
     public void postWishDateComment(String wishDateId, String author, String text) throws IllegalStateException, IllegalArgumentException, WishDateException;
 
@@ -31,5 +31,5 @@ public interface WishDateApplicationService {
 
     public int getWishDateCommentCount(String wishDateId);
 
-    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException;
+    public void deleteWishDateComment(String wishDateId, String wishDateCommentId) throws IllegalArgumentException, WishDateException;
 }
