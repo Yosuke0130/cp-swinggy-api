@@ -23,7 +23,7 @@ public class UserGroupController {
     @Autowired
     Logging logger;
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void createUserGroup(@RequestBody UserGroupRequestBody userGroupRequestBody) {
         try {
