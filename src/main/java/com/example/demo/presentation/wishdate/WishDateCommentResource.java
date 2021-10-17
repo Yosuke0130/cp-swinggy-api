@@ -9,14 +9,14 @@ import java.text.SimpleDateFormat;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class WishDateCommentResource {
 
-    private String wishDateCommentId;
+    private String id;
     private String wishDateId;
     private String author;
     private String text;
     private String createdAt;
 
     public WishDateCommentResource(WishDateCommentModel wishDateCommentModel) {
-        this.wishDateCommentId = wishDateCommentModel.getWishDateCommentId();
+        this.id = wishDateCommentModel.getWishDateCommentId();
         this.wishDateId = wishDateCommentModel.getWishDateId();
         this.author = wishDateCommentModel.getAuthor();
         this.text = wishDateCommentModel.getText();
@@ -24,7 +24,7 @@ public class WishDateCommentResource {
         this.createdAt = sdf.format(wishDateCommentModel.getCreatedAt());
     }
 
-    public String getWishDateCommentId() {return this.wishDateCommentId;}
+    public String getId() {return this.id;}
     public String getWishDateId() {return this.wishDateId;}
     public String getAuthor() {return this.author;}
     public String getText() {return this.text;}

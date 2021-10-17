@@ -7,18 +7,18 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserGroupResource {
 
-    private String groupId;
+    private String id;
     private String owner;
-    private String groupName;
+    private String name;
 
     public UserGroupResource(UserGroupQueryModel userGroup) {
-        this.groupId = userGroup.getUserGroupId();
+        this.id = userGroup.getUserGroupId();
         this.owner = userGroup.getOwner();
-        this.groupName = userGroup.getUserGroupName();
+        this.name = userGroup.getUserGroupName();
     }
 
-    public String getGroupId() {return this.groupId;}
+    public String getId() {return this.id;}
     public String getOwner() {return this.owner;}
-    public String getGroupName() {return this.groupName;}
+    public String getName() {return this.name;}
 
 }

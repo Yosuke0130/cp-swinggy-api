@@ -8,14 +8,14 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class WishDateCommentListResource {
 
-    private List<WishDateCommentResource> comments;
+    private List<WishDateCommentResource> wishDateComments;
     private int total;
 
-    public WishDateCommentListResource(List<WishDateCommentResource> comments, int total) {
-        this.comments = comments;
+    public WishDateCommentListResource(List<WishDateCommentResource> wishDateComments, int total) {
+        this.wishDateComments = wishDateComments;
         this.total = total;
     }
 
-    public List<WishDateCommentResource> getComments() {return this.comments;}
+    public List<WishDateCommentResource> getWishDateComments() {return this.wishDateComments;}
     public int getTotal() {return this.total;}
 }
