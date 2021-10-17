@@ -9,20 +9,20 @@ import java.sql.Timestamp;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ParticipationResource {
 
-    private String participationId;
+    private String id;
     private String wishDateId;
     private Timestamp createdAt;
     private String participant;
 
     public ParticipationResource(ParticipationModel participationModel) {
 
-        this.participationId = participationModel.getParticipationId();
+        this.id = participationModel.getParticipationId();
         this.wishDateId = participationModel.getWishDateId();
         this.createdAt = participationModel.getCreatedAt();
         this.participant = participationModel.getParticipant();
     }
 
-    public String getParticipationId() {return participationId;}
+    public String getId() {return id;}
 
     public String getWishDateId() {return wishDateId;}
 

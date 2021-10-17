@@ -92,7 +92,6 @@ public class UserController {
         }
     }
 
-    //todo: Optioanlでgroup_id単位で取得可能に
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")

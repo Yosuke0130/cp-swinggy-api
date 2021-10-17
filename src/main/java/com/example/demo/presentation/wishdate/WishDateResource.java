@@ -7,19 +7,19 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class WishDateResource {
 
-    private String wishDateId;
+    private String id;
     private String owner;
     private String date;
     private String groupId;
 
     public WishDateResource(WishDateModel wishDateModel) {
-        this.wishDateId = wishDateModel.getWishDateId();
+        this.id = wishDateModel.getWishDateId();
         this.owner = wishDateModel.getOwner();
         this.date = wishDateModel.getDate();
         this.groupId = wishDateModel.getUserGroupId();
     }
 
-    public String getWishDateId() {return wishDateId;}
+    public String getId() {return id;}
     public String getOwner() {return owner;}
     public String getDate() {return date;}
     public String getGroupId() {return groupId;}
