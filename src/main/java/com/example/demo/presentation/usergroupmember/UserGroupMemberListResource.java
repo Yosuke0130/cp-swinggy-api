@@ -10,6 +10,11 @@ public class UserGroupMemberListResource {
     private List<UserGroupMemberResource> userGroupMembers;
     private int total;
 
+    public UserGroupMemberListResource(List<UserGroupMemberResource> userGroupMembers, int total) {
+        this.userGroupMembers = userGroupMembers;
+        this.total = total;
+    }
+
     public List<UserGroupMemberResource> getUserGroupMembers() {
         return userGroupMembers;
     }

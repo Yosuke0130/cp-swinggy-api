@@ -103,4 +103,13 @@ CREATE TABLE IF NOT EXISTS wish_date_comment(
     FOREIGN KEY(wish_date_id) REFERENCES wish_date(wish_date_id)
 );
 
+CREATE TABLE IF NOT EXISTS user_group_member(
+    user_group_member_id VARCHAR(255),
+    group_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_group_member_id),
+    FOREIGN KEY(group_id) REFERENCES user_group(group_id),
+    FOREIGN KEY(user_id) REFERENCES user(user_id)
+);
 
