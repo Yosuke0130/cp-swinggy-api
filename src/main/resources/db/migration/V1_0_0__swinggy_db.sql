@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS user_group_member(
     group_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    isOwner BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY(user_group_member_id),
     FOREIGN KEY(group_id) REFERENCES user_group(group_id),
     FOREIGN KEY(user_id) REFERENCES user(user_id)

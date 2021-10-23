@@ -12,9 +12,9 @@ public class UserGroupMemberQueryModel {
         this.userId = userId;
     }
 
-    public String getUserGroupMemberId() {return userGroupMemberId;}
+    public String getUserGroupMemberId() {return this.userGroupMemberId;}
 
-    public String getUserGroupId() {return userGroupId;}
+    public String getUserGroupId() {return this.userGroupId;}
 
-    public String getUserId() {return userId;}
+    public String getUserId() {return this.userId;}
 }

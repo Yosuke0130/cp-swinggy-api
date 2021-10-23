@@ -20,7 +20,7 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
     private static final int USER_GROUP_MEMBER_DEFAULT_PER = 100;
 
     @Override
-    public List<UserGroupMemberQueryModel> getUserGroupMembers(String userGroupId, Optional<Integer> page, Optional<Integer> per)
+    public UserGroupMemberListQueryModel getUserGroupMembers(String userGroupId, Optional<Integer> page, Optional<Integer> per)
             throws IllegalArgumentException {
 
         if(!userGroupQueryService.exists(userGroupId)) {
@@ -32,12 +32,11 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
 
         List<UserGroupMemberQueryModel> members = userGroupMemberQueryService.selectUserGroupMembersByUserGroupId(userGroupId, pageValue, perValue);
 
-        return members;
+        int count = userGroupMemberQueryService.selectUserGroupMemberCount(userGroupId);
+
+        UserGroupMemberListQueryModel userGroupMemberListQueryModel = new UserGroupMemberListQueryModel(members, count);
+
+        return userGroupMemberListQueryModel;
     }
 
-    @Override
-    public int getUserGroupMemberCount(String userGroupId) {
-        int count = userGroupMemberQueryService.selectUserGroupMemberCount(userGroupId);
-        return count;
-    }
 }

@@ -2,7 +2,7 @@ package com.example.demo.presentation.usergroupmember;
 
 import com.example.demo.Logging;
 import com.example.demo.application.usergroupmember.UserGroupMemberApplicationService;
-import com.example.demo.application.usergroupmember.UserGroupMemberQueryModel;
+import com.example.demo.application.usergroupmember.UserGroupMemberListQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +28,13 @@ public class UserGroupMemberController {
             @RequestParam("page") Optional<Integer> page,
             @RequestParam("per") Optional<Integer> per) {
         try {
-            List<UserGroupMemberQueryModel> userGroupMembers = userGroupMemberApplicationService.getUserGroupMembers(userGroupId, page, per);
+            UserGroupMemberListQueryModel userGroupMembers = userGroupMemberApplicationService.getUserGroupMembers(userGroupId, page, per);
 
-            List<UserGroupMemberResource> userGroupMemberResources = userGroupMembers.stream()
+            List<UserGroupMemberResource> userGroupMemberResources = userGroupMembers.getUserGroupMemberListQueryModel().stream()
                     .map(member -> new UserGroupMemberResource(member))
                     .collect(Collectors.toList());
 
-            int total = userGroupMemberApplicationService.getUserGroupMemberCount(userGroupId);
+            int total = userGroupMembers.getTotal();
 
             UserGroupMemberListResource userGroupMemberListResource = new UserGroupMemberListResource(userGroupMemberResources, total);
 

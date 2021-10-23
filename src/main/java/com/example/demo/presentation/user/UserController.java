@@ -97,7 +97,7 @@ public class UserController {
     @GetMapping("")
     public UserListResource getUsers(@RequestParam("page")int page,
                                      @RequestParam("per")int per,
-                                     @RequestParam("group-id")Optional<String> userGroupId) {
+                                     @RequestParam("group_id")Optional<String> userGroupId) {
         try {
             List<UserModel> userModels = userApplicationService.getUsers(page, per, userGroupId);
 
