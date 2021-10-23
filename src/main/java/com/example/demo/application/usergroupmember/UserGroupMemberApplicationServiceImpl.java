@@ -4,7 +4,6 @@ import com.example.demo.application.usergroup.UserGroupQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,11 +29,7 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
         int pageValue = page.orElse(USER_GROUP_MEMBER_DEFAULT_PAGE);
         int perValue = per.orElse(USER_GROUP_MEMBER_DEFAULT_PER);
 
-        List<UserGroupMemberQueryModel> members = userGroupMemberQueryService.selectUserGroupMembersByUserGroupId(userGroupId, pageValue, perValue);
-
-        int count = userGroupMemberQueryService.selectUserGroupMemberCount(userGroupId);
-
-        UserGroupMemberListQueryModel userGroupMemberListQueryModel = new UserGroupMemberListQueryModel(members, count);
+        UserGroupMemberListQueryModel userGroupMemberListQueryModel = userGroupMemberQueryService.selectUserGroupMembersByUserGroupId(userGroupId, pageValue, perValue);
 
         return userGroupMemberListQueryModel;
     }

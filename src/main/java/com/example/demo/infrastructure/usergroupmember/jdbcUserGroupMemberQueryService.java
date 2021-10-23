@@ -1,10 +1,12 @@
 package com.example.demo.infrastructure.usergroupmember;
 
+import com.example.demo.application.usergroupmember.UserGroupMemberListQueryModel;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryModel;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,9 @@ public class jdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
     @Autowired
     JdbcTemplate jdbc;
 
-    public List<UserGroupMemberQueryModel> selectUserGroupMembersByUserGroupId(String userGroupId, int page, int per) {
+    @Override
+    @Transactional
+    public UserGroupMemberListQueryModel selectUserGroupMembersByUserGroupId(String userGroupId, int page, int per) {
         int offset = 0;
         if(page > 0) {offset = page * per;}
 
@@ -28,8 +32,13 @@ public class jdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
                 .map(member -> convertToUserGroupMemberQueryModel(member))
                 .collect(Collectors.toList());
 
-        return memberQueryModelList;
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM user_group_member WHERE group_id = ?",
+                Integer.class, userGroupId);
 
+        UserGroupMemberListQueryModel userGroupMemberListQueryModel = new UserGroupMemberListQueryModel(memberQueryModelList, count);
+
+        return userGroupMemberListQueryModel;
     }
 
     private UserGroupMemberQueryModel convertToUserGroupMemberQueryModel(Map<String, Object> member) {
@@ -39,10 +48,4 @@ public class jdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
                 (String) member.get("user_id"));
     }
 
-    public int selectUserGroupMemberCount(String groupId) {
-        Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM user_group_member WHERE group_id = ?",
-                Integer.class, groupId);
-        return count;
-    }
 }
