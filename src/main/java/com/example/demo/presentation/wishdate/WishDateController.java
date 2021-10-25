@@ -27,12 +27,11 @@ public class WishDateController {
     Logging logger;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{group-id}")
-    public void registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody,
-                                 @PathVariable("group-id")String userGroupId) {
+    @PostMapping("")
+    public void registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody) {
         try {
             wishDateApplicationService.register(wishDateRequestBody.getOwner(),
-                    wishDateRequestBody.getDate(), userGroupId);
+                    wishDateRequestBody.getDate(), wishDateRequestBody.getGroupId());
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
@@ -52,7 +51,7 @@ public class WishDateController {
                                              @RequestParam("to") Optional<String> to,
                                              @RequestParam("page") int page,
                                              @RequestParam("per") int per,
-                                             @RequestParam("group-id")Optional<String> userGroupId) {
+                                             @RequestParam("group_id")Optional<String> userGroupId) {
 
         List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per, userGroupId);
 
@@ -68,8 +67,8 @@ public class WishDateController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{wish-date-id}")
-    public void deleteWishDate(@PathVariable("wish-date-id") String wishDateId) {
+    @DeleteMapping("/{wish_date_id}")
+    public void deleteWishDate(@PathVariable("wish_date_id") String wishDateId) {
         try {
 
             wishDateApplicationService.deleteWishDate(wishDateId);
@@ -85,8 +84,8 @@ public class WishDateController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/{wish-date-id}/participations")
-    public ResponseEntity<String> participateInWishDate(@PathVariable("wish-date-id") String wishDateId,
+    @PostMapping("/{wish_date_id}/participations")
+    public ResponseEntity<String> participateInWishDate(@PathVariable("wish_date_id") String wishDateId,
                                                         @RequestBody @Valid ParticipantRequestBody participantRequestBody) {
         try {
             wishDateApplicationService.participate(wishDateId, participantRequestBody.getParticipant());
@@ -110,8 +109,8 @@ public class WishDateController {
 
 
     @ResponseBody
-    @GetMapping("/{wish-date-id}/participations")
-    public ParticipationListResource getParticipations(@PathVariable("wish-date-id") String wishDateId,
+    @GetMapping("/{wish_date_id}/participations")
+    public ParticipationListResource getParticipations(@PathVariable("wish_date_id") String wishDateId,
                                                        @RequestParam("page") int page,
                                                        @RequestParam("per") int per) {
         try {
@@ -134,9 +133,9 @@ public class WishDateController {
 
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{wish-date-id}/participations/{participation-id}")
-    public void deleteParticipation(@PathVariable("wish-date-id") String wishDateId,
-                                    @PathVariable("participation-id") String participationId) {
+    @DeleteMapping("/{wish_date_id}/participations/{participation_id}")
+    public void deleteParticipation(@PathVariable("wish_date_id") String wishDateId,
+                                    @PathVariable("participation_id") String participationId) {
         try {
             wishDateApplicationService.deleteParticipation(wishDateId, participationId);
 
@@ -150,8 +149,8 @@ public class WishDateController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("{wish-date-id}/comments")
-    public void postComment(@PathVariable("wish-date-id") String wishDateId,
+    @PostMapping("{wish_date_id}/comments")
+    public void postComment(@PathVariable("wish_date_id") String wishDateId,
                               @RequestBody @Valid WishDateCommentRequestBody wishDateCommentRequestBody) {
         try {
             wishDateApplicationService.postWishDateComment(wishDateId,
@@ -172,8 +171,8 @@ public class WishDateController {
     }
 
     @ResponseBody
-    @GetMapping("{wish-date-id}/comments")
-    public WishDateCommentListResource getWishDateComment(@PathVariable("wish-date-id") String wishDateId,
+    @GetMapping("{wish_date_id}/comments")
+    public WishDateCommentListResource getWishDateComment(@PathVariable("wish_date_id") String wishDateId,
                            @RequestParam(name = "page") Optional<Integer> page,
                            @RequestParam(name = "per") Optional<Integer> per) {
         try {
@@ -199,9 +198,9 @@ public class WishDateController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{wish-date-id}/comments/{comment-id}")
-    public void deleteWishDateComment(@PathVariable("wish-date-id")String wishDateId,
-                                      @PathVariable("comment-id")String wishDateCommentId) {
+    @DeleteMapping("/{wish_date_id}/comments/{comment_id}")
+    public void deleteWishDateComment(@PathVariable("wish_date_id")String wishDateId,
+                                      @PathVariable("comment_id")String wishDateCommentId) {
         try {
             wishDateApplicationService.deleteWishDateComment(wishDateId, wishDateCommentId);
 

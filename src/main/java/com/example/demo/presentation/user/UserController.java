@@ -72,8 +72,8 @@ public class UserController {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}")
-    public UserResource getUser(@PathVariable("id") String userId) {
+    @GetMapping("/{user_id}")
+    public UserResource getUser(@PathVariable("user_id") String userId) {
 
         try {
             UserModel userModel = userApplicationService.get(userId);
