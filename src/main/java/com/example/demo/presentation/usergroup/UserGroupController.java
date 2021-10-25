@@ -61,8 +61,8 @@ public class UserGroupController {
         }
     }
 
-    @GetMapping("/{group-id}")
-    public UserGroupResource getUserGroup(@PathVariable("group-id")String userGroupId) {
+    @GetMapping("/{group_id}")
+    public UserGroupResource getUserGroup(@PathVariable("group_id")String userGroupId) {
         try {
             UserGroupQueryModel userGroupQueryModel = userGroupApplicationService.getUserGroup(userGroupId);
 
@@ -78,8 +78,8 @@ public class UserGroupController {
 
     //memo: パラメータが増えてくる可能性。changeUserGroupProfileのように汎用化するかも。
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/{group-id}")
-    public void changeUserGroupName(@PathVariable("group-id")String userGroupId,
+    @PutMapping("/{group_id}")
+    public void changeUserGroupName(@PathVariable("group_id")String userGroupId,
                                     @RequestParam("name")String userGroupName) {
         try {
             userGroupApplicationService.changeUserGroupName(userGroupId, userGroupName);
@@ -93,8 +93,8 @@ public class UserGroupController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{group-id}")
-    public void deleteUserGroup(@PathVariable("group-id")String userGroupId) {
+    @DeleteMapping("/{group_id}")
+    public void deleteUserGroup(@PathVariable("group_id")String userGroupId) {
         try {
             userGroupApplicationService.deleteUserGroup(userGroupId);
         } catch (UserGroupException e) {

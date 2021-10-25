@@ -22,7 +22,7 @@ public class PrefectureController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/")
-    public PrefectureListResource getPrefectures(@RequestParam(name = "region-id", required = false) Optional<Integer> regionId) {
+    public PrefectureListResource getPrefectures(@RequestParam(name = "region_id", required = false) Optional<Integer> regionId) {
         try {
 
             List<PrefectureModel> prefectureModelList = prefectureService.getPrefectureList(regionId);
