@@ -4,6 +4,7 @@ import com.example.demo.Logging;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.usergroupmember.UserGroupMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,9 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
         UserGroup userGroup = new UserGroup(userGroupName, owner);
 
-        userGroupRepository.insert(userGroup);
+        UserGroupMember userGroupMember = new UserGroupMember(userGroup.getUserGroupId(), userGroup.getOwner());
+
+        userGroupRepository.insert(userGroup, userGroupMember);
     }
 
     private static final int USER_GROUP_DEFAULT_PAGE = 0;

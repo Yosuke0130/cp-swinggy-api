@@ -12,7 +12,7 @@ public class UserGroupMember {
         this.userId = userId;
     }
 
-    public UserGroupMemberId getUserGroupMemberId() {return userGroupMemberId;}
+    public String getUserGroupMemberId() {return userGroupMemberId.getValue();}
 
     public String getUserGroupId() {return userGroupId;}
 

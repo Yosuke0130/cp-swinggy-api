@@ -1,9 +1,12 @@
 package com.example.demo.infrastructure.usergroupmember;
 
+import com.example.demo.application.usergroupmember.UserGroupMemberException;
 import com.example.demo.application.usergroupmember.UserGroupMemberListQueryModel;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryModel;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +49,21 @@ public class jdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
                 (String) member.get("user_group_member_id"),
                 (String) member.get("group_id"),
                 (String) member.get("user_id"));
+    }
+
+    @Override
+    public UserGroupMemberQueryModel selectUserGroupMember(String groupId, String userId) throws UserGroupMemberException{
+        try {
+            Map<String, Object> userGroupMember = jdbc.queryForMap("SELECT * FROM user_group_member WHERE group_id = ? AND user_id = ?", groupId, userId);
+
+            UserGroupMemberQueryModel userGroupMemberQueryModel = convertToUserGroupMemberQueryModel(userGroupMember);
+
+            return userGroupMemberQueryModel;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        } catch (DataAccessException e) {
+            throw new UserGroupMemberException("query failed.");
+        }
     }
 
 }

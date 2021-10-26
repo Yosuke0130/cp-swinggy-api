@@ -6,4 +6,6 @@ public interface UserGroupMemberApplicationService {
 
     public UserGroupMemberListQueryModel getUserGroupMembers(String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
 
+    public void registerUserGroupMember(String userGroupId, String userId) throws UserGroupMemberException, IllegalArgumentException;
+
 }
