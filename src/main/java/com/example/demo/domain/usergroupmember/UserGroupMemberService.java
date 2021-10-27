@@ -18,7 +18,6 @@ public class UserGroupMemberService {
                 userGroupMemberQueryService.selectUserGroupMember(userGroupMember.getUserGroupId(), userGroupMember.getUserId());
 
         if(userGroupMemberQueryModel == null) {
-            System.out.println("return null. no data at db");
             return false;
         }
 

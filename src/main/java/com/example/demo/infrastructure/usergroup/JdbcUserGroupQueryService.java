@@ -5,7 +5,6 @@ import com.example.demo.application.usergroup.UserGroupQueryModel;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Repository
-public class jdbcUserGroupQueryService implements UserGroupQueryService {
+public class JdbcUserGroupQueryService implements UserGroupQueryService {
 
     @Autowired
     JdbcTemplate jdbc;

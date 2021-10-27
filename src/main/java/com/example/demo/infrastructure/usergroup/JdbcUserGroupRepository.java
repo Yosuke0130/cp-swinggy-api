@@ -3,7 +3,6 @@ package com.example.demo.infrastructure.usergroup;
 import com.example.demo.application.usergroup.UserGroupException;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
-import com.example.demo.domain.usergroupmember.UserGroupMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Repository
-public class jdbcUserGroupRepository implements UserGroupRepository {
+public class JdbcUserGroupRepository implements UserGroupRepository {
 
     @Autowired
     JdbcTemplate jdbc;
 
     @Override
     @Transactional
-    public void insert(UserGroup userGroup, UserGroupMember userGroupMember) throws UserGroupException{
+    public void insert(UserGroup userGroup) throws UserGroupException{
         try {
             jdbc.update("INSERT INTO user_group(group_id, group_name, owner) VALUES(?, ?, ?)",
                     userGroup.getUserGroupId(),
@@ -32,13 +31,6 @@ public class jdbcUserGroupRepository implements UserGroupRepository {
                     belongingId.toString(),
                     userGroup.getUserGroupId(),
                     userGroup.getOwner());
-
-            System.out.println(userGroupMember.getUserGroupMemberId() + " " +  userGroupMember.getUserGroupId() + " " + userGroupMember.getUserId());
-            jdbc.update("INSERT INTO user_group_member(user_group_member_id, group_id, user_id, isOwner) VALUES(?, ?, ?, ?)",
-                    userGroupMember.getUserGroupMemberId(),
-                    userGroupMember.getUserGroupId(),
-                    userGroupMember.getUserId(),
-                    true);
 
         } catch (DataAccessException e) {
             throw new UserGroupException("DB access error occurred when registering new user_group.", e);

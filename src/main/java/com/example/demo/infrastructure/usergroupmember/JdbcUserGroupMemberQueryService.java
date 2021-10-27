@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-public class jdbcUserGroupMemberQueryService implements UserGroupMemberQueryService {
+public class JdbcUserGroupMemberQueryService implements UserGroupMemberQueryService {
 
     @Autowired
     JdbcTemplate jdbc;
