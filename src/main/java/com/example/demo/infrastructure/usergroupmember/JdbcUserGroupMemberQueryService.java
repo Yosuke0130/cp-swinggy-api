@@ -48,7 +48,8 @@ public class JdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
         return new UserGroupMemberQueryModel(
                 (String) member.get("user_group_member_id"),
                 (String) member.get("group_id"),
-                (String) member.get("user_id"));
+                (String) member.get("user_id"),
+                (boolean) member.get("is_owner"));
     }
 
     @Override

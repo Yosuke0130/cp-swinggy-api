@@ -9,11 +9,13 @@ public class UserGroupMemberResource {
     private String id;
     private String userGroupId;
     private String userId;
+    private boolean isOwner;
 
     public UserGroupMemberResource(UserGroupMemberQueryModel userGroupMember) {
         this.id = userGroupMember.getUserGroupMemberId();
         this.userGroupId = userGroupMember.getUserGroupId();
         this.userId = userGroupMember.getUserId();
+        this.isOwner = userGroupMember.getIsOwner();
     }
 
     public String getId() {
@@ -27,4 +29,6 @@ public class UserGroupMemberResource {
     public String getUserId() {
         return userId;
     }
+
+    public boolean getIsOwner() { return isOwner;}
 }

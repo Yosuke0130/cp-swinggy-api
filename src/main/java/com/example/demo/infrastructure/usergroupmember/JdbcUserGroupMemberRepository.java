@@ -18,27 +18,21 @@ public class JdbcUserGroupMemberRepository implements UserGroupMemberRepository 
     @Override
     public void insertUserGroupMember(UserGroupMember userGroupMember) throws DataAccessException {
         try {
-            jdbc.update("INSERT INTO user_group_member(user_group_member_id, group_id, user_id) VALUES(?, ?, ?)",
-                    userGroupMember.getUserGroupMemberId(),
-                    userGroupMember.getUserGroupId(),
-                    userGroupMember.getUserId());
+            if(!userGroupMember.getIsOwner()) {
+                jdbc.update("INSERT INTO user_group_member(user_group_member_id, group_id, user_id) VALUES(?, ?, ?)",
+                        userGroupMember.getUserGroupMemberId(),
+                        userGroupMember.getUserGroupId(),
+                        userGroupMember.getUserId());
+            } else {
+                jdbc.update("INSERT INTO user_group_member(user_group_member_id, group_id, user_id, is_owner) VALUES(?, ?, ?, ?)",
+                        userGroupMember.getUserGroupMemberId(),
+                        userGroupMember.getUserGroupId(),
+                        userGroupMember.getUserId(),
+                        true);
+            }
         } catch (DataAccessException e) {
             throw new UserGroupMemberException("DB access error occurred when registering new user_group_member.", e);
         }
     }
-
-    @Override
-    public void insertUserGroupMemberByOwner(UserGroupMember userGroupMember) throws DataAccessException {
-        try {
-            jdbc.update("INSERT INTO user_group_member(user_group_member_id, group_id, user_id, isOwner) VALUES(?, ?, ?, ?)",
-                    userGroupMember.getUserGroupMemberId(),
-                    userGroupMember.getUserGroupId(),
-                    userGroupMember.getUserId(),
-                    true);
-        } catch (DataAccessException e) {
-            throw new UserGroupMemberException("DB access error occurred when registering new user_group.", e);
-        }
-    }
-
 
 }

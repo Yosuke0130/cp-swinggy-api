@@ -57,7 +57,7 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
             throw new IllegalArgumentException("This userId doesn't exist.");
         }
 
-        UserGroupMember userGroupMember = new UserGroupMember(userGroupId, userId);
+        UserGroupMember userGroupMember = new UserGroupMember(userGroupId, userId, false);
 
         if(userGroupMemberService.isMember(userGroupMember)) {
             throw new IllegalArgumentException("This user has already belonged to this group.");

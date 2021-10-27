@@ -42,9 +42,8 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
         UserGroup userGroup = new UserGroup(userGroupName, owner);
         userGroupRepository.insert(userGroup);
 
-        UserGroupMember userGroupMember = new UserGroupMember(userGroup.getUserGroupId(), userGroup.getOwner());
-        userGroupMemberRepository.insertUserGroupMemberByOwner(userGroupMember);
-
+        UserGroupMember userGroupMember = new UserGroupMember(userGroup.getUserGroupId(), userGroup.getOwner(), true);
+        userGroupMemberRepository.insertUserGroupMember(userGroupMember);
     }
 
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
