@@ -2,6 +2,7 @@ package com.example.demo.presentation.usergroupmember;
 
 import com.example.demo.Logging;
 import com.example.demo.application.usergroupmember.UserGroupMemberApplicationService;
+import com.example.demo.application.usergroupmember.UserGroupMemberException;
 import com.example.demo.application.usergroupmember.UserGroupMemberListQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,9 +49,20 @@ public class UserGroupMemberController {
 
     @PostMapping("")
     public void createUserGroupMember(
-            @RequestBody UserGroupMemberCreationRequestBody userGroupMemberCreationRequestBody
-    ) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            @RequestBody UserGroupMemberCreationRequestBody userGroupMemberCreationRequestBody) {
+        try {
+            userGroupMemberApplicationService.registerUserGroupMember(
+                    userGroupMemberCreationRequestBody.getUserGroupId(),
+                    userGroupMemberCreationRequestBody.getUserId());
+
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        } catch (UserGroupMemberException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @DeleteMapping("/{user_group_member_id}")

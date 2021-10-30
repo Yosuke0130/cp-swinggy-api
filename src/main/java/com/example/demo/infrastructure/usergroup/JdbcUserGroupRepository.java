@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Repository
-public class jdbcUserGroupRepository implements UserGroupRepository {
+public class JdbcUserGroupRepository implements UserGroupRepository {
 
     @Autowired
     JdbcTemplate jdbc;

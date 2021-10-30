@@ -4,8 +4,11 @@ import com.example.demo.Logging;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.usergroupmember.UserGroupMember;
+import com.example.demo.domain.usergroupmember.UserGroupMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +26,13 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     UserRepository userRepository;
 
     @Autowired
+    UserGroupMemberRepository userGroupMemberRepository;
+
+    @Autowired
     UserGroupQueryService userGroupQueryService;
 
     @Override
+    @Transactional
     public void createUserGroup(String userGroupName, String owner) throws IllegalStateException, IllegalArgumentException, UserGroupException {
 
         if(!userRepository.exists(owner)) {
@@ -33,8 +40,10 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
         }
 
         UserGroup userGroup = new UserGroup(userGroupName, owner);
-
         userGroupRepository.insert(userGroup);
+
+        UserGroupMember userGroupMember = new UserGroupMember(userGroup.getUserGroupId(), userGroup.getOwner(), true);
+        userGroupMemberRepository.insertUserGroupMember(userGroupMember);
     }
 
     private static final int USER_GROUP_DEFAULT_PAGE = 0;
