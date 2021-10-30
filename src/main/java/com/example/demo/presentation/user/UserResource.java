@@ -9,7 +9,7 @@ import java.util.Optional;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserResource {
 
-    private String userId;
+    private String id;
     private String firstName;
     private String lastName;
     private String screenName;
@@ -18,7 +18,7 @@ public class UserResource {
     private String profileImageURL;
 
     public UserResource(UserModel userModel) {
-        this.userId = userModel.getUserId();
+        this.id = userModel.getUserId();
         this.firstName = userModel.getFirstName();
         this.lastName = userModel.getLastName();
         this.screenName = userModel.getScreenName();
@@ -27,19 +27,17 @@ public class UserResource {
         this.profileImageURL = userModel.getProfileImageURL().toString();
     }
 
-    public String getUser_id() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public String getFirst_name() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public String getLast_name() {
-        return lastName;
-    }
+    public String getLastName() { return lastName;}
 
-    public String getScreen_name() {
+    public String getScreenName() {
         return screenName;
     }
 
@@ -51,7 +49,7 @@ public class UserResource {
         return tel;
     }
 
-    public String getProfile_image_url() {
+    public String getProfileImageUrl() {
         return profileImageURL;
     }
 

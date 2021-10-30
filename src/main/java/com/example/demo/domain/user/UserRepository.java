@@ -21,7 +21,11 @@ public interface UserRepository {
 
     public List<User> selectUsers(int page, int per) throws UserCreateException;
 
+    public List<User> selectUsersByGroupId(int page, int per, String userGroupId) throws UserCreateException;
+
     public int selectCount();
+
+    public int selectCountByGroupId(String userGroupId);
 
     public int selectCountByScreenName(String screenName) throws UserCreateException;
 

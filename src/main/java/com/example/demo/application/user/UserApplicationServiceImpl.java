@@ -76,9 +76,14 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public List<UserModel> getUsers(int page, int per) throws UserCreateException{
+    public List<UserModel> getUsers(int page, int per, Optional<String> userGroupId) throws UserCreateException{
+        List<User> users = null;
 
-        List<User> users = userRepository.selectUsers(page, per);
+        if(userGroupId.isEmpty()) {
+            users = userRepository.selectUsers(page, per);
+        } else {
+            users = userRepository.selectUsersByGroupId(page, per, userGroupId.get());
+        }
 
         List<UserModel> userModels = users.stream()
                 .map(userModel -> convertToUserModel(userModel))
@@ -86,10 +91,14 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
         return userModels;
     }
-
-    public int getCount() {
-
-        int count = userRepository.selectCount();
+    @Override
+    public int getCount(Optional<String> userGroupId) {
+        int count;
+        if(userGroupId.isEmpty()) {
+            count = userRepository.selectCount();
+        } else {
+            count = userRepository.selectCountByGroupId(userGroupId.get());
+        }
 
         return count;
     }
