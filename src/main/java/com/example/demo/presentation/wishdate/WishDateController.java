@@ -31,7 +31,7 @@ public class WishDateController {
     public void registerWishDate(@RequestBody WishDateRequestBody wishDateRequestBody) {
         try {
             wishDateApplicationService.register(wishDateRequestBody.getOwner(),
-                    wishDateRequestBody.getDate(), wishDateRequestBody.getGroupId());
+                    wishDateRequestBody.getDate(), wishDateRequestBody.getUserGroupId());
 
         } catch (IllegalStateException e) {
             logger.error(e.getMessage());
@@ -51,7 +51,7 @@ public class WishDateController {
                                              @RequestParam("to") Optional<String> to,
                                              @RequestParam("page") int page,
                                              @RequestParam("per") int per,
-                                             @RequestParam("group_id")Optional<String> userGroupId) {
+                                             @RequestParam("group_id") Optional<String> userGroupId) {
 
         List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per, userGroupId);
 
@@ -151,7 +151,7 @@ public class WishDateController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("{wish_date_id}/comments")
     public void postComment(@PathVariable("wish_date_id") String wishDateId,
-                              @RequestBody @Valid WishDateCommentRequestBody wishDateCommentRequestBody) {
+                            @RequestBody @Valid WishDateCommentRequestBody wishDateCommentRequestBody) {
         try {
             wishDateApplicationService.postWishDateComment(wishDateId,
                     wishDateCommentRequestBody.getAuthor(),
@@ -173,8 +173,8 @@ public class WishDateController {
     @ResponseBody
     @GetMapping("{wish_date_id}/comments")
     public WishDateCommentListResource getWishDateComment(@PathVariable("wish_date_id") String wishDateId,
-                           @RequestParam(name = "page") Optional<Integer> page,
-                           @RequestParam(name = "per") Optional<Integer> per) {
+                                                          @RequestParam(name = "page") Optional<Integer> page,
+                                                          @RequestParam(name = "per") Optional<Integer> per) {
         try {
 
             List<WishDateCommentModel> wishDateCommentModelList = wishDateApplicationService.getWishDateComments(wishDateId, page, per);
@@ -199,8 +199,8 @@ public class WishDateController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{wish_date_id}/comments/{comment_id}")
-    public void deleteWishDateComment(@PathVariable("wish_date_id")String wishDateId,
-                                      @PathVariable("comment_id")String wishDateCommentId) {
+    public void deleteWishDateComment(@PathVariable("wish_date_id") String wishDateId,
+                                      @PathVariable("comment_id") String wishDateCommentId) {
         try {
             wishDateApplicationService.deleteWishDateComment(wishDateId, wishDateCommentId);
 
