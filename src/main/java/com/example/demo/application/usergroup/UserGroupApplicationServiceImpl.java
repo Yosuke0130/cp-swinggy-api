@@ -1,6 +1,8 @@
 package com.example.demo.application.usergroup;
 
 import com.example.demo.Logging;
+import com.example.demo.application.usergroupmember.UserGroupMemberQueryModel;
+import com.example.demo.application.usergroupmember.UserGroupMemberQueryService;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import com.example.demo.domain.user.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserGroupApplicationServiceImpl implements UserGroupApplicationService {
@@ -30,6 +33,9 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
     @Autowired
     UserGroupQueryService userGroupQueryService;
+
+    @Autowired
+    UserGroupMemberQueryService userGroupMemberQueryService;
 
     @Override
     @Transactional
@@ -94,6 +100,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
     }
 
     @Override
+    @Transactional
     public void deleteUserGroup(String userGroupId) throws UserGroupException, IllegalArgumentException{
 
         UserGroupQueryModel userGroupQueryModel = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
@@ -102,6 +109,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
                 userGroupQueryModel.getUserGroupName(),
                 userGroupQueryModel.getOwner());
 
+        userGroupMemberRepository.deleteUserGroupMembersByGroupId(userGroup.getUserGroupId());
         userGroupRepository.delete(userGroup);
     }
 

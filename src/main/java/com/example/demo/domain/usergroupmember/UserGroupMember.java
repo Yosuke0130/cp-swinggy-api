@@ -14,6 +14,13 @@ public class UserGroupMember {
         this.isOwner = isOwner;
     }
 
+    public UserGroupMember(String userGroupMemeberId, String userGroupId, String userId, boolean isOwner) {
+        this.userGroupMemberId = new UserGroupMemberId(userGroupMemeberId);
+        this.userGroupId = userGroupId;
+        this.userId = userId;
+        this.isOwner = isOwner;
+    }
+
     public String getUserGroupMemberId() {return userGroupMemberId.getValue();}
 
     public String getUserGroupId() {return userGroupId;}

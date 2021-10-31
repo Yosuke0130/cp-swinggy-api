@@ -67,6 +67,14 @@ public class UserGroupMemberController {
 
     @DeleteMapping("/{user_group_member_id}")
     public void deleteUserGroupMember(@PathVariable("user_group_member_id") String userGroupMemberId) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            userGroupMemberApplicationService.deleteUserGroupMember(userGroupMemberId);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (UserGroupMemberException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
