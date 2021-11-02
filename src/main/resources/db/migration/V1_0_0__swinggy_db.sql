@@ -114,3 +114,22 @@ CREATE TABLE IF NOT EXISTS user_group_member(
     FOREIGN KEY(user_id) REFERENCES user(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS user_group_thread(
+    user_group_thread_id VARCHAR(255),
+    group_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY(user_group_thread_id),
+    FOREIGN KEY(group_id) REFERENCES user_group(group_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_group_comment(
+    user_group_comment_id VARCHAR(255),
+    user_group_thread_id VARCHAR(255) NOT NULL,
+    member_id VARCHAR(255) NOT NULL,
+    text VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(user_group_comment_id),
+    FOREIGN KEY(user_group_thread_id) REFERENCES user_group_thread(user_group_thread_id),
+    FOREIGN KEY(member_id) REFERENCES user(user_id)
+);
+
