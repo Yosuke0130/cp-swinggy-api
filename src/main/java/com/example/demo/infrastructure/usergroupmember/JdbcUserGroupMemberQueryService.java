@@ -67,4 +67,17 @@ public class JdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
         }
     }
 
+    @Override
+    public UserGroupMemberQueryModel selectUserGroupMemberByMemberId(String userGroupMemberId) throws IllegalArgumentException, UserGroupMemberException{
+        try {
+            Map<String, Object> member = jdbc.queryForMap("SELECT * FROM user_group_member WHERE user_group_member_id = ?", userGroupMemberId);
+
+            return convertToUserGroupMemberQueryModel(member);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new IllegalArgumentException("This userGroupMemberId is invalid.", e);
+        } catch (DataAccessException e) {
+            throw new UserGroupMemberException("Query failed.");
+        }
+    }
+
 }

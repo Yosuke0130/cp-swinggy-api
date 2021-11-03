@@ -8,4 +8,6 @@ public interface UserGroupMemberApplicationService {
 
     public void registerUserGroupMember(String userGroupId, String userId) throws UserGroupMemberException, IllegalArgumentException;
 
+    public void deleteUserGroupMember(String userGroupMemberId) throws UserGroupMemberException, IllegalArgumentException;
+
 }

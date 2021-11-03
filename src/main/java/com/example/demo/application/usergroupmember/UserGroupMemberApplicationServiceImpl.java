@@ -1,5 +1,6 @@
 package com.example.demo.application.usergroupmember;
 
+import com.example.demo.Logging;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.usergroupmember.UserGroupMember;
@@ -27,6 +28,9 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
 
     @Autowired
     UserGroupMemberService userGroupMemberService;
+
+    @Autowired
+    Logging logger;
 
     private static final int USER_GROUP_MEMBER_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_MEMBER_DEFAULT_PER = 100;
@@ -64,6 +68,25 @@ public class UserGroupMemberApplicationServiceImpl implements UserGroupMemberApp
         }
 
         userGroupMemberRepository.insertUserGroupMember(userGroupMember);
+    }
+
+    @Override
+    public void deleteUserGroupMember(String userGroupMemberId) throws UserGroupMemberException, IllegalArgumentException {
+
+        UserGroupMemberQueryModel userGroupMemberQueryModel = userGroupMemberQueryService.selectUserGroupMemberByMemberId(userGroupMemberId);
+
+        UserGroupMember userGroupMember = new UserGroupMember(
+                userGroupMemberQueryModel.getUserGroupMemberId(),
+                userGroupMemberQueryModel.getUserGroupId(),
+                userGroupMemberQueryModel.getUserId(),
+                userGroupMemberQueryModel.getIsOwner());
+
+        if(!userGroupMember.getIsOwner()) {
+            logger.info("call repository to delete member: " + userGroupMember.getUserGroupMemberId());
+            userGroupMemberRepository.deleteUserGroupMember(userGroupMember);
+        } else {
+            throw new IllegalArgumentException("Owner cannot delete group member.");
+        }
     }
 
 }
