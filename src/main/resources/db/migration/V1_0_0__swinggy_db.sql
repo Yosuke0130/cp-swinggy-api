@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS user_group_comment(
     user_group_comment_id VARCHAR(255),
     user_group_thread_id VARCHAR(255) NOT NULL,
     member_id VARCHAR(255) NOT NULL,
-    text VARCHAR(255) NOT NULL,
+    text VARCHAR(512) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(user_group_comment_id),
     FOREIGN KEY(user_group_thread_id) REFERENCES user_group_thread(user_group_thread_id),
