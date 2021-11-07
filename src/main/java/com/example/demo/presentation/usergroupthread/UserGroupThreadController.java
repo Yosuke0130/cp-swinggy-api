@@ -1,19 +1,49 @@
 package com.example.demo.presentation.usergroupthread;
 
+import com.example.demo.Logging;
+import com.example.demo.application.usergroupthread.UserGroupThreadApplicationService;
+import com.example.demo.application.usergroupthread.UserGroupThreadListQueryModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/user-groups/{user_group_id}/threads")
 public class UserGroupThreadController {
+
+    @Autowired
+    UserGroupThreadApplicationService userGroupThreadApplicationService;
+
+    @Autowired
+    Logging logger;
+
     @GetMapping("")
     public UserGroupThreadListResource getUserGroupThreads(
             @PathVariable("user_group_id") String userGroupId,
-            @RequestParam(value = "page", required = false) int page,
-            @RequestParam(value = "per", required = false) int per
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("per") Optional<Integer> per
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            UserGroupThreadListQueryModel userGroupThreadList = userGroupThreadApplicationService.getUserGroupThreads(userGroupId, page, per);
+
+            int count = userGroupThreadList.getCount();
+
+            List<UserGroupThreadResource> userGroupThreads = userGroupThreadList.getUserGroupThreadQueryModels().stream()
+                    .map(thread -> new UserGroupThreadResource(thread.getUserGroupThreadId(), thread.getName(), thread.getUserGroupId()))
+                    .collect(Collectors.toList());
+
+            UserGroupThreadListResource userGroupThreadListResource = new UserGroupThreadListResource(userGroupThreads, count);
+
+            return userGroupThreadListResource;
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{thread_id}")
