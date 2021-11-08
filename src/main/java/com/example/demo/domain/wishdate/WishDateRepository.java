@@ -14,11 +14,11 @@ public interface WishDateRepository {
 
     public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException, IOException;
 
-    public List<WishDate> selectWishDates(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per);
+    public List<WishDate> selectWishDatesByUserId(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per, String userId);
 
     public List<WishDate> selectWishDatesByGroupId(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per, String userGroupId);
 
-    public int selectWishDateCount(Optional<LocalDate> from, Optional<LocalDate> to);
+    public int selectWishDateCountByUserId(Optional<LocalDate> from, Optional<LocalDate> to, String userId);
 
     public int selectWishDateCountByGroupId(Optional<LocalDate> from, Optional<LocalDate> to, String userGroupId);
 

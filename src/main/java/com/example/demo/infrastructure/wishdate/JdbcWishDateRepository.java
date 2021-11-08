@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -68,7 +67,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDate> selectWishDates(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per) {
+    public List<WishDate> selectWishDatesByUserId(Optional<LocalDate> from, Optional<LocalDate> to, int page, int per, String userId) {
         try {
             int offset = 0;
             if (page > 0) {
@@ -80,23 +79,32 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 toValue = to.get().plusDays(1);
             }
 
+            //todo: ユーザーIDから所属グループを取得、その所属グループのwishdatesを取得
+
             List<Map<String, Object>> wishDateData = null;
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
-                            from.get(), toValue, per, offset);
+                    wishDateData = jdbc.queryForList(
+                            "SELECT * FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date >= ? AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
+                            userId, from.get(), toValue, per, offset);
                 } else {
                     //fromだけ
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date >= ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", from.get(), per, offset);
+                    wishDateData = jdbc.queryForList(
+                            "SELECT * FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date >= ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
+                            userId, from.get(), per, offset);
                 }
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?", toValue, per, offset);
+                    wishDateData = jdbc.queryForList(
+                            "SELECT * FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date < ? ORDER BY wish_date DESC LIMIT ? OFFSET ?",
+                            userId, toValue, per, offset);
                 } else {
                     //どちらも値なし
-                    wishDateData = jdbc.queryForList("SELECT * FROM wish_date ORDER BY wish_date DESC LIMIT ? OFFSET ?", per, offset);
+                    wishDateData = jdbc.queryForList(
+                            "SELECT * FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) ORDER BY wish_date DESC LIMIT ? OFFSET ?",
+                            userId, per, offset);
                 }
             }
 
@@ -157,7 +165,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public int selectWishDateCount(Optional<LocalDate> from, Optional<LocalDate> to) {
+    public int selectWishDateCountByUserId(Optional<LocalDate> from, Optional<LocalDate> to, String userId) {
         try {
             Integer count = 0;
             LocalDate toValue = null;
@@ -165,6 +173,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 toValue = to.get().plusDays(1);
             }
 
+            // (SELECT group_id FROM user_group_member WHERE user_id = ?) AND
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり

@@ -51,15 +51,16 @@ public class WishDateController {
                                              @RequestParam("to") Optional<String> to,
                                              @RequestParam("page") int page,
                                              @RequestParam("per") int per,
-                                             @RequestParam("group_id") Optional<String> userGroupId) {
+                                             @RequestParam("group_id") Optional<String> userGroupId,
+                                             @RequestParam("user_id") String userId) {
 
-        List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per, userGroupId);
+        List<WishDateModel> wishDateModelList = wishDateApplicationService.getWishDates(from, to, page, per, userGroupId, userId);
 
         List<WishDateResource> wishDateResourceList = wishDateModelList.stream()
                 .map(wishDate -> new WishDateResource(wishDate))
                 .collect(Collectors.toList());
 
-        int total = wishDateApplicationService.getWishDateCount(from, to, userGroupId);
+        int total = wishDateApplicationService.getWishDateCount(from, to, userGroupId, userId);
 
         WishDateListResource wishDateListResource = new WishDateListResource(wishDateResourceList, total);
 
