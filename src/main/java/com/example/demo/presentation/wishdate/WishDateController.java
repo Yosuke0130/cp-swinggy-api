@@ -45,6 +45,7 @@ public class WishDateController {
         }
     }
 
+    //todo: 追加でuserId受け取り
     @ResponseBody
     @GetMapping("")
     public WishDateListResource getWishDates(@RequestParam("from") Optional<String> from,

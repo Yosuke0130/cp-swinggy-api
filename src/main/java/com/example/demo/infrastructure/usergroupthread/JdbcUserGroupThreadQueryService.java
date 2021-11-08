@@ -1,9 +1,12 @@
 package com.example.demo.infrastructure.usergroupthread;
 
+import com.example.demo.application.usergroupthread.UserGroupThreadException;
 import com.example.demo.application.usergroupthread.UserGroupThreadListQueryModel;
 import com.example.demo.application.usergroupthread.UserGroupThreadQueryModel;
 import com.example.demo.application.usergroupthread.UserGroupThreadQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -46,4 +49,29 @@ public class JdbcUserGroupThreadQueryService implements UserGroupThreadQueryServ
                 (String)thread.get("name"),
                 (String)thread.get("group_id"));
     }
+
+    @Override
+    public boolean exists(String userGroupId, String userGroupThreadId) throws UserGroupThreadException{
+        try {
+            String groupId = jdbc.queryForObject("SELECT group_id FROM user_group_thread WHERE user_group_thread_id = ?", String.class, userGroupThreadId);
+
+            return groupId.equals(userGroupId);
+
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return false;
+        } catch (DataAccessException e) {
+            throw new UserGroupThreadException("DB access error when checking if userGroupThread exists.");
+        }
+    }
+
+    @Override
+    public UserGroupThreadQueryModel selectThreadById(String userGroupThreadId) {
+
+        Map<String, Object> thread = jdbc.queryForMap("SELECT * FROM user_group_thread WHERE user_group_thread_id = ?", userGroupThreadId);
+        UserGroupThreadQueryModel userGroupThreadQueryModel = convertToUserGroupThreadQueryModel(thread);
+
+        return userGroupThreadQueryModel;
+    }
 }
+
+
