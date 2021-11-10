@@ -6,4 +6,6 @@ public interface UserGroupThreadApplicationService {
 
     public UserGroupThreadListQueryModel getUserGroupThreads(String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException;
 
+    public UserGroupThreadQueryModel getUserGroupThreadById(String userGroupId, String userGroupThread) throws IllegalArgumentException, UserGroupThreadException;
+
 }

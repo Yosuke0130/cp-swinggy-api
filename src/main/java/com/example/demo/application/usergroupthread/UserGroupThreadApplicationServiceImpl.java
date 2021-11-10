@@ -32,4 +32,16 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
 
         return userGroupThreadListQueryModel;
     }
+
+    @Override
+    public UserGroupThreadQueryModel getUserGroupThreadById(String userGroupId, String userGroupThreadId) throws IllegalArgumentException, UserGroupThreadException{
+
+        if (!userGroupThreadQueryService.exists(userGroupId, userGroupThreadId)) {
+            throw new IllegalArgumentException("This userGroupThread doesn't exist.");
+        }
+
+        UserGroupThreadQueryModel thread = userGroupThreadQueryService.selectThreadById(userGroupThreadId);
+
+        return thread;
+    }
 }
