@@ -25,7 +25,6 @@ public class JdbcUserGroupQueryService implements UserGroupQueryService {
         int offset = 0;
         if(page > 0) {offset = page * per;}
 
-        //todo: use user_group_member, not belonging
         List<Map<String, Object>> userGroups = jdbc.queryForList(
                 "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM user_group_member WHERE user_id = ?)",
                 member);
@@ -45,7 +44,6 @@ public class JdbcUserGroupQueryService implements UserGroupQueryService {
 
     @Override
     public int selectUserGroupCountByMemberId(String member) {
-        //todo: use user_group_member, not belonging
         Integer count = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM user_group_member WHERE user_id = ?)",
                 Integer.class, member);

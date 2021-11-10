@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class JdbcWishDateRepository implements WishDateRepository {
 
     @Override
     @Transactional
-    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException, IOException {
+    public List<WishDate> selectWishDateByDate(LocalDate date) throws WishDateException {
         try {
             List<Map<String, Object>> wishDateListData = jdbc.queryForList("SELECT * FROM wish_date WHERE wish_date = ?", date.toString());
 
@@ -78,8 +77,6 @@ public class JdbcWishDateRepository implements WishDateRepository {
             if(to.isPresent()) {
                 toValue = to.get().plusDays(1);
             }
-
-            //todo: ユーザーIDから所属グループを取得、その所属グループのwishdatesを取得
 
             List<Map<String, Object>> wishDateData = null;
             if(from.isPresent()) {
