@@ -2,7 +2,9 @@ package com.example.demo.presentation.usergroupthread;
 
 import com.example.demo.Logging;
 import com.example.demo.application.usergroupthread.UserGroupThreadApplicationService;
+import com.example.demo.application.usergroupthread.UserGroupThreadException;
 import com.example.demo.application.usergroupthread.UserGroupThreadListQueryModel;
+import com.example.demo.application.usergroupthread.UserGroupThreadQueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +53,17 @@ public class UserGroupThreadController {
             @PathVariable("user_group_id") String userGroupId,
             @PathVariable("thread_id") String threadId
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            UserGroupThreadQueryModel thread = userGroupThreadApplicationService.getUserGroupThreadById(userGroupId, threadId);
+
+            return new UserGroupThreadResource(thread.getUserGroupThreadId(), thread.getName(), thread.getUserGroupId());
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (UserGroupThreadException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("")

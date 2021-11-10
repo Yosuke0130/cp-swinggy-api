@@ -71,6 +71,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
         List<WishDate> wishDateList = null;
         if(userGroupId.isEmpty()) {
+            //todo: userIdを追加で受け取り所属しているグループのwishDate全てを取得
             wishDateList = wishDateRepository.selectWishDates(validatedFrom, validatedTo, page, per);
         } else {
             wishDateList = wishDateRepository.selectWishDatesByGroupId(validatedFrom, validatedTo, page, per, userGroupId.get());
