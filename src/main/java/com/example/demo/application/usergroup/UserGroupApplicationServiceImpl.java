@@ -1,11 +1,10 @@
 package com.example.demo.application.usergroup;
 
 import com.example.demo.Logging;
-import com.example.demo.application.usergroupmember.UserGroupMemberQueryModel;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryService;
+import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
-import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.usergroupmember.UserGroupMember;
 import com.example.demo.domain.usergroupmember.UserGroupMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserGroupApplicationServiceImpl implements UserGroupApplicationService {

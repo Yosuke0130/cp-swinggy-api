@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Repository
 public class JdbcUserGroupRepository implements UserGroupRepository {
 
@@ -24,12 +22,6 @@ public class JdbcUserGroupRepository implements UserGroupRepository {
             jdbc.update("INSERT INTO user_group(group_id, group_name, owner) VALUES(?, ?, ?)",
                     userGroup.getUserGroupId(),
                     userGroup.getUserGroupName(),
-                    userGroup.getOwner());
-
-            UUID belongingId = UUID.randomUUID();
-            jdbc.update("INSERT INTO group_user_belonging(belonging_id, group_id, member) VALUES(?, ?, ?)",
-                    belongingId.toString(),
-                    userGroup.getUserGroupId(),
                     userGroup.getOwner());
 
         } catch (DataAccessException e) {
@@ -54,10 +46,8 @@ public class JdbcUserGroupRepository implements UserGroupRepository {
     @Transactional
     public void delete(UserGroup userGroup) throws UserGroupException{
         try {
-            jdbc.update("DELETE FROM group_user_belonging WHERE group_id = ?", userGroup.getUserGroupId());
             jdbc.update("DELETE FROM user_group WHERE group_id = ?", userGroup.getUserGroupId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
             throw new UserGroupException("DB access error occurred when deleting userGroup", e);
         }
     }
