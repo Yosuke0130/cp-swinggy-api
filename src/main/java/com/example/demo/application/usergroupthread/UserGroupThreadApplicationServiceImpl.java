@@ -1,6 +1,10 @@
 package com.example.demo.application.usergroupthread;
 
+import com.example.demo.Logging;
 import com.example.demo.application.usergroup.UserGroupQueryService;
+import com.example.demo.domain.usergroupthread.UserGroupThread;
+import com.example.demo.domain.usergroupthread.UserGroupThreadRepository;
+import com.example.demo.domain.usergroupthread.UserGroupThreadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,15 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
 
     @Autowired
     UserGroupThreadQueryService userGroupThreadQueryService;
+
+    @Autowired
+    UserGroupThreadService userGroupThreadService;
+
+    @Autowired
+    UserGroupThreadRepository userGroupThreadRepository;
+
+    @Autowired
+    Logging logger;
 
     private static final int USER_GROUP_THREAD_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_THREAD_DEFAULT_PER = 100;
@@ -43,5 +56,21 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
         UserGroupThreadQueryModel thread = userGroupThreadQueryService.selectThreadById(userGroupThreadId);
 
         return thread;
+    }
+
+    @Override
+    public void createThread(String userGroupId, String name) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException {
+        if(!userGroupQueryService.exists(userGroupId)) {
+            throw new IllegalStateException("groupId doesn't exists.");
+        }
+
+        UserGroupThread thread = new UserGroupThread(userGroupId, name);
+
+        if(!userGroupThreadService.validateName(thread.getUserGroupId(), thread.getName())) {
+            throw new IllegalArgumentException("This threadName is already used.");
+        }
+
+        userGroupThreadRepository.insert(thread);
+        logger.info("userGroupThread created: " + thread.getId());
     }
 }

@@ -8,4 +8,6 @@ public interface UserGroupThreadApplicationService {
 
     public UserGroupThreadQueryModel getUserGroupThreadById(String userGroupId, String userGroupThread) throws IllegalArgumentException, UserGroupThreadException;
 
+    public void createThread(String userGroupId, String name) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException;
+
 }
