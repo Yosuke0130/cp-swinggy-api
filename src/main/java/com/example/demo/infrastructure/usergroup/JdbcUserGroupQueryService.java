@@ -26,7 +26,7 @@ public class JdbcUserGroupQueryService implements UserGroupQueryService {
         if(page > 0) {offset = page * per;}
 
         List<Map<String, Object>> userGroups = jdbc.queryForList(
-                "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE member = ?)",
+                "SELECT * FROM user_group WHERE group_id IN (SELECT group_id FROM user_group_member WHERE user_id = ?)",
                 member);
 
         List<UserGroupQueryModel> userGroupQueryModels = userGroups.stream()
@@ -45,7 +45,7 @@ public class JdbcUserGroupQueryService implements UserGroupQueryService {
     @Override
     public int selectUserGroupCountByMemberId(String member) {
         Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM group_user_belonging WHERE member = ?)",
+                "SELECT COUNT(*) FROM user_group WHERE group_id IN (SELECT group_id FROM user_group_member WHERE user_id = ?)",
                 Integer.class, member);
 
         return count;

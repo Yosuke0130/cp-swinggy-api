@@ -63,16 +63,6 @@ CREATE TABLE IF NOT EXISTS user_group(
     FOREIGN KEY(owner) REFERENCES user(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS group_user_belonging(
-      belonging_id VARCHAR(255),
-      group_id VARCHAR(255) NOT NULL,
-      member VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      PRIMARY KEY(belonging_id),
-      FOREIGN KEY(group_id) REFERENCES user_group(group_id),
-      FOREIGN KEY(member) REFERENCES user(user_id)
-  );
-
 CREATE TABLE IF NOT EXISTS wish_date(
     wish_date_id VARCHAR(255),
     owner VARCHAR(255) NOT NULL,

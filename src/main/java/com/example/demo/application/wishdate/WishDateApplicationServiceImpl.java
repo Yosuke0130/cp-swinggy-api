@@ -57,7 +57,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
     }
 
     @Override
-    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId) throws IllegalArgumentException {
+    public List<WishDateModel> getWishDates(Optional<String> from, Optional<String> to, int page, int per, Optional<String> userGroupId, String userId) throws IllegalArgumentException {
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
             LocalDate parsedFrom = parseLocalDate(from.get());
@@ -69,10 +69,13 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
             validatedTo = Optional.of(parsedTo);
         }
 
+        if(!userRepository.exists(userId)) {
+            throw new IllegalArgumentException("This userId doesn't exist.");
+        }
+
         List<WishDate> wishDateList = null;
         if(userGroupId.isEmpty()) {
-            //todo: userIdを追加で受け取り所属しているグループのwishDate全てを取得
-            wishDateList = wishDateRepository.selectWishDates(validatedFrom, validatedTo, page, per);
+            wishDateList = wishDateRepository.selectWishDatesByUserId(validatedFrom, validatedTo, page, per, userId);
         } else {
             wishDateList = wishDateRepository.selectWishDatesByGroupId(validatedFrom, validatedTo, page, per, userGroupId.get());
         }
@@ -85,7 +88,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
 
     }
 
-    public int getWishDateCount(Optional<String> from, Optional<String> to, Optional<String> userGroupId) throws IllegalArgumentException {
+    public int getWishDateCount(Optional<String> from, Optional<String> to, Optional<String> userGroupId, String userId) throws IllegalArgumentException {
 
         Optional<LocalDate> validatedFrom = Optional.empty();
         if(from.isPresent()) {
@@ -101,7 +104,7 @@ public class WishDateApplicationServiceImpl implements WishDateApplicationServic
         int count = 0;
         if(userGroupId.isEmpty()) {
 
-            count = wishDateRepository.selectWishDateCount(validatedFrom, validatedTo);
+            count = wishDateRepository.selectWishDateCountByUserId(validatedFrom, validatedTo, userId);
         } else {
             count = wishDateRepository.selectWishDateCountByGroupId(validatedFrom, validatedTo, userGroupId.get());
         }
