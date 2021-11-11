@@ -170,22 +170,25 @@ public class JdbcWishDateRepository implements WishDateRepository {
                 toValue = to.get().plusDays(1);
             }
 
-            // (SELECT group_id FROM user_group_member WHERE user_id = ?) AND
             if(from.isPresent()) {
                 if(to.isPresent()) {
                     //どちらも値あり
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ? AND wish_date < ?", Integer.class, from.get(), toValue);
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date >= ? AND wish_date < ?",
+                            Integer.class, userId, from.get(), toValue);
                 } else {
                     //fromだけ
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date >= ?", Integer.class, from.get());
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date >= ?",
+                            Integer.class, userId, from.get());
                 }
             } else {
                 if(to.isPresent()) {
                     //toだけ
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE wish_date < ?", Integer.class, toValue);
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?) AND wish_date < ?",
+                            Integer.class, userId, toValue);
                 } else {
                     //どちらも値なし
-                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date", Integer.class);
+                    count = jdbc.queryForObject("SELECT COUNT(*) FROM wish_date WHERE group_id = (SELECT group_id FROM user_group_member WHERE user_id = ?)",
+                            Integer.class, userId);
                 }
             }
             return count;
