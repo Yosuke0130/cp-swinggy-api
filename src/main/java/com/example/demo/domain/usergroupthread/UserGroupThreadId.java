@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UserGroupThreadId {
 
     @Autowired
-    Logging logger;
+    private Logging logger;
 
     private String id;
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public class JdbcUserGroupThreadRepository implements UserGroupThreadRepository {
 
     @Autowired
-    JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
 
     @Override
     public void insert(UserGroupThread thread) throws UserGroupThreadException{

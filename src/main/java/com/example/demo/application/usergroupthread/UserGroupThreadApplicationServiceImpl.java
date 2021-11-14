@@ -4,7 +4,6 @@ import com.example.demo.Logging;
 import com.example.demo.application.usergroup.UserGroupQueryService;
 import com.example.demo.domain.usergroupthread.UserGroupThread;
 import com.example.demo.domain.usergroupthread.UserGroupThreadRepository;
-import com.example.demo.domain.usergroupthread.UserGroupThreadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +13,16 @@ import java.util.Optional;
 public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApplicationService{
 
     @Autowired
-    UserGroupQueryService userGroupQueryService;
+    private UserGroupQueryService userGroupQueryService;
 
     @Autowired
-    UserGroupThreadQueryService userGroupThreadQueryService;
+    private UserGroupThreadQueryService userGroupThreadQueryService;
 
     @Autowired
-    UserGroupThreadService userGroupThreadService;
+    private UserGroupThreadRepository userGroupThreadRepository;
 
     @Autowired
-    UserGroupThreadRepository userGroupThreadRepository;
-
-    @Autowired
-    Logging logger;
+    private Logging logger;
 
     private static final int USER_GROUP_THREAD_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_THREAD_DEFAULT_PER = 100;
@@ -65,10 +61,6 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
         }
 
         UserGroupThread thread = new UserGroupThread(userGroupId, name);
-
-        if(!userGroupThreadService.validateName(thread.getUserGroupId(), thread.getName())) {
-            throw new IllegalArgumentException("This threadName is already used.");
-        }
 
         userGroupThreadRepository.insert(thread);
         logger.info("userGroupThread created: " + thread.getId());

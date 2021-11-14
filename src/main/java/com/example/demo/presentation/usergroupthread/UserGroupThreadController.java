@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 public class UserGroupThreadController {
 
     @Autowired
-    UserGroupThreadApplicationService userGroupThreadApplicationService;
+    private UserGroupThreadApplicationService userGroupThreadApplicationService;
 
     @Autowired
-    Logging logger;
+    private Logging logger;
 
     @GetMapping("")
     public UserGroupThreadListResource getUserGroupThreads(

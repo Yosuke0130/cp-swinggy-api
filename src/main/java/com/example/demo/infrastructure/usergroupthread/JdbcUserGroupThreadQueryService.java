@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class JdbcUserGroupThreadQueryService implements UserGroupThreadQueryService {
 
     @Autowired
-    JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
 
     public UserGroupThreadListQueryModel selectList(String userGroupId, int page, int per) {
 
@@ -73,20 +73,6 @@ public class JdbcUserGroupThreadQueryService implements UserGroupThreadQueryServ
         return userGroupThreadQueryModel;
     }
 
-    @Override
-    public UserGroupThreadQueryModel selectThreadByNameInGroup(String name, String userGroupId) {
-        try {
-            Map<String, Object> thread = jdbc.queryForMap("SELECT * FROM user_group_thread WHERE name = ? AND group_id = ?",
-                    name, userGroupId);
-
-            UserGroupThreadQueryModel userGroupThreadQueryModel = convertToUserGroupThreadQueryModel(thread);
-            return userGroupThreadQueryModel;
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return null;
-        } catch (DataAccessException e) {
-            throw new IllegalArgumentException("query failed.");
-        }
-    }
 }
 
 

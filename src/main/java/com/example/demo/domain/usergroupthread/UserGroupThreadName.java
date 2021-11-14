@@ -8,7 +8,7 @@ public class UserGroupThreadName {
     public UserGroupThreadName(String name) throws IllegalArgumentException{
         //memo: need symbol regulation?
         if(name.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("UserThreadName's number of characters must be under 30.");
+            throw new IllegalArgumentException("UserThreadName's number of characters must be　less than or equal to 30.");
         }
         this.name = name;
     }
