@@ -15,12 +15,30 @@ public class JdbcUserGroupThreadRepository implements UserGroupThreadRepository 
     private JdbcTemplate jdbc;
 
     @Override
-    public void insert(UserGroupThread thread) throws UserGroupThreadException{
+    public void insert(UserGroupThread thread) throws UserGroupThreadException {
         try {
             jdbc.update("INSERT INTO user_group_thread(user_group_thread_id, group_id, name) VALUES(?, ?, ?)",
                     thread.getId(), thread.getUserGroupId(), thread.getName());
         } catch (DataAccessException e) {
             throw new UserGroupThreadException("Insert userGroupThread failed.");
+        }
+    }
+
+    @Override
+    public void updateName(UserGroupThread thread) {
+        try {
+            jdbc.update("UPDATE user_group_thread SET name = ? WHERE user_group_thread_id = ?", thread.getName(), thread.getId());
+        } catch (DataAccessException e) {
+            throw new UserGroupThreadException("DB access error when updating threadName.");
+        }
+    }
+
+    @Override
+    public void delete(UserGroupThread thread) {
+        try {
+            jdbc.update("DELETE FROM user_group_thread WHERE user_group_thread_id = ?", thread.getId());
+        } catch (DataAccessException e) {
+            throw new UserGroupThreadException("DB access error when deleting thread: " + thread.getId());
         }
     }
 

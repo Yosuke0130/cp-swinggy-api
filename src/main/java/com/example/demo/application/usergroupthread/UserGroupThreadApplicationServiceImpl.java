@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApplicationService{
+public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApplicationService {
 
     @Autowired
     private UserGroupQueryService userGroupQueryService;
@@ -30,7 +30,7 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
     @Override
     public UserGroupThreadListQueryModel getUserGroupThreads(String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalArgumentException {
 
-        if(!userGroupQueryService.exists(userGroupId)) {
+        if (!userGroupQueryService.exists(userGroupId)) {
             throw new IllegalArgumentException("This userGroup doesn't exist.");
         }
 
@@ -43,7 +43,7 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
     }
 
     @Override
-    public UserGroupThreadQueryModel getUserGroupThreadById(String userGroupId, String userGroupThreadId) throws IllegalArgumentException, UserGroupThreadException{
+    public UserGroupThreadQueryModel getUserGroupThreadById(String userGroupId, String userGroupThreadId) throws IllegalArgumentException, UserGroupThreadException {
 
         if (!userGroupThreadQueryService.exists(userGroupId, userGroupThreadId)) {
             throw new IllegalArgumentException("This userGroupThread doesn't exist.");
@@ -56,7 +56,7 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
 
     @Override
     public void createThread(String userGroupId, String name) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException {
-        if(!userGroupQueryService.exists(userGroupId)) {
+        if (!userGroupQueryService.exists(userGroupId)) {
             throw new IllegalStateException("groupId doesn't exists.");
         }
 
@@ -65,4 +65,34 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
         userGroupThreadRepository.insert(thread);
         logger.info("userGroupThread created: " + thread.getId());
     }
+
+    @Override
+    public void updateThread(String userGroupId, String id, String name) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException {
+        if (!userGroupThreadQueryService.exists(userGroupId, id)) {
+            throw new IllegalStateException("This userGroupThread doesn't exist.");
+        }
+
+        UserGroupThread thread = new UserGroupThread(userGroupId, id, name);
+
+        userGroupThreadRepository.updateName(thread);
+        logger.info("Thread Name has changed :" + thread.getName());
+    }
+
+    @Override
+    public void deleteThread(String userGroupId, String id) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException {
+        if (!userGroupThreadQueryService.exists(userGroupId, id)) {
+            throw new IllegalStateException("This userGroupThread doesn't exist.");
+        }
+
+        UserGroupThreadQueryModel threadQueryModel = userGroupThreadQueryService.selectThreadById(id);
+
+        UserGroupThread thread = new UserGroupThread(
+                threadQueryModel.getUserGroupId(),
+                threadQueryModel.getUserGroupThreadId(),
+                threadQueryModel.getName());
+
+        userGroupThreadRepository.delete(thread);
+        logger.info("Thread has deleted :" + thread.getId());
+    }
+
 }
