@@ -8,5 +8,4 @@ public interface UserGroupThreadQueryService {
 
     public UserGroupThreadQueryModel selectThreadById(String userGroupThreadId);
 
-//    public UserGroupThreadQueryModel selectThreadByNameInGroup(String userGroupId, String name);
 }
