@@ -10,10 +10,6 @@ public class UserGroupThreadCreationRequestBody {
     @NotNull
     private String name;
 
-    public UserGroupThreadCreationRequestBody(@NotNull String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }

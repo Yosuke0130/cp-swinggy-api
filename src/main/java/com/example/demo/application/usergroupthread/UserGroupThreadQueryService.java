@@ -7,4 +7,5 @@ public interface UserGroupThreadQueryService {
     public boolean exists(String userGroupId, String userGroupThreadId) throws UserGroupThreadException;
 
     public UserGroupThreadQueryModel selectThreadById(String userGroupThreadId);
+
 }

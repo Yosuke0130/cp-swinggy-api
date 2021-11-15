@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class JdbcUserGroupThreadQueryService implements UserGroupThreadQueryService {
 
     @Autowired
-    JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
 
     public UserGroupThreadListQueryModel selectList(String userGroupId, int page, int per) {
 
@@ -72,6 +72,7 @@ public class JdbcUserGroupThreadQueryService implements UserGroupThreadQueryServ
 
         return userGroupThreadQueryModel;
     }
+
 }
 
 
