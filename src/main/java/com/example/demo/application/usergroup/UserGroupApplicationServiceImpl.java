@@ -2,11 +2,13 @@ package com.example.demo.application.usergroup;
 
 import com.example.demo.Logging;
 import com.example.demo.application.usergroupmember.UserGroupMemberQueryService;
+import com.example.demo.application.wishdate.WishDateException;
 import com.example.demo.domain.user.UserRepository;
 import com.example.demo.domain.usergroup.UserGroup;
 import com.example.demo.domain.usergroup.UserGroupRepository;
 import com.example.demo.domain.usergroupmember.UserGroupMember;
 import com.example.demo.domain.usergroupmember.UserGroupMemberRepository;
+import com.example.demo.domain.wishdate.WishDateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,9 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
     @Autowired
     UserGroupMemberQueryService userGroupMemberQueryService;
+
+    @Autowired
+    private WishDateRepository wishDateRepository;
 
     @Override
     @Transactional
@@ -99,7 +104,7 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
 
     @Override
     @Transactional
-    public void deleteUserGroup(String userGroupId) throws UserGroupException, IllegalArgumentException{
+    public void deleteUserGroup(String userGroupId) throws UserGroupException, IllegalArgumentException {
 
         UserGroupQueryModel userGroupQueryModel = userGroupQueryService.selectUserGroupByGroupId(userGroupId);
 
@@ -107,8 +112,15 @@ public class UserGroupApplicationServiceImpl implements UserGroupApplicationServ
                 userGroupQueryModel.getUserGroupName(),
                 userGroupQueryModel.getOwner());
 
+        try {
+            wishDateRepository.deleteWishDatesByGroupId(userGroup.getUserGroupId());
+        } catch (WishDateException e) {
+            throw new UserGroupException(e.getMessage());
+        }
         userGroupMemberRepository.deleteUserGroupMembersByGroupId(userGroup.getUserGroupId());
         userGroupRepository.delete(userGroup);
+
+        logger.info("UserGroup deleted: " + userGroup.getUserGroupId());
     }
 
 }

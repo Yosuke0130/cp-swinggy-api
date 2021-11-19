@@ -308,6 +308,21 @@ public class JdbcWishDateRepository implements WishDateRepository {
         }
     }
 
+
+    @Override
+    @Transactional
+    public void deleteWishDatesByGroupId(String userGroupId) {
+        try {
+            jdbc.update("DELETE FROM participation WHERE wish_date_id = (SELECT wish_date_id FROM wish_date WHERE group_id = ?)", userGroupId);
+
+            jdbc.update("DELETE FROM wish_date_comment WHERE wish_date_id = (SELECT wish_date_id FROM wish_date WHERE group_id = ?)", userGroupId);
+
+            jdbc.update("DELETE FROM wish_date WHERE group_id = ?", userGroupId);
+        } catch (DataAccessException e) {
+            throw new WishDateException("DB access error occurred when deleting wishDate.", e);
+        }
+    }
+
     @Override
     @Transactional
     public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException {

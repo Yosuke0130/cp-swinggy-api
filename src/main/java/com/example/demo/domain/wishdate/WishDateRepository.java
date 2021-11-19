@@ -28,6 +28,8 @@ public interface WishDateRepository {
 
     public void deleteWishDate(String wishDateId) throws WishDateException, IllegalArgumentException;
 
+    public void deleteWishDatesByGroupId(String userGroupId);
+
     public List<Participation> selectParticipation(String wishDateId, String participant) throws DataAccessException;
 
     public List<Participation> selectParticipationsByPage(String wishDateId, int page, int per) throws IllegalArgumentException;
