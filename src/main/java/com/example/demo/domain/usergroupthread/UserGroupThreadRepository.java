@@ -6,7 +6,7 @@ public interface UserGroupThreadRepository {
 
     public void insert(UserGroupThread thread) throws UserGroupThreadException;
 
-    public void updateName(UserGroupThread thread) throws UserGroupThreadException;
+    public void update(UserGroupThread thread) throws UserGroupThreadException;
 
     public void delete(UserGroupThread thread) throws UserGroupThreadException;
 }

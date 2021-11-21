@@ -74,8 +74,8 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
 
         UserGroupThread thread = new UserGroupThread(userGroupId, id, name);
 
-        userGroupThreadRepository.updateName(thread);
-        logger.info("Thread Name has changed :" + thread.getName());
+        userGroupThreadRepository.update(thread);
+        logger.info("Thread has been updated :" + thread.getId());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
                 threadQueryModel.getName());
 
         userGroupThreadRepository.delete(thread);
-        logger.info("Thread has deleted :" + thread.getId());
+        logger.info("Thread has been deleted :" + thread.getId());
     }
 
 }

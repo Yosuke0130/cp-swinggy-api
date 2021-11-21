@@ -25,11 +25,11 @@ public class JdbcUserGroupThreadRepository implements UserGroupThreadRepository 
     }
 
     @Override
-    public void updateName(UserGroupThread thread) {
+    public void update(UserGroupThread thread) {
         try {
             jdbc.update("UPDATE user_group_thread SET name = ? WHERE user_group_thread_id = ?", thread.getName(), thread.getId());
         } catch (DataAccessException e) {
-            throw new UserGroupThreadException("DB access error when updating threadName.");
+            throw new UserGroupThreadException("DB access error when updating userGroupThread.");
         }
     }
 
