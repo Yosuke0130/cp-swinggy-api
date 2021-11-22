@@ -17,7 +17,7 @@ public class JdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void insert(UserGroup userGroup) throws UserGroupException{
+    public void insert(UserGroup userGroup) throws UserGroupException {
         try {
             jdbc.update("INSERT INTO user_group(group_id, group_name, owner) VALUES(?, ?, ?)",
                     userGroup.getUserGroupId(),
@@ -31,7 +31,7 @@ public class JdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void update(UserGroup userGroup) throws UserGroupException{
+    public void update(UserGroup userGroup) throws UserGroupException {
         try {
             jdbc.update("UPDATE user_group SET group_name = ? WHERE group_id = ?",
                     userGroup.getUserGroupName(),
@@ -44,7 +44,7 @@ public class JdbcUserGroupRepository implements UserGroupRepository {
 
     @Override
     @Transactional
-    public void delete(UserGroup userGroup) throws UserGroupException{
+    public void delete(UserGroup userGroup) throws UserGroupException {
         try {
             jdbc.update("DELETE FROM user_group WHERE group_id = ?", userGroup.getUserGroupId());
         } catch (DataAccessException e) {
