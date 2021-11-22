@@ -10,10 +10,6 @@ public class UserGroupThreadUpdateRequestBody {
     @NotNull
     private String name;
 
-    public UserGroupThreadUpdateRequestBody(@NotNull String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }

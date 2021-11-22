@@ -6,8 +6,14 @@ public class UserGroupThread {
     private String userGroupId;
     private UserGroupThreadName name;
 
-    public UserGroupThread(String userGroupId, String name) throws IllegalArgumentException{
+    public UserGroupThread(String userGroupId, String name) throws IllegalArgumentException {
         this.id = new UserGroupThreadId();
+        this.name = new UserGroupThreadName(name);
+        this.userGroupId = userGroupId;
+    }
+
+    public UserGroupThread(String userGroupId, String id, String name) throws IllegalArgumentException {
+        this.id = new UserGroupThreadId(id);
         this.name = new UserGroupThreadName(name);
         this.userGroupId = userGroupId;
     }

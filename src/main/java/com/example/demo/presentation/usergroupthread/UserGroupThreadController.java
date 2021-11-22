@@ -76,37 +76,58 @@ public class UserGroupThreadController {
             userGroupThreadApplicationService.createThread(userGroupId, requestBody.getName());
 
         } catch (IllegalStateException e) {
-
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         } catch (IllegalArgumentException e) {
-
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
         } catch (UserGroupThreadException e) {
-
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{thread_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUserGroupThread(
             @PathVariable("user_group_id") String userGroupId,
             @PathVariable("thread_id") String threadId,
             @RequestBody UserGroupThreadUpdateRequestBody requestBody
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            userGroupThreadApplicationService.updateThread(userGroupId, threadId, requestBody.getName());
+
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (UserGroupThreadException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{thread_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserGroupThread(
             @PathVariable("user_group_id") String userGroupId,
             @PathVariable("thread_id") String threadId
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            userGroupThreadApplicationService.deleteThread(userGroupId, threadId);
+
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (UserGroupThreadException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{thread_id}/comments")

@@ -18,5 +18,9 @@ public class UserGroupThreadId {
         logger.info("UserGroupThreadId issued: " + this.id);
     }
 
+    public UserGroupThreadId(String id) {
+        this.id = id;
+    }
+
     public String getValue() {return this.id;}
 }
