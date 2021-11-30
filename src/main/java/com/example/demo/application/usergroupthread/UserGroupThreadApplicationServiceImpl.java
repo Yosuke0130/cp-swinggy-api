@@ -95,4 +95,20 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
         logger.info("Thread has been deleted :" + thread.getId());
     }
 
+    private static final int USER_GROUP_COMMENT_DEFAULT_PAGE = 0;
+    private static final int USER_GROUP_COMMENT_DEFAULT_PER = 100;
+
+    @Override
+    public UserGroupCommentListQueryModel getUserGroupComments(String threadId, String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalStateException {
+        if (!userGroupThreadQueryService.exists(userGroupId, threadId)) {
+            throw new IllegalStateException("This userGroupThread doesn't exist.");
+        }
+
+        int pageValue = page.orElse(USER_GROUP_COMMENT_DEFAULT_PAGE);
+        int perValue = per.orElse(USER_GROUP_COMMENT_DEFAULT_PER);
+
+        return userGroupThreadQueryService.selectCommentList(threadId, pageValue, perValue);
+    }
+
+
 }

@@ -14,4 +14,6 @@ public interface UserGroupThreadApplicationService {
 
     public void deleteThread(String userGroupId, String id) throws IllegalStateException, IllegalArgumentException, UserGroupThreadException;
 
+    public UserGroupCommentListQueryModel getUserGroupComments(String id, String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalStateException;
+
 }
