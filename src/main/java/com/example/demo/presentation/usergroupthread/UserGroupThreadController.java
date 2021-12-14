@@ -1,10 +1,7 @@
 package com.example.demo.presentation.usergroupthread;
 
 import com.example.demo.Logging;
-import com.example.demo.application.usergroupthread.UserGroupThreadApplicationService;
-import com.example.demo.application.usergroupthread.UserGroupThreadException;
-import com.example.demo.application.usergroupthread.UserGroupThreadListQueryModel;
-import com.example.demo.application.usergroupthread.UserGroupThreadQueryModel;
+import com.example.demo.application.usergroupthread.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -134,10 +131,29 @@ public class UserGroupThreadController {
     public UserGroupCommentListResource getUserGroupComments(
             @PathVariable("user_group_id") String userGroupId,
             @PathVariable("thread_id") String threadId,
-            @RequestParam(value = "page", required = false) int page,
-            @RequestParam(value = "per", required = false) int per
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("per") Optional<Integer> per
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            UserGroupCommentListQueryModel commentList = userGroupThreadApplicationService.getUserGroupComments(threadId, userGroupId, page, per);
+
+            int count = commentList.getCount();
+
+            List<UserGroupCommentResource> comments = commentList.getUserGroupCommentQueryModels().stream()
+                    .map(comment -> new UserGroupCommentResource(
+                            comment.getId(),
+                            comment.getUserGroupThreadId(),
+                            comment.getMemberId(),
+                            comment.getText(),
+                            comment.getCreatedAt().toString()))
+                    .collect(Collectors.toList());
+
+            return new UserGroupCommentListResource(comments, count);
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PostMapping("/{thread_id}/comments")

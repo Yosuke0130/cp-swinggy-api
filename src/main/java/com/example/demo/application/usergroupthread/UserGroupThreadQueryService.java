@@ -8,4 +8,6 @@ public interface UserGroupThreadQueryService {
 
     public UserGroupThreadQueryModel selectThreadById(String userGroupThreadId);
 
+    public UserGroupCommentListQueryModel selectCommentList(String threadId, int page, int per);
+
 }
