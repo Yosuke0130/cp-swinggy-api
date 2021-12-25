@@ -9,4 +9,7 @@ public interface UserGroupThreadRepository {
     public void update(UserGroupThread thread) throws UserGroupThreadException;
 
     public void delete(UserGroupThread thread) throws UserGroupThreadException;
+
+    public void insertComment(UserGroupComment comment) throws UserGroupThreadException;
+
 }

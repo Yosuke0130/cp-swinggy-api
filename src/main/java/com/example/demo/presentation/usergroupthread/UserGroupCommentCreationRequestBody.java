@@ -11,13 +11,10 @@ public class UserGroupCommentCreationRequestBody {
     private String memberId;
     @NotNull
     private String text;
-    @NotNull
-    private String createdAt;
 
-    public UserGroupCommentCreationRequestBody(String memberId, String text, String createdAt) {
+    public UserGroupCommentCreationRequestBody(String memberId, String text) {
         this.memberId = memberId;
         this.text = text;
-        this.createdAt = createdAt;
     }
 
     public String getMemberId() {
@@ -28,7 +25,4 @@ public class UserGroupCommentCreationRequestBody {
         return text;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
 }

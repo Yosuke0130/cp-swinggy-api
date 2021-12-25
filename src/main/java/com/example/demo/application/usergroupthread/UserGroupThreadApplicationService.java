@@ -16,4 +16,5 @@ public interface UserGroupThreadApplicationService {
 
     public UserGroupCommentListQueryModel getUserGroupComments(String id, String userGroupId, Optional<Integer> page, Optional<Integer> per) throws IllegalStateException;
 
+    public void createGroupComment(String userGroupId, String threadId, String memberId, String text) throws IllegalStateException, UserGroupThreadException, IllegalArgumentException;
 }

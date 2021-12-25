@@ -2,6 +2,8 @@ package com.example.demo.application.usergroupthread;
 
 import com.example.demo.Logging;
 import com.example.demo.application.usergroup.UserGroupQueryService;
+import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.usergroupthread.UserGroupComment;
 import com.example.demo.domain.usergroupthread.UserGroupThread;
 import com.example.demo.domain.usergroupthread.UserGroupThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
 
     @Autowired
     private Logging logger;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private static final int USER_GROUP_THREAD_DEFAULT_PAGE = 0;
     private static final int USER_GROUP_THREAD_DEFAULT_PER = 100;
@@ -110,5 +115,20 @@ public class UserGroupThreadApplicationServiceImpl implements UserGroupThreadApp
         return userGroupThreadQueryService.selectCommentList(threadId, pageValue, perValue);
     }
 
+    @Override
+    public void createGroupComment(String userGroupId, String threadId, String memberId, String text)
+            throws IllegalStateException, UserGroupThreadException, IllegalArgumentException
+    {
+        if(!userGroupThreadQueryService.exists(userGroupId, threadId)) {
+            throw new IllegalStateException("This userGroupThread doesn't exist.");
+        }
+        if(!userRepository.exists(memberId)) {
+            throw new IllegalStateException("This participant doesn't exist.");
+        }
+
+        UserGroupComment groupComment = new UserGroupComment(threadId, memberId, text);
+
+        userGroupThreadRepository.insertComment(groupComment);
+    }
 
 }

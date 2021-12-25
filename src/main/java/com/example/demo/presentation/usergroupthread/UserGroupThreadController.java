@@ -153,7 +153,6 @@ public class UserGroupThreadController {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @PostMapping("/{thread_id}/comments")
@@ -162,7 +161,22 @@ public class UserGroupThreadController {
             @PathVariable("thread_id") String threadId,
             @RequestBody UserGroupCommentCreationRequestBody requestBody
     ) {
-        throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED);
+        try {
+            userGroupThreadApplicationService.createGroupComment(
+                    userGroupId,
+                    threadId,
+                    requestBody.getMemberId(),
+                    requestBody.getText());
+        } catch (IllegalStateException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (UserGroupThreadException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{thread_id}/comments/{comment_id}")

@@ -1,6 +1,7 @@
 package com.example.demo.infrastructure.usergroupthread;
 
 import com.example.demo.application.usergroupthread.UserGroupThreadException;
+import com.example.demo.domain.usergroupthread.UserGroupComment;
 import com.example.demo.domain.usergroupthread.UserGroupThread;
 import com.example.demo.domain.usergroupthread.UserGroupThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,22 @@ public class JdbcUserGroupThreadRepository implements UserGroupThreadRepository 
             jdbc.update("DELETE FROM user_group_thread WHERE user_group_thread_id = ?", thread.getId());
         } catch (DataAccessException e) {
             throw new UserGroupThreadException("DB access error when deleting thread: " + thread.getId());
+        }
+    }
+
+    @Override
+    public void insertComment(UserGroupComment comment) throws UserGroupThreadException{
+        try {
+            jdbc.update(
+                    "INSERT INTO user_group_comment(" +
+                    "user_group_comment_id, user_group_thread_id, member_id, text)" +
+                    " VALUES(?, ?, ?, ?)",
+                    comment.getId(),
+                    comment.getThreadId(),
+                    comment.getMemberId(),
+                    comment.getText());
+        } catch (DataAccessException e) {
+            throw new UserGroupThreadException("Insert userGroupComment failed.");
         }
     }
 
