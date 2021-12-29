@@ -9,4 +9,6 @@ public interface UserGroupMemberQueryService {
 
     public UserGroupMemberQueryModel selectUserGroupMemberByMemberId(String userGroupMemberId) throws IllegalArgumentException, UserGroupMemberException;
 
+    public boolean exists(String memberId) throws UserGroupMemberException;
+
 }

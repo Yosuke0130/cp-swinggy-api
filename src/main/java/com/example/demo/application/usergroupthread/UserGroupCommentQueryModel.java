@@ -10,7 +10,7 @@ public class UserGroupCommentQueryModel {
     private String text;
     private Timestamp createdAt;
 
-    public UserGroupCommentQueryModel(String id, String userGroupThreadId, String text, String memberId, Timestamp createdAt) {
+    public UserGroupCommentQueryModel(String id, String userGroupThreadId, String memberId, String text, Timestamp createdAt) {
         this.id = id;
         this.userGroupThreadId = userGroupThreadId;
         this.memberId = memberId;

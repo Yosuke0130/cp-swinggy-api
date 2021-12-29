@@ -120,6 +120,6 @@ CREATE TABLE IF NOT EXISTS user_group_comment(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(user_group_comment_id),
     FOREIGN KEY(user_group_thread_id) REFERENCES user_group_thread(user_group_thread_id),
-    FOREIGN KEY(member_id) REFERENCES user(user_id)
+    FOREIGN KEY(member_id) REFERENCES user_group_member(user_group_member_id)
 );
 

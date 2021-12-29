@@ -80,4 +80,18 @@ public class JdbcUserGroupMemberQueryService implements UserGroupMemberQueryServ
         }
     }
 
+    @Override
+    public boolean exists(String memberId) throws UserGroupMemberException {
+        try {
+            Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM user_group_member WHERE user_group_member_id = ?", Integer.class, memberId);
+
+            return count > 0;
+
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return false;
+        } catch (DataAccessException e) {
+            throw new UserGroupMemberException("query fails.");
+        }
+    }
+
 }
